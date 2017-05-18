@@ -89,15 +89,14 @@ void GameInit(struct Game* game, int width, int height)
 //  ---------------------------------------------------------------------------
 void GameMain()
 {
-    struct Game game;
-    game.World = NULL;
+    struct Game game = {0};
 
     GameInit(&game, 800, 800);
 
     game.World = CreateWorld();
     LoadMap(&game, "map01.map", &game.World->Map, game.World->Actors);
 
-    struct InputDevice inputDevice = { };
+    struct InputDevice inputDevice = {0};
     game.InputDevice = &inputDevice;
 
     struct Input input;
