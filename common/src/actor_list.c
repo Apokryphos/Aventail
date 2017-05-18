@@ -1,0 +1,125 @@
+#include "actor.h"
+#include "actor_list.h"
+#include <assert.h>
+#include <stdlib.h>
+
+//  ---------------------------------------------------------------------------
+void AddActor(struct ActorList* list, struct Actor* actor)
+{
+    assert(list != NULL);
+    assert(actor != NULL);
+
+    struct ActorListNode* node = malloc(sizeof(struct ActorList));
+    node->Actor = actor;
+    node->Previous = NULL;
+    node->Next = NULL;
+
+    if (list->First == NULL)
+    {  
+        assert(list->Count == 0);
+
+        list->First = node;
+        list->Count = 1;
+    }
+    else
+    {
+        struct ActorListNode* n = list->First;
+        while (n->Next != NULL)
+        {
+            n = n->Next;
+        }
+        n->Next = node;
+        node->Previous = n;
+        ++list->Count;
+    }
+}
+
+//  ---------------------------------------------------------------------------
+void ClearActorList(struct ActorList* list)
+{
+    assert(list != NULL);
+
+    struct ActorListNode* node = list->First;
+    while (node != NULL)
+    {
+        struct ActorListNode* next = node->Next;
+        free(node);
+        node = next;
+    }
+
+    list->Count = 0;
+    list->First = NULL;
+}
+
+//  ---------------------------------------------------------------------------
+struct ActorList* CreateActorList()
+{
+    struct ActorList* actors =  malloc(sizeof(struct ActorList));
+    actors->Count = 0;
+    actors->First = NULL;
+    return actors;
+}
+
+//  ---------------------------------------------------------------------------
+void DestroyActorList(struct ActorList** list)
+{
+    if (*list == NULL)
+    {
+        return;
+    }
+
+    struct ActorListNode* node = (*list)->First;
+    while (node != NULL)
+    {
+        struct ActorListNode* next = node->Next;
+        free(node->Actor);
+        free(node);
+        node = next;
+    }
+
+    free(*list);
+    *list = NULL;
+}
+
+//  ---------------------------------------------------------------------------
+void RemoveActor(struct ActorList* list, struct Actor* actor)
+{
+    assert(list != NULL);
+    assert(actor != NULL);
+
+    struct ActorListNode* node = list->First;
+
+    while (node->Next != NULL)
+    {
+        if (node->Actor == actor)
+        {
+            if (node == list->First)
+            {
+                assert(list->Count == 1);
+                list->First = NULL;
+            }
+
+            if (node == list->First)
+            {
+                assert(list->Count == 1);
+                list->First = NULL;
+            }
+
+            if (node->Previous != NULL)
+            {
+                node->Previous->Next = node->Next;
+            }
+
+            if (node->Next != NULL)
+            {
+                node->Next->Previous = node->Previous;
+            }
+
+            --list->Count;
+            free(node);
+            return;
+        }
+
+        node = node->Next;
+    }
+}

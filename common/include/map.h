@@ -1,0 +1,23 @@
+#ifndef MAP_HEADER_INCLUDED
+#define MAP_HEADER_INCLUDED
+
+#include "direction.h"
+
+struct Tile;
+
+struct Map
+{
+    int Width;
+    int Height;
+    int TileWidth;
+    int TileHeight;
+    struct Tile* Tiles;
+};
+
+struct Map* CreateMap(const int width, const int height, const int tileWidth, const int tileHeight);
+struct Tile* GetNeighbor(struct Map* map, struct Tile* tile, enum Direction direction);
+struct Tile* GetTile(const struct Map* map, const int x, const int y);
+int GetTileCount(const struct Map* map);
+int InBounds(const struct Map* map, const int x, const int y);
+
+#endif

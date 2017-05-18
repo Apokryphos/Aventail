@@ -1,0 +1,9 @@
+#ifndef GAME_STATE_HEADER_INCLUDED
+#define GAME_STATE_HEADER_INCLUDED
+
+enum GameState
+{
+    GAME_STATE_LEVEL,
+};
+
+#endif

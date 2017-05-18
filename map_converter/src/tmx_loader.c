@@ -1,0 +1,150 @@
+#include "actor.h"
+#include "actor_list.h"
+#include "map.h"
+#include "paths.h"
+#include "tile.h"
+#include "xml_util.h"
+#include <libxml/parser.h>
+#include <libxml/xmlmemory.h>
+#include <assert.h>
+#include <string.h>
+
+//  ---------------------------------------------------------------------------
+int IsCollision(const int tilesetId)
+{
+    //  TODO: Temp hack until tileset loading is complete
+    switch (tilesetId)
+    {
+        case 56:
+        case 57:
+        case 58:
+        case 66:
+            return 1;
+    }
+
+    return 0;
+}
+
+// //  ---------------------------------------------------------------------------
+// int IsNode(const xmlNode* node, char* name)
+// {
+//     return xmlStrcmp(node->name, (const xmlChar*)name) == 0;
+// }
+
+// //  ---------------------------------------------------------------------------
+// int HasAttribute(const xmlNode* node, const char* name)
+// {
+//     return xmlHasProp(node, (const xmlChar*)name) != NULL;
+// }
+
+// //  ---------------------------------------------------------------------------
+// void ReadIntAttribute(const xmlNode* node, const char* name, int* value)
+// {
+//     xmlChar* strValue = xmlGetProp(node, (const xmlChar*)name);
+//     *value = strtol((char*)strValue, NULL, 10);
+//     xmlFree(strValue);
+// }
+
+//  ---------------------------------------------------------------------------
+void LoadTmx(xmlDoc* doc, struct Map** map, struct ActorList** actors)
+{
+    assert(doc != NULL);
+    assert(*map == NULL);
+    assert(*actors == NULL);
+
+    xmlNode* root = xmlDocGetRootElement(doc);
+    assert(root != NULL);
+    assert(IsNode(root, "map"));
+
+    assert(xmlStrcmp(root->name, (const xmlChar*)"map") == 0);
+
+    int mapWidth, mapHeight, tileWidth, tileHeight;
+    ReadIntAttribute(root, "width", &mapWidth);
+    ReadIntAttribute(root, "height", &mapHeight);
+    ReadIntAttribute(root, "tilewidth", &tileWidth);
+    ReadIntAttribute(root, "tileheight", &tileHeight);
+
+    printf("Parsing TMX...\n");
+    printf("Map Size: %d x %d\n", mapWidth, mapHeight);
+    printf("Tile Size: %d x %d\n", tileWidth, tileHeight);
+
+    *map = CreateMap(mapWidth, mapHeight, tileWidth, tileHeight);
+    *actors = CreateActorList();
+
+    xmlNode* node = root->xmlChildrenNode;
+    while (node != NULL)
+    {
+        //  Tile layer
+        if (IsNode(node, "layer"))
+        {
+            xmlNode* dataNode = node->xmlChildrenNode;
+            while (dataNode != NULL)
+            {
+                if (IsNode(dataNode, "data"))
+                {
+                    int tileX = 0;
+                    int tileY = 0;
+
+                    xmlNode* tileNode = dataNode->xmlChildrenNode;
+                    while (tileNode != NULL)
+                    {
+                        if (IsNode(tileNode, "tile"))
+                        {
+                            int gid;
+                            ReadIntAttribute(tileNode, "gid", &gid);
+
+                            struct Tile* tile = GetTile(*map, tileX, tileY);
+                            tile->TilesetId = gid - 1;
+
+                            tile->Collision = IsCollision(tile->TilesetId);
+
+                            ++tileX;
+                            if (tileX > mapWidth - 1)
+                            {
+                                tileX = 0;
+                                ++tileY;
+                            }
+                        }
+
+                        tileNode = tileNode->next;
+                    }
+                }
+                dataNode = dataNode->next;
+            }
+        }
+        else if (IsNode(node, "objectgroup"))
+        {
+            xmlNode* objectNode = node->xmlChildrenNode;
+            while (objectNode != NULL)
+            {
+                if (IsNode(objectNode, "object"))
+                {
+                    int gid = 0;
+                    int tileX = 0;
+                    int tileY = 0;
+
+                    ReadIntAttribute(objectNode, "x", &tileX);
+                    ReadIntAttribute(objectNode, "y", &tileY);
+
+                    tileX /= (*map)->TileWidth;
+                    tileY /= (*map)->TileHeight;
+
+                    if (HasAttribute(objectNode, "gid"))
+                    {
+                        ReadIntAttribute(objectNode, "gid", &gid);
+                    }
+
+                    char* type = NULL;
+                    ReadAttribute(objectNode, "type", &type);
+                    if (strcmp(type, "Actor") == 0)
+                    {
+                        struct Actor* actor = CreateActor(*map, tileX, tileY - 1, gid);
+                        AddActor(*actors, actor);
+                    }
+                }
+                objectNode = objectNode->next;
+            }
+        }
+        node = node->next;
+    }
+}
