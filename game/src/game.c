@@ -135,6 +135,8 @@ void GameMain()
         SDL_RenderPresent(game.Renderer);
     }
 
+    SDL_DestroyTexture(tileset.Texture);
+
     GameShutdown(&game);
 }
 

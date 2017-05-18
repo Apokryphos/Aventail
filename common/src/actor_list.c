@@ -9,7 +9,7 @@ void AddActor(struct ActorList* list, struct Actor* actor)
     assert(list != NULL);
     assert(actor != NULL);
 
-    struct ActorListNode* node = malloc(sizeof(struct ActorList));
+    struct ActorListNode* node = malloc(sizeof(struct ActorListNode));
     node->Actor = actor;
     node->Previous = NULL;
     node->Next = NULL;
