@@ -24,9 +24,9 @@ struct Map* CreateMap(
 
     map->Tiles = malloc(sizeof(struct Tile) * width * height);
 
-    for (int x = 0; x < width; ++x)
+    for (int y = 0; y < height; ++y)
     {
-        for (int y = 0; y < height; ++y)
+        for (int x = 0; x < width; ++x)
         {
             struct Tile* tile = &map->Tiles[y * width + x];
             tile->Collision = 0;
@@ -37,6 +37,21 @@ struct Map* CreateMap(
     }
 
     return map;
+}
+
+//  ---------------------------------------------------------------------------
+void DestroyMap(struct Map** map)
+{
+    if (*map == NULL)
+    {
+        return;
+    }
+
+    assert((*map)->Tiles != NULL);
+    free((*map)->Tiles);
+
+    free(*map);
+    *map = NULL;
 }
 
 //  ---------------------------------------------------------------------------

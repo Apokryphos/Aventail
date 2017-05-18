@@ -142,9 +142,28 @@ void GameMain()
 //  ---------------------------------------------------------------------------
 void GameShutdown(struct Game* game)
 {
+    if (game->BasePath != NULL)
+    {
+        SDL_free(game->BasePath);
+        game->BasePath = NULL;
+    }
+
     if (game->World != NULL)
     {
         DestroyWorld(&game->World);
+        game->World = NULL;
+    }
+
+    if (game->Renderer != NULL)
+    {
+        SDL_DestroyRenderer(game->Renderer);
+        game->Renderer = NULL;
+    }
+
+    if (game->Window != NULL)
+    {
+        SDL_DestroyWindow(game->Window);
+        game->Window = NULL;
     }
 
     IMG_Quit();

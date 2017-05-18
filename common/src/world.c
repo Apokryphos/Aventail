@@ -1,6 +1,7 @@
 #include "world.h"
 #include "actor.h"
 #include "actor_list.h"
+#include "map.h"
 #include <assert.h>
 #include <stdlib.h>
 
@@ -39,7 +40,7 @@ void DestroyWorld(struct World** world)
 
     if ((*world)->Map != NULL)
     {
-        free((*world)->Map);
+        DestroyMap(&(*world)->Map);
     }
 
     free(*world);
