@@ -3,6 +3,7 @@
 
 #include "direction.h"
 
+struct ActorList;
 struct Map;
 struct Tile;
 
@@ -15,6 +16,5 @@ struct Actor
 };
 
 struct Actor* CreateActor(struct Map* map, int tileX, int tileY, int tilesetId);
-void MoveActor(struct Actor* actor);
 
 #endif

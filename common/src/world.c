@@ -2,6 +2,7 @@
 #include "actor.h"
 #include "actor_list.h"
 #include "map.h"
+#include "tile.h"
 #include <assert.h>
 #include <stdlib.h>
 
@@ -48,14 +49,48 @@ void DestroyWorld(struct World** world)
 }
 
 //  ---------------------------------------------------------------------------
-void SimulateWorld(struct World* world)
+void MoveActors(struct World* world)
 {
     struct ActorListNode* actorNode = world->Actors->First;
     while (actorNode != NULL)
     {
         struct Actor* actor = actorNode->Actor;
-        MoveActor(actor);
+
+        struct Tile* destTile = GetNeighbor(actor->Map, actor->Tile, actor->MoveDirection);
+
+        //  Check if destination tile is valid
+        if (destTile != NULL && destTile->Collision == 0)
+        {
+            int canMove = 1;
+
+            struct ActorListNode* otherActorNode = world->Actors->First;
+            while (otherActorNode != NULL)
+            {
+                struct Actor* otherActor = otherActorNode->Actor;
+                
+                //  Check if another actor occupies destination tile
+                if (otherActor->Tile == destTile && otherActor != actor)
+                {
+                    canMove = 0;
+                    break;
+                }
+                otherActorNode = otherActorNode->Next;
+            }
+            
+            //  Move actor to destination tile
+            if (canMove)
+            {
+                actor->Tile = destTile;
+                actor->MoveDirection = DIRECTION_NONE;
+            }
+        }
 
         actorNode = actorNode->Next;
-    }    
+    } 
+}
+
+//  ---------------------------------------------------------------------------
+void SimulateWorld(struct World* world)
+{
+    MoveActors(world);
 }
