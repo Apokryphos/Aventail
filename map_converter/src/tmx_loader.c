@@ -1,6 +1,7 @@
 #include "actor.h"
 #include "actor_list.h"
 #include "map.h"
+#include "map_link.h"
 #include "paths.h"
 #include "tile.h"
 #include "xml_util.h"
@@ -15,6 +16,19 @@ int IsCollision(const int tilesetId)
     //  TODO: Temp hack until tileset loading is complete
     switch (tilesetId)
     {
+        case 20:
+        case 21:
+        case 22:
+        case 23:
+        case 24:
+        case 30:
+        case 31:
+        case 32:
+        case 33:
+        case 34:
+        case 40:
+        case 41:
+        case 42:
         case 56:
         case 57:
         case 58:
@@ -25,7 +39,6 @@ int IsCollision(const int tilesetId)
     return 0;
 }
 
-// //  ---------------------------------------------------------------------------
 // int IsNode(const xmlNode* node, char* name)
 // {
 //     return xmlStrcmp(node->name, (const xmlChar*)name) == 0;
@@ -44,6 +57,67 @@ int IsCollision(const int tilesetId)
 //     *value = strtol((char*)strValue, NULL, 10);
 //     xmlFree(strValue);
 // }
+
+//  ---------------------------------------------------------------------------
+xmlNode* GetPropertiesNode(xmlNode* parentNode)
+{
+    xmlNode* node = parentNode->xmlChildrenNode;
+    while (node != NULL)
+    {
+        if (IsNode(node, "properties"))
+        {
+            return node;
+        }
+        node = node->next;
+    }
+
+    return NULL;
+}
+
+//  ---------------------------------------------------------------------------
+xmlNode* GetPropertyNode(xmlNode* propertiesNode, const char* propertyName)
+{
+    xmlNode* node = propertiesNode->xmlChildrenNode;
+    while (node != NULL)
+    {
+        if (IsNode(node, "property"))
+        {
+            char* name = NULL;
+            ReadAttribute(node, "name", &name);
+
+            if (strcmp(name, propertyName) == 0)
+            {
+                free(name);
+                return node;
+            }
+
+            free(name);
+        }
+        node = node->next;
+    }
+
+    return NULL;
+}
+
+//  ---------------------------------------------------------------------------
+void ReadIntProperty(xmlNode* propertiesNode, char* propertyName, int* value)
+{
+    xmlNode* propertyNode = GetPropertyNode(propertiesNode, propertyName);
+    if (propertyNode != NULL)
+    {
+        ReadIntAttribute(propertyNode, "value", value);
+    }
+}
+
+//  ---------------------------------------------------------------------------
+void ReadProperty(xmlNode* propertiesNode, char* propertyName, char** value)
+{
+    xmlNode* propertyNode = GetPropertyNode(propertiesNode, propertyName);
+    if (propertyNode != NULL)
+    {
+        ReadAttribute(propertyNode, "value", value);
+    }
+}
 
 //  ---------------------------------------------------------------------------
 void LoadTmx(xmlDoc* doc, struct Map** map, struct ActorList** actors)
@@ -132,14 +206,32 @@ void LoadTmx(xmlDoc* doc, struct Map** map, struct ActorList** actors)
                     if (HasAttribute(objectNode, "gid"))
                     {
                         ReadIntAttribute(objectNode, "gid", &gid);
+
+                        //  Adjust Y component of Tile objects
+                        --tileY;
                     }
 
                     char* type = NULL;
                     ReadAttribute(objectNode, "type", &type);
                     if (strcmp(type, "Actor") == 0)
                     {
-                        struct Actor* actor = CreateActor(*map, tileX, tileY - 1, gid);
+                        struct Actor* actor = CreateActor(*map, tileX, tileY, gid);
                         AddActor(*actors, actor);
+                    }
+                    else if (strcmp(type, "MapLink") == 0)
+                    {
+                        char* destMap = NULL;
+                        int destX, destY;
+
+                        xmlNode* propertiesNode = GetPropertiesNode(objectNode);
+                        ReadProperty(propertiesNode, "DestMap", &destMap);
+                        ReadIntProperty(propertiesNode, "DestX", &destX);
+                        ReadIntProperty(propertiesNode, "DestY", &destY);
+
+                        struct MapLink* link = CreateMapLink(destMap, destX, destY);
+
+                        struct Tile* tile = GetTile(*map, tileX, tileY);
+                        tile->Link = link;
                     }
                 }
                 objectNode = objectNode->next;

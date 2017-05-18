@@ -1,4 +1,5 @@
 #include "map.h"
+#include "map_link.h"
 #include "tile.h"
 #include <assert.h>
 #include <stdlib.h>
@@ -33,6 +34,7 @@ struct Map* CreateMap(
             tile->TilesetId = 0;
             tile->X = x;
             tile->Y = y;
+            tile->Link = NULL;
         }
     }
 
@@ -48,6 +50,16 @@ void DestroyMap(struct Map** map)
     }
 
     assert((*map)->Tiles != NULL);
+    int tileCount = (*map)->Width * (*map)->Height;
+    for (int t = 0; t < tileCount; ++t)
+    {
+        struct Tile* tile = &(*map)->Tiles[t];
+        if (tile->Link != NULL)
+        {
+            //  Free tile links
+            DestroyMapLink(&tile->Link);
+        }
+    }
     free((*map)->Tiles);
 
     free(*map);

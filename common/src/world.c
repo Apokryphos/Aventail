@@ -24,6 +24,7 @@ struct World* CreateWorld()
 {
     struct World* world = malloc(sizeof(struct World));
     world->Actors = CreateActorList();
+    world->LoadMapLink = NULL;
     world->Player.Actor = NULL;
     world->Map = NULL;
     return world;
@@ -49,6 +50,12 @@ void DestroyWorld(struct World** world)
 }
 
 //  ---------------------------------------------------------------------------
+void EnterMapLink(struct World* world, struct MapLink* link)
+{
+    world->LoadMapLink = link;  
+}
+
+//  ---------------------------------------------------------------------------
 void MoveActors(struct World* world)
 {
     struct ActorListNode* actorNode = world->Actors->First;
@@ -57,6 +64,9 @@ void MoveActors(struct World* world)
         struct Actor* actor = actorNode->Actor;
 
         struct Tile* destTile = GetNeighbor(actor->Map, actor->Tile, actor->MoveDirection);
+
+        //  Reset move direction
+        actor->MoveDirection = DIRECTION_NONE;
 
         //  Check if destination tile is valid
         if (destTile != NULL && destTile->Collision == 0)
@@ -80,8 +90,19 @@ void MoveActors(struct World* world)
             //  Move actor to destination tile
             if (canMove)
             {
-                actor->Tile = destTile;
-                actor->MoveDirection = DIRECTION_NONE;
+                if (destTile->Link == NULL)
+                {
+                    actor->Tile = destTile;
+                }
+                else
+                {
+                    //  Map links are currently usable by player only
+                    if (actor == world->Player.Actor)
+                    {
+                        EnterMapLink(world, destTile->Link);
+                        return;
+                    }
+                }
             }
         }
 

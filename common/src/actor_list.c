@@ -2,6 +2,7 @@
 #include "actor_list.h"
 #include <assert.h>
 #include <stdlib.h>
+#include <stdio.h>
 
 //  ---------------------------------------------------------------------------
 void AddActor(struct ActorList* list, struct Actor* actor)
@@ -26,6 +27,7 @@ void AddActor(struct ActorList* list, struct Actor* actor)
         struct ActorListNode* n = list->First;
         while (n->Next != NULL)
         {
+            assert(n->Actor != actor);
             n = n->Next;
         }
         n->Next = node;
@@ -85,24 +87,17 @@ void DestroyActorList(struct ActorList** list)
 void RemoveActor(struct ActorList* list, struct Actor* actor)
 {
     assert(list != NULL);
+    assert(list->Count > 0);
     assert(actor != NULL);
 
     struct ActorListNode* node = list->First;
-
-    while (node->Next != NULL)
+    while (node != NULL)
     {
         if (node->Actor == actor)
         {
             if (node == list->First)
             {
-                assert(list->Count == 1);
-                list->First = NULL;
-            }
-
-            if (node == list->First)
-            {
-                assert(list->Count == 1);
-                list->First = NULL;
+                list->First = list->First->Next;
             }
 
             if (node->Previous != NULL)

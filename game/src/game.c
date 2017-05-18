@@ -4,6 +4,7 @@
 #include "game_state_level.h"
 #include "input.h"
 #include "map.h"
+#include "map_link.h"
 #include "map_util.h"
 #include "paths.h"
 #include "render.h"
@@ -22,6 +23,7 @@ void LoadMap(
     struct ActorList* actors)
 {
     assert(*map == NULL);
+    assert(assetFilename != NULL);
 
     char *fullpath = CreateMapPath(game->BasePath, assetFilename);
     printf("%s\n", fullpath);
@@ -31,6 +33,46 @@ void LoadMap(
     *map = LoadMapFromFile(file);
     LoadActorsFromFile(file, *map, actors);
     fclose(file);
+}
+
+//  ---------------------------------------------------------------------------
+void LoadMapLink(struct Game* game)
+{
+    struct MapLink* link = game->World->LoadMapLink;
+
+    assert(link != NULL);
+    assert(link->DestMap != NULL);
+
+    game->World->LoadMapLink = NULL;
+    
+    //  Copy destination link data before DestroyMap frees it
+    char* destMap = strdup(link->DestMap);
+    int destX = link->DestX;
+    int destY = link->DestY;
+
+    struct World* world = game->World;
+
+    //  Remove player from actors so it doesn't get freed
+    RemoveActor(world->Actors, world->Player.Actor);
+
+    DestroyActorList(&world->Actors);
+    DestroyMap(&world->Map);
+
+    game->World->Actors = CreateActorList();
+
+    //  Add player actor back
+    AddActor(world->Actors, world->Player.Actor);
+
+    LoadMap(game, destMap, &world->Map, world->Actors);
+
+    free(destMap);
+
+    struct Tile* destTile = GetTile(world->Map, destX, destY);
+    assert(destTile != NULL);
+    assert(InBounds(world->Map, destX, destY));
+
+    world->Player.Actor->Map = world->Map;
+    world->Player.Actor->Tile = destTile;
 }
 
 //  ---------------------------------------------------------------------------
@@ -94,7 +136,7 @@ void GameMain()
     GameInit(&game, 800, 800);
 
     game.World = CreateWorld();
-    LoadMap(&game, "map01.map", &game.World->Map, game.World->Actors);
+    LoadMap(&game, "map01", &game.World->Map, game.World->Actors);
 
     struct InputDevice inputDevice = {0};
     game.InputDevice = &inputDevice;
@@ -104,7 +146,7 @@ void GameMain()
     CreatePlayerActor(game.World);
 
     struct Tileset tileset;
-    LoadTileset(&game, &tileset, "tileset.png");
+    LoadTileset(&game, &tileset, "tileset");
     
     if (tileset.Texture == NULL)
     {
@@ -128,6 +170,11 @@ void GameMain()
             case GAME_STATE_LEVEL:
                 LevelMain(&game);
                 break;
+        }
+
+        if (game.World->LoadMapLink != NULL)
+        {
+            LoadMapLink(&game);
         }
 
         SDL_RenderClear(game.Renderer);

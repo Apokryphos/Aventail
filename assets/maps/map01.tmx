@@ -655,7 +655,13 @@
  <objectgroup name="Object Layer 1">
   <object id="1" name="Campfire" type="Campfire" gid="88" x="192" y="192" width="16" height="16"/>
   <object id="2" name="PlayerStart" type="PlayerStart" gid="191" x="192" y="176" width="16" height="16"/>
-  <object id="3" name="surface_to_dungeon" type="MapLink" x="112" y="64" width="16" height="16"/>
+  <object id="3" name="surface_to_dungeon" type="MapLink" x="112" y="64" width="16" height="16">
+   <properties>
+    <property name="DestMap" value="map02"/>
+    <property name="DestX" type="int" value="7"/>
+    <property name="DestY" type="int" value="5"/>
+   </properties>
+  </object>
   <object id="5" name="Slime" type="Actor" gid="218" x="64" y="48" width="16" height="16"/>
   <object id="6" name="Slime" type="Actor" gid="218" x="224" y="96" width="16" height="16"/>
   <object id="7" name="Slime" type="Actor" gid="218" x="96" y="336" width="16" height="16"/>

@@ -6,9 +6,11 @@
 
 struct Actor;
 struct Map;
+struct MapLink;
 
 struct World
 {
+    struct MapLink* LoadMapLink;
     struct Map* Map;
     struct ActorList* Actors;
     struct Player Player;
