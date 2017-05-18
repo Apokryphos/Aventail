@@ -3,7 +3,6 @@
 
 #include "direction.h"
 
-struct ActorList;
 struct Map;
 struct Tile;
 
