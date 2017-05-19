@@ -13,6 +13,7 @@ struct ActorListNode
 struct ActorList
 {
     struct ActorListNode* First;
+    struct ActorListNode* Last;
     int Count;
 };
 

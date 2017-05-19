@@ -207,6 +207,9 @@ void LoadTmx(xmlDoc* doc, struct Map** map, struct ActorList** actors)
                     {
                         ReadIntAttribute(objectNode, "gid", &gid);
 
+                        //  Adjust GID
+                        --gid;
+
                         //  Adjust Y component of Tile objects
                         --tileY;
                     }
@@ -216,6 +219,12 @@ void LoadTmx(xmlDoc* doc, struct Map** map, struct ActorList** actors)
                     if (strcmp(type, "Actor") == 0)
                     {
                         struct Actor* actor = CreateActor(*map, tileX, tileY, gid);
+                        AddActor(*actors, actor);
+                    }
+                    else if (strcmp(type, "Door") == 0)
+                    {
+                        struct Actor* actor = CreateActor(*map, tileX, tileY, gid);
+                        actor->Type = ACTOR_TYPE_DOOR;
                         AddActor(*actors, actor);
                     }
                     else if (strcmp(type, "MapLink") == 0)

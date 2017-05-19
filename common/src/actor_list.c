@@ -34,6 +34,8 @@ void AddActor(struct ActorList* list, struct Actor* actor)
         node->Previous = n;
         ++list->Count;
     }
+
+    list->Last = node;
 }
 
 //  ---------------------------------------------------------------------------
@@ -51,6 +53,7 @@ void ClearActorList(struct ActorList* list)
 
     list->Count = 0;
     list->First = NULL;
+    list->Last = NULL;
 }
 
 //  ---------------------------------------------------------------------------
@@ -59,6 +62,7 @@ struct ActorList* CreateActorList()
     struct ActorList* actors =  malloc(sizeof(struct ActorList));
     actors->Count = 0;
     actors->First = NULL;
+    actors->Last = NULL;
     return actors;
 }
 
@@ -98,6 +102,11 @@ void RemoveActor(struct ActorList* list, struct Actor* actor)
             if (node == list->First)
             {
                 list->First = list->First->Next;
+            }
+
+            if (node == list->Last)
+            {
+                list->Last = list->Last->Previous;
             }
 
             if (node->Previous != NULL)

@@ -13,6 +13,7 @@ struct Actor* CreatePlayerActor(struct World* world)
     assert(world->Player.Actor == NULL);
 
     struct Actor* actor = CreateActor(world->Map, 12, 10, 190);
+    actor->Type = ACTOR_TYPE_PLAYER;
     AddActor(world->Actors, actor);
     world->Player.Actor = actor;
 
@@ -79,10 +80,19 @@ void MoveActors(struct World* world)
                 struct Actor* otherActor = otherActorNode->Actor;
                 
                 //  Check if another actor occupies destination tile
-                if (otherActor->Tile == destTile && otherActor != actor)
+                //  and is collidable
+                if (otherActor->Tile == destTile &&
+                    otherActor != actor)
                 {
-                    canMove = 0;
-                    break;
+                    if (otherActor->Collision)
+                    {
+                        canMove = 0;
+                    }
+
+                    if (otherActor->OnTouch != NULL)
+                    {
+                        (*otherActor->OnTouch)(actor, otherActor);
+                    }
                 }
                 otherActorNode = otherActorNode->Next;
             }

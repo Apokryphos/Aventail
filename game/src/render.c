@@ -42,7 +42,7 @@ void DrawMap(
         }
     }
 
-    struct ActorListNode* actorNode = actors->First;
+    struct ActorListNode* actorNode = actors->Last;
     while (actorNode != NULL)
     {
         struct Actor* actor = actorNode->Actor;
@@ -56,6 +56,6 @@ void DrawMap(
             SDL_RenderCopy(renderer, tileset->Texture, &sourceRect, &destRect);  
         }
 
-        actorNode = actorNode->Next;
+        actorNode = actorNode->Previous;
     }
 }

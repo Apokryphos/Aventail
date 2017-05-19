@@ -1,4 +1,5 @@
 #include "actor.h"
+#include "actor_funcs.h"
 #include "actor_list.h"
 #include "map.h"
 #include "map_link.h"
@@ -25,18 +26,31 @@ void LoadActorsFromFile(FILE* file, struct Map* map, struct ActorList* actors)
         int tilesetId = 0;
         int tileX = 0;
         int tileY = 0;
+        int collision = 0;
+        int type = 0;
 
         fread(&tilesetId, sizeof(int), 1, file);
         fread(&tileX, sizeof(int), 1, file);
         fread(&tileY, sizeof(int), 1, file);
+        fread(&collision, sizeof(int), 1, file);
+        fread(&type, sizeof(int), 1, file);
 
         struct Actor* actor = CreateActor(map, tileX, tileY, tilesetId);
+        actor->Collision = collision;
+        actor->Type = (enum ActorType)type;
+
+        if (actor->Type == ACTOR_TYPE_DOOR)
+        {
+            actor->OnTouch = &ActivateDoor;
+        }
 
         printf(
-            "[Actor] GID: %d POS: %d, %d\n",
+            "[Actor] GID: %d POS: %d, %d COL: %d TYPE: %d\n",
             actor->TilesetId,
             actor->Tile->X,
-            actor->Tile->Y);
+            actor->Tile->Y,
+            actor->Collision,
+            actor->Type);
 
         AddActor(actors, actor);
     }
@@ -119,17 +133,23 @@ void SaveActorsToFile(FILE* file, const struct ActorList* actors)
         {
             const struct Actor* actor = node->Actor;
 
+            int type = (int)actor->Type;
+
             fwrite(&actor->TilesetId, sizeof(int), 1, file);
             fwrite(&actor->Tile->X, sizeof(int), 1, file);
             fwrite(&actor->Tile->Y, sizeof(int), 1, file);
+            fwrite(&actor->Collision, sizeof(int), 1, file);
+            fwrite(&type, sizeof(int), 1, file);
 
             node = node->Next;
 
             printf(
-                "[Actor] GID: %d POS: %d, %d\n",
+                "[Actor] GID: %d POS: %d, %d COL: %d TYPE: %d\n",
                 actor->TilesetId,
                 actor->Tile->X,
-                actor->Tile->Y);
+                actor->Tile->Y,
+                actor->Collision,
+                actor->Type);
         }
     }
 }
