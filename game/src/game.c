@@ -1,5 +1,6 @@
 #include "game.h"
 #include "actor.h"
+#include "audio.h"
 #include "game_state.h"
 #include "game_state_level.h"
 #include "input.h"
@@ -12,6 +13,7 @@
 #include "world.h"
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+#include <SDL2/SDL_mixer.h>
 #include <assert.h>
 #include <stdlib.h>
 
@@ -88,6 +90,18 @@ void GameInit(struct Game* game, int width, int height)
 		exit(1);
 	}
 
+    game->BasePath = SDL_GetBasePath();
+    if (game->BasePath == NULL)
+    {
+        game->BasePath = SDL_strdup("./");
+    }
+
+    if (AudioInit(game) != 0)
+    {
+  		printf("SDL2_mixer failed to initialize: %sn", Mix_GetError());
+		exit(1);      
+    }
+
     game->Window = SDL_CreateWindow(
         "Game", 
         SDL_WINDOWPOS_UNDEFINED,
@@ -114,12 +128,6 @@ void GameInit(struct Game* game, int width, int height)
     SDL_SetRenderDrawColor(game->Renderer, 0, 0, 0, 255);
     SDL_RenderClear(game->Renderer);
     SDL_RenderPresent(game->Renderer);
-
-    game->BasePath = SDL_GetBasePath();
-    if (game->BasePath == NULL)
-    {
-        game->BasePath = SDL_strdup("./");
-    }
 
     game->ElapsedSeconds = 0;
     game->Quit = 0;
@@ -213,6 +221,8 @@ void GameShutdown(struct Game* game)
         SDL_DestroyWindow(game->Window);
         game->Window = NULL;
     }
+
+    AudioShutdown();
 
     IMG_Quit();
     SDL_Quit();

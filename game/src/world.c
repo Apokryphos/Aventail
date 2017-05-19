@@ -1,6 +1,7 @@
 #include "world.h"
 #include "actor.h"
 #include "actor_list.h"
+#include "audio.h"
 #include "map.h"
 #include "tile.h"
 #include <assert.h>
@@ -13,6 +14,8 @@ void Attack(struct Actor* source, struct Actor* target)
 {
     if (source->Health > 0 && target->Health > 0)
     {
+        PlaySfx(SFX_ATTACK_01);
+
         target->Health -= 50;
 
         if (target->Health <= 0)

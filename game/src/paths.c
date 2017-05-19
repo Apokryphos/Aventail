@@ -31,6 +31,12 @@ char* CreateMapPath(const char* basePath, const char* assetFilename)
 }
 
 //  ---------------------------------------------------------------------------
+char* CreateSfxPath(const char* basePath, const char* assetFilename)
+{
+    return CreateAssetPath(basePath, "assets/sfx/", assetFilename, ".ogg");
+}
+
+//  ---------------------------------------------------------------------------
 char* CreateTexturePath(const char* basePath, const char* assetFilename)
 {
     return CreateAssetPath(basePath, "assets/gfx/", assetFilename, ".png");

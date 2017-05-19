@@ -20,7 +20,7 @@ GAME_BIN_DIR = bin/
 GAME_EXE = game.exe
 GAME_DIR = game/
 GAME_INCLUDE = -I$(GAME_DIR)include $(COMMON_INCLUDE)
-GAME_LIBS = -lSDL2 -lSDL2_image
+GAME_LIBS = -lSDL2 -lSDL2_image -lSDL2_mixer
 GAME_OBJ_DIR = $(OBJ_DIR)$(GAME_DIR)
 GAME_SRC_DIR = $(GAME_DIR)src/
 GAME_SRC_FILES = $(wildcard $(GAME_SRC_DIR)*.c)
@@ -50,7 +50,9 @@ mc: $(MAP_CONVERTER_BIN_DIR)$(MAP_CONVERTER_EXE)
 #	Copies assets to app bin - use with -B option
 assets: mc $(ASSETS_MAP_FILES)
 	mkdir -p -v bin/assets/gfx
+	mkdir -p -v bin/assets/sfx
 	cp -u -v assets/gfx/* bin/assets/gfx/
+	cp -u -v assets/sfx/*.ogg bin/assets/sfx/
 
 clean:
 	rm -rf bin/
