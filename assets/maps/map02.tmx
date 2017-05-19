@@ -660,7 +660,7 @@
     <property name="DestY" type="int" value="5"/>
    </properties>
   </object>
-  <object id="5" name="Slime" type="Actor" gid="218" x="112" y="208" width="16" height="16"/>
+  <object id="5" name="Slime" type="Villain" gid="218" x="112" y="208" width="16" height="16"/>
   <object id="9" name="Door" type="Door" gid="42" x="112" y="112" width="16" height="16"/>
  </objectgroup>
 </map>

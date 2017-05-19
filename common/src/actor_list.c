@@ -78,7 +78,7 @@ void DestroyActorList(struct ActorList** list)
     while (node != NULL)
     {
         struct ActorListNode* next = node->Next;
-        free(node->Actor);
+        DestroyActor(&node->Actor);
         free(node);
         node = next;
     }

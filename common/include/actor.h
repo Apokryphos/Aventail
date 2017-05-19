@@ -19,8 +19,11 @@ struct Actor
     enum ActorType Type;
     struct Map* Map;
     struct Tile* Tile;
+    int Health;
+    int MaxHealth;
 };
 
 struct Actor* CreateActor(struct Map* map, int tileX, int tileY, int tilesetId);
+void DestroyActor(struct Actor** actor);
 
 #endif
