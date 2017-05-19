@@ -143,6 +143,12 @@ void GameMain()
 
     GameInit(&game, 800, 800);
 
+    if (GfxInit(&game) != 0)
+    {
+        printf("Failed to initialize graphics.\n");
+        GameShutdown(&game);
+    }
+
     game.World = CreateWorld();
     LoadMap(&game, "map01", &game.World->Map, game.World->Actors);
 
@@ -152,15 +158,6 @@ void GameMain()
     struct Input input;
 
     CreatePlayerActor(game.World);
-
-    struct Tileset tileset;
-    LoadTileset(&game, &tileset, "tileset");
-    
-    if (tileset.Texture == NULL)
-    {
-        printf("Failed to load tileset texture.\n");
-        exit(1);
-    }
 
     unsigned int lastTicks = 0;
     unsigned int ticks = 0;
@@ -186,11 +183,9 @@ void GameMain()
         }
 
         SDL_RenderClear(game.Renderer);
-        DrawMap(game.Renderer, game.World->Map, game.World->Actors, &tileset);
+        DrawMap(game.Renderer, game.World->Map, game.World->Actors);
         SDL_RenderPresent(game.Renderer);
     }
-
-    SDL_DestroyTexture(tileset.Texture);
 
     GameShutdown(&game);
 }
@@ -198,6 +193,8 @@ void GameMain()
 //  ---------------------------------------------------------------------------
 void GameShutdown(struct Game* game)
 {
+    GfxShutdown();
+
     if (game->BasePath != NULL)
     {
         SDL_free(game->BasePath);
