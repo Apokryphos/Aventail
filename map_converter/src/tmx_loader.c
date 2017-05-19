@@ -39,25 +39,6 @@ int IsCollision(const int tilesetId)
     return 0;
 }
 
-// int IsNode(const xmlNode* node, char* name)
-// {
-//     return xmlStrcmp(node->name, (const xmlChar*)name) == 0;
-// }
-
-// //  ---------------------------------------------------------------------------
-// int HasAttribute(const xmlNode* node, const char* name)
-// {
-//     return xmlHasProp(node, (const xmlChar*)name) != NULL;
-// }
-
-// //  ---------------------------------------------------------------------------
-// void ReadIntAttribute(const xmlNode* node, const char* name, int* value)
-// {
-//     xmlChar* strValue = xmlGetProp(node, (const xmlChar*)name);
-//     *value = strtol((char*)strValue, NULL, 10);
-//     xmlFree(strValue);
-// }
-
 //  ---------------------------------------------------------------------------
 xmlNode* GetPropertiesNode(xmlNode* parentNode)
 {
