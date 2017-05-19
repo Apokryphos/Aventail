@@ -11,13 +11,14 @@ Converts [Tiled](http://www.mapeditor.org/) TMX files to the format used by the 
 Game
 * SDL2
 * SDL2_image
+* SDL2_mixer
 
 Map Converter
 * libxml2
 
 # Directory Structure
 
-assets - game assets (image and map files)  
+assets - game assets (audio, image, and map files)  
 common - common source and header files  
 game - game source and header files  
 map_converter - map converter source and header files  
