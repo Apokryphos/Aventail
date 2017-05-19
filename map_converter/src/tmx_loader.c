@@ -202,6 +202,12 @@ void LoadTmx(xmlDoc* doc, struct Map** map, struct ActorList** actors)
                         struct Actor* actor = CreateActor(*map, tileX, tileY, gid);
                         AddActor(*actors, actor);
                     }
+                    else if (strcmp(type, "Villain") == 0)
+                    {
+                        struct Actor* actor = CreateActor(*map, tileX, tileY, gid);
+                        actor->Type = ACTOR_TYPE_VILLAIN;
+                        AddActor(*actors, actor);
+                    }
                     else if (strcmp(type, "Door") == 0)
                     {
                         struct Actor* actor = CreateActor(*map, tileX, tileY, gid);
