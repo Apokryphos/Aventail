@@ -18,6 +18,7 @@ struct ActorList
 };
 
 void AddActor(struct ActorList* list, struct Actor* actor);
+void AddActorToFront(struct ActorList* list, struct Actor* actor);
 /*
     Allocates an ActorList. Free with DestroyActorList.
 */

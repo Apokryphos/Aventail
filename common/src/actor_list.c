@@ -39,6 +39,28 @@ void AddActor(struct ActorList* list, struct Actor* actor)
 }
 
 //  ---------------------------------------------------------------------------
+void AddActorToFront(struct ActorList* list, struct Actor* actor)
+{
+    assert(list != NULL);
+    assert(actor != NULL);
+
+    if (list->First == NULL)
+    {
+        AddActor(list, actor);        
+    }
+    else
+    {
+        struct ActorListNode* node = malloc(sizeof(struct ActorListNode));
+        node->Actor = actor;
+        node->Previous = NULL;
+        node->Next = list->First;
+        list->First->Previous = node;
+        list->First = node;
+        ++list->Count;
+    }
+}
+
+//  ---------------------------------------------------------------------------
 void ClearActorList(struct ActorList* list)
 {
     assert(list != NULL);

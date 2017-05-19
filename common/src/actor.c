@@ -33,3 +33,14 @@ void DestroyActor(struct Actor** actor)
         *actor = NULL;
     }
 }
+
+//  ---------------------------------------------------------------------------
+int IsFoe(struct Actor* actor, struct Actor* other)
+{
+    assert(actor != NULL);
+    assert(other != NULL);
+    
+    return
+        (actor->Type == ACTOR_TYPE_PLAYER && other->Type == ACTOR_TYPE_VILLAIN) ||
+        (actor->Type == ACTOR_TYPE_VILLAIN && other->Type == ACTOR_TYPE_PLAYER);
+}

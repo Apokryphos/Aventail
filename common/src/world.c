@@ -6,6 +6,25 @@
 #include <assert.h>
 #include <stdlib.h>
 
+static const int BonesTilesetId = 95;
+
+//  ---------------------------------------------------------------------------
+void Attack(struct Actor* source, struct Actor* target)
+{
+    if (source->Health > 0 && target->Health > 0)
+    {
+        target->Health -= 50;
+
+        if (target->Health <= 0)
+        {
+            target->Collision = 0;
+            target->Health = 0;
+            target->MoveDirection = DIRECTION_NONE;
+            target->TilesetId = BonesTilesetId;
+        }
+    }
+}
+
 //  ---------------------------------------------------------------------------
 struct Actor* CreatePlayerActor(struct World* world)
 {
@@ -14,7 +33,7 @@ struct Actor* CreatePlayerActor(struct World* world)
 
     struct Actor* actor = CreateActor(world->Map, 12, 10, 190);
     actor->Type = ACTOR_TYPE_PLAYER;
-    AddActor(world->Actors, actor);
+    AddActorToFront(world->Actors, actor);
     world->Player.Actor = actor;
 
     return actor;
@@ -64,6 +83,8 @@ void MoveActors(struct World* world)
     {
         struct Actor* actor = actorNode->Actor;
 
+        struct Actor* target = NULL;
+
         struct Tile* destTile = GetNeighbor(actor->Map, actor->Tile, actor->MoveDirection);
 
         //  Reset move direction
@@ -86,6 +107,13 @@ void MoveActors(struct World* world)
                 {
                     if (otherActor->Collision)
                     {
+                        //  Attack first foe on tile
+                        if (target == NULL &&
+                            IsFoe(actor, otherActor))
+                        {
+                            target = otherActor;
+                        }
+
                         canMove = 0;
                     }
 
@@ -97,8 +125,13 @@ void MoveActors(struct World* world)
                 otherActorNode = otherActorNode->Next;
             }
             
+            //  Attack target if any
+            if (target != NULL)
+            {
+                Attack(actor, target);
+            }
             //  Move actor to destination tile
-            if (canMove)
+            else if (canMove)
             {
                 if (destTile->Link == NULL)
                 {

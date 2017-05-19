@@ -25,5 +25,6 @@ struct Actor
 
 struct Actor* CreateActor(struct Map* map, int tileX, int tileY, int tilesetId);
 void DestroyActor(struct Actor** actor);
+int IsFoe(struct Actor* actor, struct Actor* other);
 
 #endif
