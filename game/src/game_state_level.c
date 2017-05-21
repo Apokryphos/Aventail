@@ -16,5 +16,5 @@ void ProcessLevelInput(struct Game* game)
 void LevelMain(struct Game* game)
 {
     ProcessLevelInput(game);
-    SimulateWorld(game->World);
+    SimulateWorld(game, game->World);
 }

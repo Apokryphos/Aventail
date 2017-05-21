@@ -4,6 +4,7 @@
 enum GameState
 {
     GAME_STATE_LEVEL,
+    GAME_STATE_TRANSITION,
 };
 
 #endif

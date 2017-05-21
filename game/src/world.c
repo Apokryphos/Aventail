@@ -4,6 +4,7 @@
 #include "audio.h"
 #include "map.h"
 #include "tile.h"
+#include "game_state_transition.h"
 #include <assert.h>
 #include <stdlib.h>
 
@@ -47,7 +48,6 @@ struct World* CreateWorld()
 {
     struct World* world = malloc(sizeof(struct World));
     world->Actors = CreateActorList();
-    world->LoadMapLink = NULL;
     world->Player.Actor = NULL;
     world->Map = NULL;
     return world;
@@ -73,13 +73,7 @@ void DestroyWorld(struct World** world)
 }
 
 //  ---------------------------------------------------------------------------
-void EnterMapLink(struct World* world, struct MapLink* link)
-{
-    world->LoadMapLink = link;  
-}
-
-//  ---------------------------------------------------------------------------
-void MoveActors(struct World* world)
+void MoveActors(struct Game* game, struct World* world)
 {
     struct ActorListNode* actorNode = world->Actors->First;
     while (actorNode != NULL)
@@ -145,7 +139,7 @@ void MoveActors(struct World* world)
                     //  Map links are currently usable by player only
                     if (actor == world->Player.Actor)
                     {
-                        EnterMapLink(world, destTile->Link);
+                        BeginTransition(game, destTile->Link, DIRECTION_NONE);
                         return;
                     }
                 }
@@ -157,7 +151,7 @@ void MoveActors(struct World* world)
 }
 
 //  ---------------------------------------------------------------------------
-void SimulateWorld(struct World* world)
+void SimulateWorld(struct Game* game, struct World* world)
 {
-    MoveActors(world);
+    MoveActors(game, world);
 }

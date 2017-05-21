@@ -32,3 +32,26 @@ void GetDelta(const enum Direction direction, int* dx, int* dy)
             return;
     }
 }
+
+//  ---------------------------------------------------------------------------
+enum Direction GetOppositeDirection(const enum Direction direction)
+{
+    switch (direction)
+    {
+        case DIRECTION_RIGHT:
+            return DIRECTION_LEFT;
+
+        case DIRECTION_UP:
+            return DIRECTION_DOWN;
+
+        case DIRECTION_LEFT:
+            return DIRECTION_RIGHT;
+
+        case DIRECTION_DOWN:
+            return DIRECTION_UP;
+
+        case DIRECTION_NONE:
+        default:
+            return DIRECTION_NONE;
+    }
+}

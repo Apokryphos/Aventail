@@ -11,5 +11,6 @@ enum Direction
 };
 
 void GetDelta(const enum Direction direction, int* dx, int* dy);
+enum Direction GetOppositeDirection(const enum Direction direction);
 
 #endif

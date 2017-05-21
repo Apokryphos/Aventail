@@ -3,6 +3,7 @@
 #include "audio.h"
 #include "game_state.h"
 #include "game_state_level.h"
+#include "game_state_transition.h"
 #include "input.h"
 #include "map.h"
 #include "map_link.h"
@@ -35,46 +36,6 @@ void LoadMap(
     *map = LoadMapFromFile(file);
     LoadActorsFromFile(file, *map, actors);
     fclose(file);
-}
-
-//  ---------------------------------------------------------------------------
-void LoadMapLink(struct Game* game)
-{
-    struct MapLink* link = game->World->LoadMapLink;
-
-    assert(link != NULL);
-    assert(link->DestMap != NULL);
-
-    game->World->LoadMapLink = NULL;
-    
-    //  Copy destination link data before DestroyMap frees it
-    char* destMap = strdup(link->DestMap);
-    int destX = link->DestX;
-    int destY = link->DestY;
-
-    struct World* world = game->World;
-
-    //  Remove player from actors so it doesn't get freed
-    RemoveActor(world->Actors, world->Player.Actor);
-
-    DestroyActorList(&world->Actors);
-    DestroyMap(&world->Map);
-
-    game->World->Actors = CreateActorList();
-
-    //  Add player actor back
-    AddActor(world->Actors, world->Player.Actor);
-
-    LoadMap(game, destMap, &world->Map, world->Actors);
-
-    free(destMap);
-
-    struct Tile* destTile = GetTile(world->Map, destX, destY);
-    assert(destTile != NULL);
-    assert(InBounds(world->Map, destX, destY));
-
-    world->Player.Actor->Map = world->Map;
-    world->Player.Actor->Tile = destTile;
 }
 
 //  ---------------------------------------------------------------------------
@@ -175,15 +136,25 @@ void GameMain()
             case GAME_STATE_LEVEL:
                 LevelMain(&game);
                 break;
-        }
-
-        if (game.World->LoadMapLink != NULL)
-        {
-            LoadMapLink(&game);
+            case GAME_STATE_TRANSITION:
+                TransitionUpdate(&game);
+                break;
         }
 
         SDL_RenderClear(game.Renderer);
-        DrawMap(game.Renderer, game.World->Map, game.World->Actors);
+
+        switch (game.State)
+        {
+            case GAME_STATE_TRANSITION:
+                DrawMap(game.Renderer, game.World->Map, game.World->Actors);
+                TransitionDraw(&game);
+                break;
+            case GAME_STATE_LEVEL:
+                DrawMap(game.Renderer, game.World->Map, game.World->Actors);
+                break;
+
+        }
+
         SDL_RenderPresent(game.Renderer);
     }
 

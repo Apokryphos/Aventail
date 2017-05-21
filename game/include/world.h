@@ -1,16 +1,15 @@
 #ifndef WORLD_HEADER_INCLUDED
 #define WORLD_HEADER_INCLUDED
 
-#include "actor_list.h"
 #include "player.h"
 
 struct Actor;
+struct ActorList;
+struct Game;
 struct Map;
-struct MapLink;
 
 struct World
 {
-    struct MapLink* LoadMapLink;
     struct Map* Map;
     struct ActorList* Actors;
     struct Player Player;
@@ -26,6 +25,6 @@ struct World* CreateWorld();
     specified pointer will be set to NULL.
 */
 void DestroyWorld(struct World** world);
-void SimulateWorld(struct World* world);
+void SimulateWorld(struct Game* game, struct World* world);
 
 #endif
