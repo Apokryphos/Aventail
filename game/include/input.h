@@ -11,6 +11,8 @@ struct Input
 
 struct InputDevice
 {
+    int CursorX;
+    int CursorY;
     enum Direction MoveDirection;
     int Quit;
 };

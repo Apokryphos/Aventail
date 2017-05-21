@@ -35,6 +35,11 @@ void UpdateInput(struct Input* input, struct InputDevice* inputDevice)
                 }
                 break;
 
+                case SDL_MOUSEMOTION:
+                    inputDevice->CursorX = input->Event.motion.x;
+                    inputDevice->CursorY = input->Event.motion.y;
+                    break;
+
             default:
             break;
         }

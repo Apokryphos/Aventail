@@ -151,6 +151,7 @@ void GameMain()
                 break;
             case GAME_STATE_LEVEL:
                 DrawMap(game.Renderer, game.World->Map, game.World->Actors);
+                LevelDraw(&game);
                 break;
 
         }

@@ -3,6 +3,7 @@
 
 struct Game;
 
+void LevelDraw(struct Game* game);
 void LevelMain(struct Game* game);
 
 #endif

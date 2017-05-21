@@ -13,6 +13,12 @@ void ProcessLevelInput(struct Game* game)
 }
 
 //  ---------------------------------------------------------------------------
+void LevelDraw(struct Game* game)
+{
+
+}
+
+//  ---------------------------------------------------------------------------
 void LevelMain(struct Game* game)
 {
     ProcessLevelInput(game);
