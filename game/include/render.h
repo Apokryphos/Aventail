@@ -12,10 +12,11 @@ void DrawMap(
     struct ActorList* actors);
 void DrawText(
     SDL_Renderer* renderer, 
-    char* text,
+    const char* text,
     int x,
     int y);
 int GfxInit(struct Game* game);
 void GfxShutdown();
+void MeasureText(const char* text, int* width, int* height);
 
 #endif

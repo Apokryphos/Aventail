@@ -4,6 +4,6 @@
 struct Game;
 
 void LevelDraw(struct Game* game);
-void LevelMain(struct Game* game);
+void LevelUpdate(struct Game* game);
 
 #endif

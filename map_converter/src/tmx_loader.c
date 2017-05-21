@@ -177,7 +177,9 @@ void LoadTmx(xmlDoc* doc, struct Map** map, struct ActorList** actors)
                     int gid = 0;
                     int tileX = 0;
                     int tileY = 0;
+                    char* name = NULL;
 
+                    ReadAttribute(objectNode, "name", &name);
                     ReadIntAttribute(objectNode, "x", &tileX);
                     ReadIntAttribute(objectNode, "y", &tileY);
 
@@ -199,18 +201,18 @@ void LoadTmx(xmlDoc* doc, struct Map** map, struct ActorList** actors)
                     ReadAttribute(objectNode, "type", &type);
                     if (strcmp(type, "Actor") == 0)
                     {
-                        struct Actor* actor = CreateActor(*map, tileX, tileY, gid);
+                        struct Actor* actor = CreateActor(*map, name, tileX, tileY, gid);
                         AddActor(*actors, actor);
                     }
                     else if (strcmp(type, "Villain") == 0)
                     {
-                        struct Actor* actor = CreateActor(*map, tileX, tileY, gid);
+                        struct Actor* actor = CreateActor(*map, name, tileX, tileY, gid);
                         actor->Type = ACTOR_TYPE_VILLAIN;
                         AddActor(*actors, actor);
                     }
                     else if (strcmp(type, "Door") == 0)
                     {
-                        struct Actor* actor = CreateActor(*map, tileX, tileY, gid);
+                        struct Actor* actor = CreateActor(*map, name, tileX, tileY, gid);
                         actor->Type = ACTOR_TYPE_DOOR;
                         AddActor(*actors, actor);
                     }
@@ -228,6 +230,16 @@ void LoadTmx(xmlDoc* doc, struct Map** map, struct ActorList** actors)
 
                         struct Tile* tile = GetTile(*map, tileX, tileY);
                         tile->Link = link;
+                    }
+
+                    if (name != NULL)
+                    {
+                        free(name);
+                    }
+
+                    if (type != NULL)
+                    {
+                        free(type);
                     }
                 }
                 objectNode = objectNode->next;

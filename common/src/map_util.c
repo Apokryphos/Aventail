@@ -9,6 +9,7 @@
 #include <stdlib.h>
 #include <string.h>
 
+static const int MAX_ACTOR_NAME_STRING_LENGTH = 24;
 static const int MAX_DEST_MAP_STRING_LENGTH = 256;
 
 //  ---------------------------------------------------------------------------
@@ -28,6 +29,8 @@ void LoadActorsFromFile(FILE* file, struct Map* map, struct ActorList* actors)
         int tileY = 0;
         int collision = 0;
         int type = 0;
+        int nameLen = 0;
+        char* name = NULL;
 
         fread(&tilesetId, sizeof(int), 1, file);
         fread(&tileX, sizeof(int), 1, file);
@@ -35,7 +38,14 @@ void LoadActorsFromFile(FILE* file, struct Map* map, struct ActorList* actors)
         fread(&collision, sizeof(int), 1, file);
         fread(&type, sizeof(int), 1, file);
 
-        struct Actor* actor = CreateActor(map, tileX, tileY, tilesetId);
+        fread(&nameLen, sizeof(int), 1, file);
+        assert(nameLen <= MAX_ACTOR_NAME_STRING_LENGTH);
+        
+        name = malloc(sizeof(char) * nameLen + 1);
+        fread(name, sizeof(char), nameLen, file);
+        name[nameLen] = '\0';
+
+        struct Actor* actor = CreateActor(map, name, tileX, tileY, tilesetId);
         actor->Collision = collision;
         actor->Type = (enum ActorType)type;
 
@@ -45,7 +55,8 @@ void LoadActorsFromFile(FILE* file, struct Map* map, struct ActorList* actors)
         }
 
         printf(
-            "[Actor] GID: %d POS: %d, %d COL: %d TYPE: %d\n",
+            "[Actor] NAME: %s GID: %d POS: %d, %d COL: %d TYPE: %d\n",
+            actor->Name,
             actor->TilesetId,
             actor->Tile->X,
             actor->Tile->Y,
@@ -53,6 +64,8 @@ void LoadActorsFromFile(FILE* file, struct Map* map, struct ActorList* actors)
             actor->Type);
 
         AddActor(actors, actor);
+
+        free(name);
     }
 }
 
@@ -141,10 +154,17 @@ void SaveActorsToFile(FILE* file, const struct ActorList* actors)
             fwrite(&actor->Collision, sizeof(int), 1, file);
             fwrite(&type, sizeof(int), 1, file);
 
+            size_t nameLen = strlen(actor->Name);
+            assert(nameLen <= MAX_ACTOR_NAME_STRING_LENGTH);
+
+            fwrite(&nameLen, sizeof(int), 1, file);
+            fwrite(actor->Name, sizeof(char), nameLen, file);
+
             node = node->Next;
 
             printf(
-                "[Actor] GID: %d POS: %d, %d COL: %d TYPE: %d\n",
+                "[Actor] NAME: %s GID: %d POS: %d, %d COL: %d TYPE: %d\n",
+                actor->Name,
                 actor->TilesetId,
                 actor->Tile->X,
                 actor->Tile->Y,

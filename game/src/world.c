@@ -35,7 +35,7 @@ struct Actor* CreatePlayerActor(struct World* world)
     assert(world->Map != NULL);
     assert(world->Player.Actor == NULL);
 
-    struct Actor* actor = CreateActor(world->Map, 12, 10, 190);
+    struct Actor* actor = CreateActor(world->Map, "Player", 12, 10, 190);
     actor->Type = ACTOR_TYPE_PLAYER;
     AddActorToFront(world->Actors, actor);
     world->Player.Actor = actor;

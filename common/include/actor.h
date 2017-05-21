@@ -14,16 +14,22 @@ struct Actor
 {
     int Collision;
     int TilesetId;
-    ActorOnTouchFunction *OnTouch;
+    ActorOnTouchFunction* OnTouch;
     enum Direction MoveDirection;
     enum ActorType Type;
     struct Map* Map;
     struct Tile* Tile;
     int Health;
     int MaxHealth;
+    char* Name;
 };
 
-struct Actor* CreateActor(struct Map* map, int tileX, int tileY, int tilesetId);
+struct Actor* CreateActor(
+    struct Map* map,
+    const char *name,
+    int tileX,
+    int tileY, 
+    int tilesetId);
 void DestroyActor(struct Actor** actor);
 int IsFoe(struct Actor* actor, struct Actor* other);
 

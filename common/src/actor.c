@@ -1,11 +1,17 @@
-#include <assert.h>
-#include <stdlib.h>
 #include "actor.h"
 #include "direction.h"
 #include "map.h"
+#include <assert.h>
+#include <stdlib.h>
+#include <string.h>
 
 //  ---------------------------------------------------------------------------
-struct Actor* CreateActor(struct Map* map, int tileX, int tileY, int tilesetId)
+struct Actor* CreateActor(
+    struct Map* map,
+    const char* name,
+    int tileX, 
+    int tileY,
+    int tilesetId)
 {
     assert(map != NULL);
 
@@ -19,6 +25,7 @@ struct Actor* CreateActor(struct Map* map, int tileX, int tileY, int tilesetId)
     actor->Type = ACTOR_TYPE_NONE;
     actor->MaxHealth = 100;
     actor->Health = actor->MaxHealth;
+    actor->Name = strdup(name);
     return actor;
 }
 
@@ -29,6 +36,7 @@ void DestroyActor(struct Actor** actor)
 
     if (*actor != NULL)
     {
+        free((*actor)->Name);
         free(*actor);
         *actor = NULL;
     }

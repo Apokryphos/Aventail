@@ -67,7 +67,7 @@ void DrawMap(
 //  ---------------------------------------------------------------------------
 void DrawText(
     SDL_Renderer* renderer, 
-    char* text,
+    const char* text,
     int x,
     int y)
 {
@@ -129,4 +129,13 @@ void GfxShutdown()
 {
     SDL_DestroyTexture(FontTileset.Texture);
     SDL_DestroyTexture(MapTileset.Texture);
+}
+
+//  ---------------------------------------------------------------------------
+void MeasureText(const char* text, int* width, int* height)
+{
+    assert(text != NULL);
+
+    *width = strlen(text) * FontTileset.TileWidth * 2;
+    *height = FontTileset.TileHeight * 2;
 }

@@ -3,6 +3,8 @@
 
 struct Actor;
 
+typedef int FindActorFunction(struct Actor* source);
+
 struct ActorListNode
 {
     struct Actor* Actor;
@@ -28,6 +30,7 @@ struct ActorList* CreateActorList();
     referenced by its nodes. Afterwards the specified pointer will be set to NULL.
 */
 void DestroyActorList(struct ActorList** list);
+struct Actor* FindActor(struct ActorList* list, FindActorFunction* find);
 void RemoveActor(struct ActorList* list, struct Actor* actor);
 
 #endif

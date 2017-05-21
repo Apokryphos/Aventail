@@ -134,7 +134,7 @@ void GameMain()
         switch (game.State)
         {
             case GAME_STATE_LEVEL:
-                LevelMain(&game);
+                LevelUpdate(&game);
                 break;
             case GAME_STATE_TRANSITION:
                 TransitionUpdate(&game);

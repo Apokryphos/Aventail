@@ -110,6 +110,27 @@ void DestroyActorList(struct ActorList** list)
 }
 
 //  ---------------------------------------------------------------------------
+struct Actor* FindActor(struct ActorList* list, FindActorFunction* find)
+{
+    assert(list != NULL);
+    assert(list->Count > 0);
+    assert(find != NULL);
+
+    struct ActorListNode* node = list->First;
+    while (node != NULL)
+    {
+        if ((*find)(node->Actor))
+        {
+            return node->Actor;
+        }
+
+        node = node->Next;
+    }
+
+    return NULL;
+}
+
+//  ---------------------------------------------------------------------------
 void RemoveActor(struct ActorList* list, struct Actor* actor)
 {
     assert(list != NULL);
