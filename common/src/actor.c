@@ -26,6 +26,7 @@ struct Actor* CreateActor(
     actor->MaxHealth = 100;
     actor->Health = actor->MaxHealth;
     actor->Name = strdup(name);
+    actor->Cash = 0;
     return actor;
 }
 

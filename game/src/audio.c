@@ -5,6 +5,7 @@
 #include <assert.h>
 
 static Mix_Chunk* AttackSfxMixChunk = NULL;
+static Mix_Chunk* CashPickupSfxMixChunk = NULL;
 
 //  ---------------------------------------------------------------------------
 static void LoadSfx(Mix_Chunk** chunk, struct Game* game, char* assetName)
@@ -36,6 +37,7 @@ int AudioInit(struct Game* game)
     }
 
     LoadSfx(&AttackSfxMixChunk, game, "attack01");
+    LoadSfx(&CashPickupSfxMixChunk, game, "cash_pickup_01");
 
     return 0;
 }
@@ -47,6 +49,7 @@ void AudioShutdown()
     Mix_HaltChannel(-1);
 
     Mix_FreeChunk(AttackSfxMixChunk);
+    Mix_FreeChunk(CashPickupSfxMixChunk);
 
     Mix_CloseAudio();
     Mix_Quit();
@@ -60,6 +63,9 @@ void PlaySfx(enum SfxId id)
     {
         case SFX_ATTACK_01:
             chunk = AttackSfxMixChunk;
+            break;
+        case SFX_CASH_PICKUP_01:
+            chunk = CashPickupSfxMixChunk;
             break;
     }
 

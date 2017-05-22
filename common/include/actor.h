@@ -21,6 +21,7 @@ struct Actor
     struct Tile* Tile;
     int Health;
     int MaxHealth;
+    int Cash;
     char* Name;
 };
 

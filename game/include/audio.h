@@ -6,6 +6,7 @@ struct Game;
 enum SfxId
 {
     SFX_ATTACK_01,
+    SFX_CASH_PICKUP_01,
 };
 
 int AudioInit(struct Game* game);

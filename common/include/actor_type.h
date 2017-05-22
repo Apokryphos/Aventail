@@ -7,6 +7,7 @@ enum ActorType
     ACTOR_TYPE_VILLAIN,
     ACTOR_TYPE_DOOR,
     ACTOR_TYPE_PLAYER,
+    ACTOR_TYPE_CONTAINER,
 };
 
 #endif

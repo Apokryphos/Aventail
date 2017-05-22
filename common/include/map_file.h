@@ -1,0 +1,7 @@
+#ifndef MAP_FILE_HEADER_INCLUDED
+#define MAP_FILE_HEADER_INCLUDED
+
+static const int MAX_ACTOR_NAME_STRING_LENGTH = 24;
+static const int MAX_DEST_MAP_STRING_LENGTH = 256;
+
+#endif

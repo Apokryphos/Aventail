@@ -2,15 +2,13 @@
 #include "actor_funcs.h"
 #include "actor_list.h"
 #include "map.h"
+#include "map_file.h"
 #include "map_link.h"
 #include "tile.h"
 #include <assert.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
-static const int MAX_ACTOR_NAME_STRING_LENGTH = 24;
-static const int MAX_DEST_MAP_STRING_LENGTH = 256;
 
 //  ---------------------------------------------------------------------------
 void LoadActorsFromFile(FILE* file, struct Map* map, struct ActorList* actors)
@@ -31,12 +29,14 @@ void LoadActorsFromFile(FILE* file, struct Map* map, struct ActorList* actors)
         int type = 0;
         int nameLen = 0;
         char* name = NULL;
+        int cash = 0;
 
         fread(&tilesetId, sizeof(int), 1, file);
         fread(&tileX, sizeof(int), 1, file);
         fread(&tileY, sizeof(int), 1, file);
         fread(&collision, sizeof(int), 1, file);
         fread(&type, sizeof(int), 1, file);
+        fread(&cash, sizeof(int), 1, file);
 
         fread(&nameLen, sizeof(int), 1, file);
         assert(nameLen <= MAX_ACTOR_NAME_STRING_LENGTH);
@@ -54,14 +54,22 @@ void LoadActorsFromFile(FILE* file, struct Map* map, struct ActorList* actors)
             actor->OnTouch = &ActivateDoor;
         }
 
+        if (actor->Type == ACTOR_TYPE_CONTAINER)
+        {
+            actor->OnTouch = &ActivateContainer;
+        }
+
+        actor->Cash = cash;
+
         printf(
-            "[Actor] NAME: %s GID: %d POS: %d, %d COL: %d TYPE: %d\n",
+            "[Actor] NAME: %s GID: %d POS: %d, %d COL: %d TYPE: %d CASH: %d\n",
             actor->Name,
             actor->TilesetId,
             actor->Tile->X,
             actor->Tile->Y,
             actor->Collision,
-            actor->Type);
+            actor->Type,
+            actor->Cash);
 
         AddActor(actors, actor);
 
@@ -128,102 +136,4 @@ struct Map* LoadMapFromFile(FILE* file)
     }
 
     return map;
-}
-
-//  ---------------------------------------------------------------------------
-void SaveActorsToFile(FILE* file, const struct ActorList* actors)
-{
-    assert(actors != NULL);
-
-    if (actors->Count > 0)
-    {
-        printf("Saving %d actors...\n", actors->Count);
-        
-        fwrite(&actors->Count, sizeof(int), 1, file);
-
-        struct ActorListNode* node = actors->First;
-        while (node != NULL)
-        {
-            const struct Actor* actor = node->Actor;
-
-            int type = (int)actor->Type;
-
-            fwrite(&actor->TilesetId, sizeof(int), 1, file);
-            fwrite(&actor->Tile->X, sizeof(int), 1, file);
-            fwrite(&actor->Tile->Y, sizeof(int), 1, file);
-            fwrite(&actor->Collision, sizeof(int), 1, file);
-            fwrite(&type, sizeof(int), 1, file);
-
-            size_t nameLen = strlen(actor->Name);
-            assert(nameLen <= MAX_ACTOR_NAME_STRING_LENGTH);
-
-            fwrite(&nameLen, sizeof(int), 1, file);
-            fwrite(actor->Name, sizeof(char), nameLen, file);
-
-            node = node->Next;
-
-            printf(
-                "[Actor] NAME: %s GID: %d POS: %d, %d COL: %d TYPE: %d\n",
-                actor->Name,
-                actor->TilesetId,
-                actor->Tile->X,
-                actor->Tile->Y,
-                actor->Collision,
-                actor->Type);
-        }
-    }
-}
-
-//  ---------------------------------------------------------------------------
-void SaveMapToFile(FILE* file, const struct Map* map)
-{
-    printf("Saving map header...\n");
-    fwrite(&map->Width, sizeof(int), 1, file);
-    fwrite(&map->Height, sizeof(int), 1, file);
-    fwrite(&map->TileHeight, sizeof(int), 1, file);
-    fwrite(&map->TileHeight, sizeof(int), 1, file);
-
-    int mapLinkCount = 0;
-    int tileCount = GetTileCount(map);
-    printf("Saving %d tiles...\n", tileCount);
-    for (int t = 0; t < tileCount; ++t)
-    {
-        struct Tile* tile = &map->Tiles[t];
-        fwrite(&tile->TilesetId, sizeof(int), 1, file);
-        fwrite(&tile->Collision, sizeof(int), 1, file);
-
-        if (tile->Link != NULL)
-        {
-            ++mapLinkCount;
-        }
-    }
-
-    printf("Saving %d map links...\n", mapLinkCount);
-    fwrite(&mapLinkCount, sizeof(int), 1, file);
-    for (int t = 0; t < tileCount; ++t)
-    {
-        struct Tile* tile = &map->Tiles[t];
-        struct MapLink* link = tile->Link;
-
-        if (link != NULL)
-        {
-            size_t destMapLen = strlen(link->DestMap);
-            assert(destMapLen <= MAX_DEST_MAP_STRING_LENGTH);
-
-            fwrite(&tile->X, sizeof(int), 1, file);
-            fwrite(&tile->Y, sizeof(int), 1, file);
-            fwrite(&destMapLen, sizeof(int), 1, file);
-            fwrite(link->DestMap, sizeof(char), destMapLen, file);
-            fwrite(&link->DestX, sizeof(int), 1, file);
-            fwrite(&link->DestY, sizeof(int), 1, file);
-
-            printf(
-                "[MapLink] MAP: %s POS: %d, %d DEST: %d, %d\n",
-                link->DestMap,
-                tile->X,
-                tile->Y,
-                link->DestX,
-                link->DestY);
-        }
-    }
 }

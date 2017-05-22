@@ -1,5 +1,19 @@
 #include "actor.h"
+#include "audio.h"
 #include <stdio.h>
+
+//  ---------------------------------------------------------------------------
+void ActivateContainer(struct Actor* source, struct Actor* target)
+{
+    target->TilesetId = 85;
+
+    if (target->Cash > 0)
+    {
+        PlaySfx(SFX_CASH_PICKUP_01);
+        source->Cash += target->Cash;
+        target->Cash = 0;
+    }
+}
 
 //  ---------------------------------------------------------------------------
 void ActivateDoor(struct Actor* source, struct Actor* target)
@@ -8,7 +22,6 @@ void ActivateDoor(struct Actor* source, struct Actor* target)
     {
         target->Collision = 0;
 
-        printf("ActivateDoor %d", target->TilesetId);
         switch (target->TilesetId)
         {
             case 41:

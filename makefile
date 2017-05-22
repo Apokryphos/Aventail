@@ -1,6 +1,6 @@
 CC = gcc
 LINKER := gcc
-CFLAGS = -Wall -g -pedantic
+CFLAGS = -Wall -g -pedantic -D_GNU_SOURCE
 OBJ_DIR = build/
 MKDIR = @mkdir -p $(@D)
 

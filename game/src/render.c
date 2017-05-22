@@ -8,6 +8,8 @@
 #include <assert.h>
 #include <string.h>
 
+static const int RenderScale = 2;
+
 static struct Tileset FontTileset;
 static struct Tileset MapTileset;
 
@@ -24,8 +26,8 @@ void DrawMap(
     SDL_Rect sourceRect;
 
     SDL_Rect destRect;
-    destRect.w = 32;
-    destRect.h = 32;
+    destRect.w = map->TileWidth * RenderScale;
+    destRect.h = map->TileHeight * RenderScale;
 
     for (int y = 0; y < map->Height; ++y)
     {
@@ -79,8 +81,8 @@ void DrawText(
     { 
         .x = x, 
         .y = y, 
-        .w = FontTileset.TileWidth * 2, 
-        .h = FontTileset.TileHeight * 2
+        .w = FontTileset.TileWidth * RenderScale, 
+        .h = FontTileset.TileHeight *  RenderScale
     };
     SDL_Rect sourceRect;
 
@@ -96,6 +98,32 @@ void DrawText(
 
         destRect.x += destRect.w;
     }
+}
+
+//  ---------------------------------------------------------------------------
+void DrawTextAlpha(
+    SDL_Renderer* renderer, 
+    const char* text,
+    int x,
+    int y,
+    int alpha)
+{
+    SDL_SetTextureAlphaMod(FontTileset.Texture, alpha);
+    DrawText(renderer, text, x, y);
+    SDL_SetTextureAlphaMod(FontTileset.Texture, 255);
+}
+
+//  ---------------------------------------------------------------------------
+void GetTileRect(struct Map* map, struct Tile* tile, SDL_Rect* rect)
+{
+    assert(map != NULL);
+    assert(tile != NULL);
+    assert(rect != NULL);
+
+    (*rect).x = tile->X * map->TileWidth * RenderScale;
+    (*rect).y = tile->Y * map->TileHeight * RenderScale;
+    (*rect).w = map->TileWidth * RenderScale;
+    (*rect).h = map->TileHeight * RenderScale;
 }
 
 //  ---------------------------------------------------------------------------
@@ -136,6 +164,6 @@ void MeasureText(const char* text, int* width, int* height)
 {
     assert(text != NULL);
 
-    *width = strlen(text) * FontTileset.TileWidth * 2;
-    *height = FontTileset.TileHeight * 2;
+    *width = strlen(text) * FontTileset.TileWidth * RenderScale;
+    *height = FontTileset.TileHeight * RenderScale;
 }

@@ -197,6 +197,14 @@ void LoadTmx(xmlDoc* doc, struct Map** map, struct ActorList** actors)
                         --tileY;
                     }
 
+                    xmlNode* propertiesNode = GetPropertiesNode(objectNode);
+
+                    int cash = 0;
+                    if (propertiesNode != NULL)
+                    {
+                        ReadIntProperty(propertiesNode, "Cash", &cash);
+                    }
+
                     char* type = NULL;
                     ReadAttribute(objectNode, "type", &type);
                     if (strcmp(type, "Actor") == 0)
@@ -208,6 +216,14 @@ void LoadTmx(xmlDoc* doc, struct Map** map, struct ActorList** actors)
                     {
                         struct Actor* actor = CreateActor(*map, name, tileX, tileY, gid);
                         actor->Type = ACTOR_TYPE_VILLAIN;
+                        actor->Cash = cash;
+                        AddActor(*actors, actor);
+                    }
+                    else if (strcmp(type, "Container") == 0)
+                    {
+                        struct Actor* actor = CreateActor(*map, name, tileX, tileY, gid);
+                        actor->Type = ACTOR_TYPE_CONTAINER;
+                        actor->Cash = cash;
                         AddActor(*actors, actor);
                     }
                     else if (strcmp(type, "Door") == 0)
@@ -221,7 +237,6 @@ void LoadTmx(xmlDoc* doc, struct Map** map, struct ActorList** actors)
                         char* destMap = NULL;
                         int destX, destY;
 
-                        xmlNode* propertiesNode = GetPropertiesNode(objectNode);
                         ReadProperty(propertiesNode, "DestMap", &destMap);
                         ReadIntProperty(propertiesNode, "DestX", &destX);
                         ReadIntProperty(propertiesNode, "DestY", &destY);

@@ -7,7 +7,7 @@
 #include "input.h"
 #include "map.h"
 #include "map_link.h"
-#include "map_util.h"
+#include "map_load_util.h"
 #include "paths.h"
 #include "render.h"
 #include "tileset.h"

@@ -3,6 +3,7 @@
 
 struct Actor;
 
+void ActivateContainer(struct Actor* source, struct Actor* target);
 void ActivateDoor(struct Actor* source, struct Actor* target);
 
 #endif

@@ -3,6 +3,9 @@
 
 void UpdateInput(struct Input* input, struct InputDevice* inputDevice)
 {
+    //  Reset
+    inputDevice->MoveDirection = DIRECTION_NONE;
+
     while(SDL_PollEvent(&input->Event))
     {
         switch(input->Event.type)
