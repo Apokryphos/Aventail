@@ -18,7 +18,9 @@ struct Actor* CreateActor(
 
     struct Actor* actor = malloc(sizeof(struct Actor));
 
+    actor->Name = strdup(name);
     actor->Inventory = CreateInventory();
+    
     actor->Collision = 1;
     actor->OnTouch = NULL;
     actor->Map = map;
@@ -28,7 +30,6 @@ struct Actor* CreateActor(
     actor->Type = ACTOR_TYPE_NONE;
     actor->MaxHealth = 100;
     actor->Health = actor->MaxHealth;
-    actor->Name = strdup(name);
     actor->Cash = 0;
     return actor;
 }

@@ -1,6 +1,7 @@
 #include "map_link.h"
 #include <assert.h>
 #include <stdlib.h>
+#include <string.h>
 
 //  ---------------------------------------------------------------------------
 struct MapLink* CreateMapLink(char* destMap, int destX, int destY)
@@ -10,7 +11,7 @@ struct MapLink* CreateMapLink(char* destMap, int destX, int destY)
     assert(destY >= 0);
 
     struct MapLink* link = malloc(sizeof(struct MapLink));
-    link->DestMap = destMap;
+    link->DestMap = strdup(destMap);
     link->DestX = destX;
     link->DestY = destY;
     

@@ -57,6 +57,7 @@ void LoadActorsFromFile(FILE* file, struct Map* map, struct ActorList* actors)
 
             char* itemName = malloc(sizeof(char) * nameLen + 1);
             fread(itemName, sizeof(char), nameLen, file);
+            itemName[nameLen] = '\0';
 
             struct Item* item = CreateItem(itemName);
 

@@ -51,7 +51,7 @@ void ProcessLevelInput(struct Game* game)
             struct Item* item = playerInventory->Items[n];
             if (item != NULL)
             {
-                printf("%s\n", item->Name);
+                printf("'%s'\n", item->Name);
             }
         }
     }

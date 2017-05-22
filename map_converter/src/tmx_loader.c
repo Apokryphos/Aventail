@@ -263,6 +263,8 @@ void LoadTmx(xmlDoc* doc, struct Map** map, struct ActorList** actors)
 
                         struct Tile* tile = GetTile(*map, tileX, tileY);
                         tile->Link = link;
+
+                        free(destMap);
                     }
 
                     if (name != NULL)
