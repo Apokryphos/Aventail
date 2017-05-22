@@ -23,6 +23,7 @@ struct Actor
     int MaxHealth;
     int Cash;
     char* Name;
+    struct Inventory* Inventory;
 };
 
 struct Actor* CreateActor(

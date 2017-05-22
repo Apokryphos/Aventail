@@ -5,6 +5,7 @@ void UpdateInput(struct Input* input, struct InputDevice* inputDevice)
 {
     //  Reset
     inputDevice->MoveDirection = DIRECTION_NONE;
+    inputDevice->DebugPrintInventory = 0;
 
     while(SDL_PollEvent(&input->Event))
     {
@@ -21,6 +22,9 @@ void UpdateInput(struct Input* input, struct InputDevice* inputDevice)
                     {
                         case SDLK_ESCAPE:
                             inputDevice->Quit = 1;
+                            break;
+                        case SDLK_i:
+                            inputDevice->DebugPrintInventory = 1;
                             break;
                         case SDLK_UP:
                             inputDevice->MoveDirection = DIRECTION_UP;

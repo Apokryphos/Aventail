@@ -1,6 +1,8 @@
 #include "actor.h"
 #include "actor_funcs.h"
 #include "actor_list.h"
+#include "inventory.h"
+#include "item.h"
 #include "map.h"
 #include "map_file.h"
 #include "map_link.h"
@@ -46,6 +48,21 @@ void LoadActorsFromFile(FILE* file, struct Map* map, struct ActorList* actors)
         name[nameLen] = '\0';
 
         struct Actor* actor = CreateActor(map, name, tileX, tileY, tilesetId);
+
+        size_t itemCount = 0;
+        fread(&itemCount, sizeof(int), 1, file);
+        for (size_t n = 0; n < itemCount; ++n)
+        {
+            fread(&nameLen, sizeof(int), 1, file);
+
+            char* itemName = malloc(sizeof(char) * nameLen + 1);
+            fread(itemName, sizeof(char), nameLen, file);
+
+            struct Item* item = CreateItem(itemName);
+
+            AddInventoryItem(actor->Inventory, item);
+        }
+
         actor->Collision = collision;
         actor->Type = (enum ActorType)type;
 
@@ -62,14 +79,15 @@ void LoadActorsFromFile(FILE* file, struct Map* map, struct ActorList* actors)
         actor->Cash = cash;
 
         printf(
-            "[Actor] NAME: %s GID: %d POS: %d, %d COL: %d TYPE: %d CASH: %d\n",
+            "[Actor] NAME: %s GID: %d POS: %d, %d COL: %d TYPE: %d CASH: %d ITEMS: %zu\n",
             actor->Name,
             actor->TilesetId,
             actor->Tile->X,
             actor->Tile->Y,
             actor->Collision,
             actor->Type,
-            actor->Cash);
+            actor->Cash,
+            GetInventoryItemCount(actor->Inventory));
 
         AddActor(actors, actor);
 

@@ -13,6 +13,7 @@ struct InputDevice
 {
     int CursorX;
     int CursorY;
+    int DebugPrintInventory;
     enum Direction MoveDirection;
     int Quit;
 };

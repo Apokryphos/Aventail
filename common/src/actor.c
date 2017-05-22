@@ -1,5 +1,6 @@
 #include "actor.h"
 #include "direction.h"
+#include "inventory.h"
 #include "map.h"
 #include <assert.h>
 #include <stdlib.h>
@@ -16,6 +17,8 @@ struct Actor* CreateActor(
     assert(map != NULL);
 
     struct Actor* actor = malloc(sizeof(struct Actor));
+
+    actor->Inventory = CreateInventory();
     actor->Collision = 1;
     actor->OnTouch = NULL;
     actor->Map = map;
@@ -37,6 +40,7 @@ void DestroyActor(struct Actor** actor)
 
     if (*actor != NULL)
     {
+        DestroyInventory(&(*actor)->Inventory);
         free((*actor)->Name);
         free(*actor);
         *actor = NULL;

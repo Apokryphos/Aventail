@@ -1,7 +1,9 @@
 #include "game.h"
 #include "actor.h"
 #include "actor_list.h"
+#include "inventory.h"
 #include "input.h"
+#include "item.h"
 #include "map.h"
 #include "tile.h"
 #include "render.h"
@@ -35,6 +37,24 @@ void ProcessLevelInput(struct Game* game)
 
     game->World->Player.Actor->MoveDirection = inputDevice->MoveDirection;
     inputDevice->MoveDirection = DIRECTION_NONE;
+
+    //  List player actor's inventory
+    if (inputDevice->DebugPrintInventory)
+    {
+        struct Inventory* playerInventory = game->World->Player.Actor->Inventory;
+        size_t itemCount = GetInventoryItemCount(playerInventory);
+
+        printf("[ITEMS: %zu]\n", itemCount);
+
+        for (size_t n = 0; n < itemCount; ++n)
+        {
+            struct Item* item = playerInventory->Items[n];
+            if (item != NULL)
+            {
+                printf("%s\n", item->Name);
+            }
+        }
+    }
 }
 
 //  ---------------------------------------------------------------------------

@@ -1,8 +1,11 @@
 #include "actor.h"
 #include "actor_list.h"
+#include "inventory.h"
+#include "item.h"
 #include "map.h"
 #include "map_link.h"
 #include "paths.h"
+#include "string_util.h"
 #include "tile.h"
 #include "xml_util.h"
 #include <libxml/parser.h>
@@ -58,23 +61,26 @@ xmlNode* GetPropertiesNode(xmlNode* parentNode)
 //  ---------------------------------------------------------------------------
 xmlNode* GetPropertyNode(xmlNode* propertiesNode, const char* propertyName)
 {
-    xmlNode* node = propertiesNode->xmlChildrenNode;
-    while (node != NULL)
+    if (propertiesNode != NULL)
     {
-        if (IsNode(node, "property"))
+        xmlNode* node = propertiesNode->xmlChildrenNode;
+        while (node != NULL)
         {
-            char* name = NULL;
-            ReadAttribute(node, "name", &name);
-
-            if (strcmp(name, propertyName) == 0)
+            if (IsNode(node, "property"))
             {
-                free(name);
-                return node;
-            }
+                char* name = NULL;
+                ReadAttribute(node, "name", &name);
 
-            free(name);
+                if (strcmp(name, propertyName) == 0)
+                {
+                    free(name);
+                    return node;
+                }
+
+                free(name);
+            }
+            node = node->next;
         }
-        node = node->next;
     }
 
     return NULL;
@@ -200,10 +206,7 @@ void LoadTmx(xmlDoc* doc, struct Map** map, struct ActorList** actors)
                     xmlNode* propertiesNode = GetPropertiesNode(objectNode);
 
                     int cash = 0;
-                    if (propertiesNode != NULL)
-                    {
-                        ReadIntProperty(propertiesNode, "Cash", &cash);
-                    }
+                    ReadIntProperty(propertiesNode, "Cash", &cash);
 
                     char* type = NULL;
                     ReadAttribute(objectNode, "type", &type);
@@ -224,6 +227,21 @@ void LoadTmx(xmlDoc* doc, struct Map** map, struct ActorList** actors)
                         struct Actor* actor = CreateActor(*map, name, tileX, tileY, gid);
                         actor->Type = ACTOR_TYPE_CONTAINER;
                         actor->Cash = cash;
+
+                        size_t itemCount = 0;
+                        char** itemNames = NULL;
+                        char* itemNamesCsv = NULL;
+                        ReadProperty(propertiesNode, "Items", &itemNamesCsv);
+                        itemCount = Tokenize(itemNamesCsv, &itemNames);
+                        assert(itemCount < MaxInventoryItems);
+                        for (int n = 0; n < itemCount; ++n)
+                        {
+                            struct Item* item = CreateItem(itemNames[n]);
+                            AddInventoryItem(actor->Inventory, item);
+                            free(itemNames[n]);
+                        }
+                        free(itemNames);
+
                         AddActor(*actors, actor);
                     }
                     else if (strcmp(type, "Door") == 0)

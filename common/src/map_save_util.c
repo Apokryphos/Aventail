@@ -1,5 +1,7 @@
 #include "actor.h"
 #include "actor_list.h"
+#include "inventory.h"
+#include "item.h"
 #include "map.h"
 #include "map_file.h"
 #include "map_link.h"
@@ -40,17 +42,39 @@ void SaveActorsToFile(FILE* file, const struct ActorList* actors)
             fwrite(&nameLen, sizeof(int), 1, file);
             fwrite(actor->Name, sizeof(char), nameLen, file);
 
+            size_t itemsWritten = 0;
+            size_t itemCount = GetInventoryItemCount(actor->Inventory);
+            fwrite(&itemCount, sizeof(int), 1, file);
+            for (size_t n = 0; n < MaxInventoryItems; ++n)
+            {
+                struct Item* item = actor->Inventory->Items[n];
+
+                if (item != NULL)
+                {
+                    assert(itemsWritten < itemCount);
+
+                    nameLen = strlen(item->Name);
+                    assert(nameLen <= MAX_ACTOR_NAME_STRING_LENGTH);
+
+                    fwrite(&nameLen, sizeof(int), 1, file);
+                    fwrite(item->Name, sizeof(char), nameLen, file);
+
+                    itemsWritten++;
+                }
+            }
+
             node = node->Next;
 
             printf(
-                "[Actor] NAME: %s GID: %d POS: %d, %d COL: %d TYPE: %d CASH: %d\n",
+                "[Actor] NAME: %s GID: %d POS: %d, %d COL: %d TYPE: %d CASH: %d ITEMS: %zu\n",
                 actor->Name,
                 actor->TilesetId,
                 actor->Tile->X,
                 actor->Tile->Y,
                 actor->Collision,
                 actor->Type,
-                actor->Cash);
+                actor->Cash,
+                GetInventoryItemCount(actor->Inventory));
         }
     }
 }
