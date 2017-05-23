@@ -3,6 +3,7 @@
 
 struct ActorList;
 struct Map;
+struct Panel;
 struct Tile;
 struct Tileset;
 typedef struct SDL_Rect SDL_Rect;
@@ -12,6 +13,7 @@ void DrawMap(
     SDL_Renderer* renderer, 
     struct Map* map,
     struct ActorList* actors);
+void DrawPanel(SDL_Renderer* renderer, struct Panel* panel);
 void DrawText(
     SDL_Renderer* renderer, 
     const char* text,

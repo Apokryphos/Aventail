@@ -39,8 +39,10 @@ void ProcessLevelInput(struct Game* game)
     inputDevice->MoveDirection = DIRECTION_NONE;
 
     //  List player actor's inventory
-    if (inputDevice->DebugPrintInventory)
+    if (inputDevice->Inventory)
     {
+        game->State = GAME_STATE_INVENTORY;
+
         struct Inventory* playerInventory = game->World->Player.Actor->Inventory;
         size_t itemCount = GetInventoryItemCount(playerInventory);
 

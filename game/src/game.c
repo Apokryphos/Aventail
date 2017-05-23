@@ -3,6 +3,7 @@
 #include "audio.h"
 #include "game_state.h"
 #include "game_state_level.h"
+#include "game_state_inventory.h"
 #include "game_state_transition.h"
 #include "input.h"
 #include "map.h"
@@ -139,6 +140,9 @@ void GameMain()
             case GAME_STATE_TRANSITION:
                 TransitionUpdate(&game);
                 break;
+            case GAME_STATE_INVENTORY:
+                InventoryGameStateUpdate(&game);
+                break;
         }
 
         AudioUpdate();
@@ -154,6 +158,9 @@ void GameMain()
             case GAME_STATE_LEVEL:
                 DrawMap(game.Renderer, game.World->Map, game.World->Actors);
                 LevelDraw(&game);
+                break;
+            case GAME_STATE_INVENTORY:
+                InventoryGameStateDraw(&game);
                 break;
 
         }

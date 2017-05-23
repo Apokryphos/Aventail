@@ -2,6 +2,7 @@
 #include "actor_list.h"
 #include "game.h"
 #include "map.h"
+#include "panel.h"
 #include "tile.h"
 #include "tileset.h"
 #include <SDL2/SDL.h>
@@ -11,6 +12,7 @@
 static const int RenderScale = 2;
 
 static struct Tileset FontTileset;
+static struct Tileset GuiTileset;
 static struct Tileset MapTileset;
 
 //  ---------------------------------------------------------------------------
@@ -64,6 +66,117 @@ void DrawMap(
 
         actorNode = actorNode->Previous;
     }
+}
+
+//  ---------------------------------------------------------------------------
+void DrawPanel(SDL_Renderer* renderer, struct Panel* panel)
+{
+    assert(renderer != NULL);
+    assert(panel != NULL);
+    assert(MapTileset.Texture != NULL);
+
+    SDL_Rect sourceRect;
+
+    SDL_Rect destRect;
+    destRect.x = panel->X;
+    destRect.y = panel->Y;
+    destRect.w = GuiTileset.TileWidth * RenderScale;
+    destRect.h = GuiTileset.TileHeight * RenderScale;
+
+    const int cornerTilesetId = 1065;
+    const int sideTilesetId = 1072;
+
+    SDL_Rect panelRect = { panel->X, panel->Y, panel->Width, panel->Height };
+    SDL_SetRenderDrawColor(renderer, 42, 5, 3, 255);
+    SDL_RenderFillRect(renderer, &panelRect);
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+
+    GetTilesetRect(&GuiTileset, sideTilesetId, &sourceRect);
+    for (int x = panel->X + destRect.w; x <= panel->Width; x += destRect.w)
+    {
+        destRect.x = x;
+
+        destRect.y = panel->Y;
+        SDL_RenderCopyEx(
+            renderer,
+            GuiTileset.Texture,
+            &sourceRect,
+            &destRect,
+            90,
+            NULL,
+            SDL_FLIP_NONE);
+
+        destRect.y = panel->Y + panel->Height - (GuiTileset.TileHeight * RenderScale);
+        SDL_RenderCopyEx(
+            renderer,
+            GuiTileset.Texture,
+            &sourceRect,
+            &destRect,
+            270,
+            NULL,
+            SDL_FLIP_NONE);
+    }
+
+    for (int y = panel->Y + destRect.h; y <= panel->Height; y += destRect.h)
+    {
+        destRect.y = y;
+
+        destRect.x = panel->X;
+        SDL_RenderCopy(renderer, GuiTileset.Texture, &sourceRect, &destRect);
+
+        destRect.x = panel->X + panel->Width - (GuiTileset.TileWidth * RenderScale);
+        SDL_RenderCopyEx(
+            renderer,
+            GuiTileset.Texture,
+            &sourceRect,
+            &destRect,
+            0,
+            NULL,
+            SDL_FLIP_HORIZONTAL);
+    }
+
+    GetTilesetRect(&GuiTileset, cornerTilesetId, &sourceRect);
+
+    //  Upper-left corner
+    destRect.x = panel->X;
+    destRect.y = panel->Y;
+    SDL_RenderCopy(renderer, GuiTileset.Texture, &sourceRect, &destRect);
+
+    //  Lower-left corner
+    destRect.x = panel->X;
+    destRect.y = panel->Y + panel->Height - (GuiTileset.TileHeight * RenderScale);
+    SDL_RenderCopyEx(
+            renderer,
+            GuiTileset.Texture,
+            &sourceRect,
+            &destRect,
+            0,
+            NULL,
+            SDL_FLIP_VERTICAL);
+
+    //  Lower-right corner
+    destRect.x = panel->X + panel->Width - (GuiTileset.TileWidth * RenderScale);
+    destRect.y = panel->Y + panel->Height - (GuiTileset.TileHeight * RenderScale);
+    SDL_RenderCopyEx(
+            renderer,
+            GuiTileset.Texture,
+            &sourceRect,
+            &destRect,
+            0,
+            NULL,
+            SDL_FLIP_HORIZONTAL | SDL_FLIP_VERTICAL);
+
+    //  Upper-right corner
+    destRect.x = panel->X + panel->Width - (GuiTileset.TileWidth * RenderScale);
+    destRect.y = panel->Y;
+    SDL_RenderCopyEx(
+            renderer,
+            GuiTileset.Texture,
+            &sourceRect,
+            &destRect,
+            0,
+            NULL,
+            SDL_FLIP_HORIZONTAL);
 }
 
 //  ---------------------------------------------------------------------------
@@ -130,6 +243,7 @@ void GetTileRect(struct Map* map, struct Tile* tile, SDL_Rect* rect)
 int GfxInit(struct Game* game)
 {
     assert(FontTileset.Texture == NULL);
+    assert(GuiTileset.Texture == NULL);
     assert(MapTileset.Texture == NULL);
 
     LoadTileset(game, &FontTileset, "font");
@@ -141,6 +255,16 @@ int GfxInit(struct Game* game)
 
     FontTileset.TileWidth = 5;
     FontTileset.TileHeight = 12;
+
+    LoadTileset(game, &GuiTileset, "tileset");
+    if (GuiTileset.Texture == NULL)
+    {
+        printf("Failed to load GUI tileset texture.\n");
+        return -1;
+    }
+
+    GuiTileset.TileWidth = 8;
+    GuiTileset.TileHeight = 8;
 
     LoadTileset(game, &MapTileset, "tileset");
     if (MapTileset.Texture == NULL)
@@ -156,6 +280,7 @@ int GfxInit(struct Game* game)
 void GfxShutdown()
 {
     SDL_DestroyTexture(FontTileset.Texture);
+    SDL_DestroyTexture(GuiTileset.Texture);
     SDL_DestroyTexture(MapTileset.Texture);
 }
 

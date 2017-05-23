@@ -11,9 +11,10 @@ struct Input
 
 struct InputDevice
 {
+    int Cancel;
     int CursorX;
     int CursorY;
-    int DebugPrintInventory;
+    int Inventory;
     enum Direction MoveDirection;
     int Quit;
 };
