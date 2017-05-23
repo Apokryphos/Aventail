@@ -70,7 +70,7 @@ int CursorOverActor(struct Actor* actor)
         actor->Health > 0)
     {
         SDL_Rect rect;
-        GetTileRect(actor->Map, actor->Tile, &rect);
+        GetTileRect(actor->Map, actor->Tile, &rect, 1);
 
         return 
             CursorX >= rect.x &&
@@ -146,7 +146,7 @@ void LevelGameStateDraw(struct Game* game)
             HoverActorNameString = strdup(HoverActor->Name);
         }
 
-        GetTileRect(HoverActor->Map, HoverActor->Tile, &HoverActorRect);
+        GetTileRect(HoverActor->Map, HoverActor->Tile, &HoverActorRect, 0);
     }
     else
     {

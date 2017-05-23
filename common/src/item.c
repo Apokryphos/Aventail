@@ -7,6 +7,7 @@ struct Item* CreateItem(char* name)
 {
     struct Item* item = malloc(sizeof(struct Item));
     item->Name = strdup(name);
+    item->TilesetId = 91;
     return item;
 }
 

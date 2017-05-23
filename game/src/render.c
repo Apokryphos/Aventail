@@ -9,6 +9,7 @@
 #include <assert.h>
 #include <string.h>
 
+//  SDL_RenderSetScale scale amount
 static const int RenderScale = 2;
 
 static struct Tileset FontTileset;
@@ -28,8 +29,8 @@ void DrawMap(
     SDL_Rect sourceRect;
 
     SDL_Rect destRect;
-    destRect.w = map->TileWidth * RenderScale;
-    destRect.h = map->TileHeight * RenderScale;
+    destRect.w = map->TileWidth;
+    destRect.h = map->TileHeight;
 
     for (int y = 0; y < map->Height; ++y)
     {
@@ -69,6 +70,22 @@ void DrawMap(
 }
 
 //  ---------------------------------------------------------------------------
+void DrawTilesetTile(SDL_Renderer* renderer, int tilesetId, int x, int y)
+{
+    SDL_Rect sourceRect;
+
+    SDL_Rect destRect;
+    destRect.w = MapTileset.TileWidth;
+    destRect.h = MapTileset.TileHeight;
+
+    GetTilesetRect(&MapTileset, tilesetId, &sourceRect);
+
+    destRect.x = x;
+    destRect.y = y;
+    SDL_RenderCopy(renderer, MapTileset.Texture, &sourceRect, &destRect);
+}
+
+//  ---------------------------------------------------------------------------
 void DrawPanel(SDL_Renderer* renderer, struct Panel* panel)
 {
     assert(renderer != NULL);
@@ -80,8 +97,8 @@ void DrawPanel(SDL_Renderer* renderer, struct Panel* panel)
     SDL_Rect destRect;
     destRect.x = panel->X;
     destRect.y = panel->Y;
-    destRect.w = GuiTileset.TileWidth * RenderScale;
-    destRect.h = GuiTileset.TileHeight * RenderScale;
+    destRect.w = GuiTileset.TileWidth;
+    destRect.h = GuiTileset.TileHeight;
 
     const int cornerTilesetId = 1065;
     const int sideTilesetId = 1072;
@@ -92,7 +109,9 @@ void DrawPanel(SDL_Renderer* renderer, struct Panel* panel)
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 
     GetTilesetRect(&GuiTileset, sideTilesetId, &sourceRect);
-    for (int x = panel->X + destRect.w; x <= panel->Width; x += destRect.w)
+    int startX = panel->X + destRect.w;
+    int endX = panel->X + panel->Width - destRect.w;
+    for (int x = startX; x < endX; x += destRect.w)
     {
         destRect.x = x;
 
@@ -106,7 +125,7 @@ void DrawPanel(SDL_Renderer* renderer, struct Panel* panel)
             NULL,
             SDL_FLIP_NONE);
 
-        destRect.y = panel->Y + panel->Height - (GuiTileset.TileHeight * RenderScale);
+        destRect.y = panel->Y + panel->Height - GuiTileset.TileHeight;
         SDL_RenderCopyEx(
             renderer,
             GuiTileset.Texture,
@@ -117,14 +136,16 @@ void DrawPanel(SDL_Renderer* renderer, struct Panel* panel)
             SDL_FLIP_NONE);
     }
 
-    for (int y = panel->Y + destRect.h; y <= panel->Height; y += destRect.h)
+    int startY = panel->Y + destRect.h;
+    int endY = panel->Y + panel->Height - destRect.h;
+    for (int y = startY; y < endY; y += destRect.h)
     {
         destRect.y = y;
 
         destRect.x = panel->X;
         SDL_RenderCopy(renderer, GuiTileset.Texture, &sourceRect, &destRect);
 
-        destRect.x = panel->X + panel->Width - (GuiTileset.TileWidth * RenderScale);
+        destRect.x = panel->X + panel->Width - GuiTileset.TileWidth;
         SDL_RenderCopyEx(
             renderer,
             GuiTileset.Texture,
@@ -144,7 +165,7 @@ void DrawPanel(SDL_Renderer* renderer, struct Panel* panel)
 
     //  Lower-left corner
     destRect.x = panel->X;
-    destRect.y = panel->Y + panel->Height - (GuiTileset.TileHeight * RenderScale);
+    destRect.y = panel->Y + panel->Height - GuiTileset.TileHeight;
     SDL_RenderCopyEx(
             renderer,
             GuiTileset.Texture,
@@ -155,8 +176,8 @@ void DrawPanel(SDL_Renderer* renderer, struct Panel* panel)
             SDL_FLIP_VERTICAL);
 
     //  Lower-right corner
-    destRect.x = panel->X + panel->Width - (GuiTileset.TileWidth * RenderScale);
-    destRect.y = panel->Y + panel->Height - (GuiTileset.TileHeight * RenderScale);
+    destRect.x = panel->X + panel->Width - GuiTileset.TileWidth;
+    destRect.y = panel->Y + panel->Height - GuiTileset.TileHeight;
     SDL_RenderCopyEx(
             renderer,
             GuiTileset.Texture,
@@ -167,7 +188,7 @@ void DrawPanel(SDL_Renderer* renderer, struct Panel* panel)
             SDL_FLIP_HORIZONTAL | SDL_FLIP_VERTICAL);
 
     //  Upper-right corner
-    destRect.x = panel->X + panel->Width - (GuiTileset.TileWidth * RenderScale);
+    destRect.x = panel->X + panel->Width - GuiTileset.TileWidth;
     destRect.y = panel->Y;
     SDL_RenderCopyEx(
             renderer,
@@ -194,8 +215,8 @@ void DrawText(
     { 
         .x = x, 
         .y = y, 
-        .w = FontTileset.TileWidth * RenderScale, 
-        .h = FontTileset.TileHeight *  RenderScale
+        .w = FontTileset.TileWidth, 
+        .h = FontTileset.TileHeight
     };
     SDL_Rect sourceRect;
 
@@ -227,16 +248,18 @@ void DrawTextAlpha(
 }
 
 //  ---------------------------------------------------------------------------
-void GetTileRect(struct Map* map, struct Tile* tile, SDL_Rect* rect)
+void GetTileRect(struct Map* map, struct Tile* tile, SDL_Rect* rect, int scaled)
 {
     assert(map != NULL);
     assert(tile != NULL);
     assert(rect != NULL);
 
-    (*rect).x = tile->X * map->TileWidth * RenderScale;
-    (*rect).y = tile->Y * map->TileHeight * RenderScale;
-    (*rect).w = map->TileWidth * RenderScale;
-    (*rect).h = map->TileHeight * RenderScale;
+    int scale = scaled ? RenderScale : 1;
+
+    (*rect).x = tile->X * map->TileWidth * scale;
+    (*rect).y = tile->Y * map->TileHeight * scale;
+    (*rect).w = map->TileWidth * scale;
+    (*rect).h = map->TileHeight * scale;
 }
 
 //  ---------------------------------------------------------------------------
@@ -245,6 +268,8 @@ int GfxInit(struct Game* game)
     assert(FontTileset.Texture == NULL);
     assert(GuiTileset.Texture == NULL);
     assert(MapTileset.Texture == NULL);
+
+    SDL_RenderSetScale(game->Renderer, RenderScale, RenderScale);
 
     LoadTileset(game, &FontTileset, "font");
     if (FontTileset.Texture == NULL)
@@ -289,6 +314,6 @@ void MeasureText(const char* text, int* width, int* height)
 {
     assert(text != NULL);
 
-    *width = strlen(text) * FontTileset.TileWidth * RenderScale;
-    *height = FontTileset.TileHeight * RenderScale;
+    *width = strlen(text) * FontTileset.TileWidth;
+    *height = FontTileset.TileHeight;
 }

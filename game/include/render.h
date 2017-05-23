@@ -13,6 +13,7 @@ void DrawMap(
     SDL_Renderer* renderer, 
     struct Map* map,
     struct ActorList* actors);
+void DrawTilesetTile(SDL_Renderer* renderer, int tilesetId, int x, int y);
 void DrawPanel(SDL_Renderer* renderer, struct Panel* panel);
 void DrawText(
     SDL_Renderer* renderer, 
@@ -28,7 +29,7 @@ void DrawTextAlpha(
 /*
     Gets the SDL_Rect of the specified Tile in pixels.
 */
-void GetTileRect(struct Map* map, struct Tile* tile, SDL_Rect* rect);
+void GetTileRect(struct Map* map, struct Tile* tile, SDL_Rect* rect, int scaled);
 int GfxInit(struct Game* game);
 void GfxShutdown();
 void MeasureText(const char* text, int* width, int* height);

@@ -3,6 +3,7 @@
 
 struct Item
 {
+    int TilesetId;
     char* Name;
 };
 
