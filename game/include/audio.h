@@ -7,6 +7,7 @@ enum SfxId
 {
     SFX_ATTACK_01,
     SFX_CASH_PICKUP_01,
+    SFX_DOOR,
     SFX_STEPS_ENTER,
     SFX_STEPS_EXIT,
 };

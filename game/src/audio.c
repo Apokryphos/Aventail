@@ -15,6 +15,7 @@ int ChannelQueue[AUDIO_QUEUE_SIZE];
 
 static Mix_Chunk* AttackSfxMixChunk = NULL;
 static Mix_Chunk* CashPickupSfxMixChunk = NULL;
+static Mix_Chunk* DoorSfxMixChunk = NULL;
 static Mix_Chunk* StepsEnterSfxMixChunk = NULL;
 static Mix_Chunk* StepsExitSfxMixChunk = NULL;
 
@@ -49,6 +50,7 @@ int AudioInit(struct Game* game)
 
     LoadSfx(&AttackSfxMixChunk, game, "attack01");
     LoadSfx(&CashPickupSfxMixChunk, game, "cash_pickup_01");
+    LoadSfx(&DoorSfxMixChunk, game, "door");
     LoadSfx(&StepsEnterSfxMixChunk, game, "steps_enter");
     LoadSfx(&StepsExitSfxMixChunk, game, "steps_exit");
 
@@ -73,6 +75,7 @@ void AudioShutdown()
 
     Mix_FreeChunk(AttackSfxMixChunk);
     Mix_FreeChunk(CashPickupSfxMixChunk);
+    Mix_FreeChunk(DoorSfxMixChunk);
     Mix_FreeChunk(StepsEnterSfxMixChunk);
     Mix_FreeChunk(StepsExitSfxMixChunk);
 
@@ -119,6 +122,9 @@ void PlaySfx(enum SfxId id)
             break;
         case SFX_CASH_PICKUP_01:
             chunk = CashPickupSfxMixChunk;
+            break;
+        case SFX_DOOR:
+            chunk = DoorSfxMixChunk;
             break;
         case SFX_STEPS_ENTER:
             channel = StepsEnterSfxChannel;

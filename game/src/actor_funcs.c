@@ -44,6 +44,8 @@ void ActivateDoor(struct Actor* source, struct Actor* target)
     {
         target->Collision = 0;
 
+        PlaySfx(SFX_DOOR);
+
         switch (target->TilesetId)
         {
             case 41:
