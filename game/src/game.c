@@ -101,6 +101,9 @@ void GameInit(struct Game* game, int width, int height)
 //  ---------------------------------------------------------------------------
 void GameMain()
 {
+    //  Use same seed everytime for now
+    srand(0);
+
     struct Game game = {0};
 
     GameInit(&game, 800, 800);

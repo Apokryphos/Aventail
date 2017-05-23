@@ -12,6 +12,7 @@ int CanAct(struct Actor* actor)
     return 
         (actor->Type == ACTOR_TYPE_PLAYER || 
         actor->Type == ACTOR_TYPE_VILLAIN) &&
+        actor->Health > 0 &&
         actor->ActionPoints > 0;
 }
 

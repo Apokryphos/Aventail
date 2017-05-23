@@ -260,7 +260,7 @@ void SimulateWorld(struct Game* game, struct World* world)
     {
         if (ActiveActor->Type == ACTOR_TYPE_VILLAIN)
         {
-            ActiveActor->MoveDirection = DIRECTION_LEFT;
+            ActiveActor->MoveDirection = GetRandomDirection();
         }
 
         if (ActiveActor->ActionPoints > 0)
@@ -271,6 +271,8 @@ void SimulateWorld(struct Game* game, struct World* world)
                 ActiveActor->Type == ACTOR_TYPE_VILLAIN &&
                 ActiveActor->ActionPoints > 0)
             {
+                //  Villains always expend action points to prevent
+                //  their turn from never ending
                 --ActiveActor->ActionPoints;
             }
         }

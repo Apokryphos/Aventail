@@ -1,4 +1,5 @@
 #include "direction.h"
+#include <stdlib.h>
 
 //  ---------------------------------------------------------------------------
 void GetDelta(const enum Direction direction, int* dx, int* dy)
@@ -54,4 +55,11 @@ enum Direction GetOppositeDirection(const enum Direction direction)
         default:
             return DIRECTION_NONE;
     }
+}
+
+//  ---------------------------------------------------------------------------
+enum Direction GetRandomDirection()
+{
+    //  Random direction excluding DIRECTION_NONE
+    return (enum Direction)(rand() % 4 + 1);
 }
