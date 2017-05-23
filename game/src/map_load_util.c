@@ -62,6 +62,8 @@ void LoadActorsFromFile(FILE* file, struct Map* map, struct ActorList* actors)
             struct Item* item = CreateItem(itemName);
 
             AddInventoryItem(actor->Inventory, item);
+
+            free(itemName);
         }
 
         actor->Collision = collision;
@@ -141,6 +143,8 @@ struct Map* LoadMapFromFile(FILE* file)
         fread(&destY, sizeof(int), 1, file);
 
         struct MapLink* link = CreateMapLink(destMap, destX, destY);
+
+        free(destMap);
 
         struct Tile* tile = &map->Tiles[tileY * map->Width + tileX];
         tile->Link = link;
