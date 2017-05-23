@@ -141,6 +141,8 @@ void GameMain()
                 break;
         }
 
+        AudioUpdate();
+
         SDL_RenderClear(game.Renderer);
 
         switch (game.State)

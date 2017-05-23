@@ -668,6 +668,7 @@
   <object id="16" name="Chest" type="Container" gid="85" x="32" y="240" width="16" height="16">
    <properties>
     <property name="Cash" type="int" value="10"/>
+    <property name="Items" value="Mattock, Copper Sword"/>
    </properties>
   </object>
   <object id="19" name="Slime" type="Villain" gid="218" x="192" y="144" width="16" height="16"/>

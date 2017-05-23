@@ -1,5 +1,6 @@
 #include "actor.h"
 #include "actor_list.h"
+#include "audio.h"
 #include "direction.h"
 #include "game.h"
 #include "map.h"
@@ -52,6 +53,8 @@ void LoadMapLink(struct Game* game)
 
     world->Player.Actor->Map = world->Map;
     world->Player.Actor->Tile = destTile;
+
+    PlaySfx(SFX_STEPS_ENTER);
 }
 
 //  ---------------------------------------------------------------------------
@@ -65,6 +68,8 @@ void BeginTransition(
     TransitionDirection = direction;
     TransitionTicks = 0;
     TransitionPhase = 0;
+
+    PlaySfx(SFX_STEPS_EXIT);
 }
 
 //  ---------------------------------------------------------------------------
