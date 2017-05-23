@@ -32,7 +32,7 @@ void InventoryGameStateDraw(struct Game* game)
     GearPanel.X = 16;
     GearPanel.Y = 16;
     GearPanel.Width = 128;
-    GearPanel.Height = MaxInventoryItems * itemSize + 16;
+    GearPanel.Height = MaxInventoryItems * (itemSize + padding) + (padding * 2);
 
     char* inventoryTitleText = "Inventory";
     int inventoryTitleWidth, inventoryTitleHeight;
