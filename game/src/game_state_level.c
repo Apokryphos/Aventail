@@ -31,7 +31,7 @@ static char* HoverActorHealthString = NULL;
 static char* HoverActorNameString = NULL;
 
 //  ---------------------------------------------------------------------------
-void ProcessLevelInput(struct Game* game)
+void ProcessLevelGameStateInput(struct Game* game)
 {
     struct InputDevice* inputDevice = game->InputDevice;
 
@@ -83,7 +83,7 @@ int CursorOverActor(struct Actor* actor)
 }
 
 //  ---------------------------------------------------------------------------
-void LevelDraw(struct Game* game)
+void LevelGameStateDraw(struct Game* game)
 {
     CursorX = game->InputDevice->CursorX;
     CursorY = game->InputDevice->CursorY;
@@ -224,8 +224,8 @@ void LevelDraw(struct Game* game)
 }
 
 //  ---------------------------------------------------------------------------
-void LevelUpdate(struct Game* game)
+void LevelGameStateUpdate(struct Game* game)
 {
-    ProcessLevelInput(game);
+    ProcessLevelGameStateInput(game);
     SimulateWorld(game, game->World);
 }
