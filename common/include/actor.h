@@ -7,11 +7,14 @@
 struct Actor;
 struct Map;
 struct Tile;
+struct World;
 
 typedef void ActorOnTouchFunction(struct Actor* source, struct Actor* target);
 
 struct Actor
 {
+    int ActionPoints;
+    int MaxActionPoints;
     int Collision;
     int TilesetId;
     ActorOnTouchFunction* OnTouch;
@@ -26,6 +29,7 @@ struct Actor
     struct Inventory* Inventory;
 };
 
+int CanAct(struct Actor* actor);
 struct Actor* CreateActor(
     struct Map* map,
     const char *name,

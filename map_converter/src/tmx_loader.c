@@ -107,6 +107,24 @@ void ReadProperty(xmlNode* propertiesNode, char* propertyName, char** value)
 }
 
 //  ---------------------------------------------------------------------------
+void LoadActorItems(struct Actor* actor, xmlNode* propertiesNode)
+{
+    size_t itemCount = 0;
+    char** itemNames = NULL;
+    char* itemNamesCsv = NULL;
+    ReadProperty(propertiesNode, "Items", &itemNamesCsv);
+    itemCount = Tokenize(itemNamesCsv, &itemNames);
+    assert(itemCount < MaxInventoryItems);
+    for (int n = 0; n < itemCount; ++n)
+    {
+        struct Item* item = CreateItem(itemNames[n]);
+        AddInventoryItem(actor->Inventory, item);
+        free(itemNames[n]);
+    }
+    free(itemNames);
+}
+
+//  ---------------------------------------------------------------------------
 void LoadTmx(xmlDoc* doc, struct Map** map, struct ActorList** actors)
 {
     assert(doc != NULL);
@@ -220,6 +238,7 @@ void LoadTmx(xmlDoc* doc, struct Map** map, struct ActorList** actors)
                         struct Actor* actor = CreateActor(*map, name, tileX, tileY, gid);
                         actor->Type = ACTOR_TYPE_VILLAIN;
                         actor->Cash = cash;
+                        LoadActorItems(actor, propertiesNode);
                         AddActor(*actors, actor);
                     }
                     else if (strcmp(type, "Container") == 0)
@@ -227,21 +246,7 @@ void LoadTmx(xmlDoc* doc, struct Map** map, struct ActorList** actors)
                         struct Actor* actor = CreateActor(*map, name, tileX, tileY, gid);
                         actor->Type = ACTOR_TYPE_CONTAINER;
                         actor->Cash = cash;
-
-                        size_t itemCount = 0;
-                        char** itemNames = NULL;
-                        char* itemNamesCsv = NULL;
-                        ReadProperty(propertiesNode, "Items", &itemNamesCsv);
-                        itemCount = Tokenize(itemNamesCsv, &itemNames);
-                        assert(itemCount < MaxInventoryItems);
-                        for (int n = 0; n < itemCount; ++n)
-                        {
-                            struct Item* item = CreateItem(itemNames[n]);
-                            AddInventoryItem(actor->Inventory, item);
-                            free(itemNames[n]);
-                        }
-                        free(itemNames);
-
+                        LoadActorItems(actor, propertiesNode);
                         AddActor(*actors, actor);
                     }
                     else if (strcmp(type, "Door") == 0)

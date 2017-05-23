@@ -7,6 +7,15 @@
 #include <string.h>
 
 //  ---------------------------------------------------------------------------
+int CanAct(struct Actor* actor)
+{
+    return 
+        (actor->Type == ACTOR_TYPE_PLAYER || 
+        actor->Type == ACTOR_TYPE_VILLAIN) &&
+        actor->ActionPoints > 0;
+}
+
+//  ---------------------------------------------------------------------------
 struct Actor* CreateActor(
     struct Map* map,
     const char* name,
@@ -21,6 +30,8 @@ struct Actor* CreateActor(
     actor->Name = strdup(name);
     actor->Inventory = CreateInventory();
     
+    actor->MaxActionPoints = 1;
+    actor->ActionPoints = actor->MaxActionPoints;
     actor->Collision = 1;
     actor->OnTouch = NULL;
     actor->Map = map;
