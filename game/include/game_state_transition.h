@@ -12,7 +12,7 @@ struct MapLink;
     for a fade.
 */
 void BeginTransition(struct Game* game, struct MapLink* link, enum Direction direction);
-void TransitionDraw(struct Game* game);
-void TransitionUpdate(struct Game* game);
+void TransitionGameStateDraw(struct Game* game);
+void TransitionGameStateUpdate(struct Game* game);
 
 #endif

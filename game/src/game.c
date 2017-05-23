@@ -138,7 +138,7 @@ void GameMain()
                 LevelGameStateUpdate(&game);
                 break;
             case GAME_STATE_TRANSITION:
-                TransitionUpdate(&game);
+                TransitionGameStateUpdate(&game);
                 break;
             case GAME_STATE_INVENTORY:
                 InventoryGameStateUpdate(&game);
@@ -153,7 +153,7 @@ void GameMain()
         {
             case GAME_STATE_TRANSITION:
                 DrawMap(game.Renderer, game.World->Map, game.World->Actors);
-                TransitionDraw(&game);
+                TransitionGameStateDraw(&game);
                 break;
             case GAME_STATE_LEVEL:
                 DrawMap(game.Renderer, game.World->Map, game.World->Actors);

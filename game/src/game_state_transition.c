@@ -73,7 +73,7 @@ void BeginTransition(
 }
 
 //  ---------------------------------------------------------------------------
-void TransitionDraw(struct Game* game)
+void TransitionGameStateDraw(struct Game* game)
 {
     Uint8 alpha = 255;
     float progress = (TransitionTicks / TransitionDuration);
@@ -125,7 +125,7 @@ void TransitionDraw(struct Game* game)
 }
 
 //  ---------------------------------------------------------------------------
-void TransitionUpdate(struct Game* game)
+void TransitionGameStateUpdate(struct Game* game)
 {
     assert(game != NULL);
 
