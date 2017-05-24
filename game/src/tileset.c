@@ -4,7 +4,10 @@
 #include <assert.h>
 
 //  ---------------------------------------------------------------------------
-void GetTilesetRect(struct Tileset* tileset, int index, SDL_Rect* rect)
+void GetTilesetRect(
+    const struct Tileset* tileset,
+    const int index,
+    SDL_Rect* rect)
 {
     assert(tileset->Texture != NULL);
     assert(tileset->TextureWidth > 0);

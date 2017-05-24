@@ -57,7 +57,7 @@ void DestroyInventory(struct Inventory** inventory)
 }
 
 //  ---------------------------------------------------------------------------
-size_t GetInventoryItemCount(struct Inventory* inventory)
+size_t GetInventoryItemCount(const struct Inventory* inventory)
 {
     size_t count = 0;
     for (size_t n = 0; n < MaxInventoryItems; ++n)

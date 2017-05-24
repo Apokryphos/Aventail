@@ -13,7 +13,10 @@ struct MapLink
     A MapLink assigned to the Link member of a Tile struct will be freed
     when that tile's map is destroyed.
 */
-struct MapLink* CreateMapLink(char* destMap, int destX, int destY);
+struct MapLink* CreateMapLink(
+    const char* destMap,
+    const int destX,
+    const int destY);
 /**
     Frees the specified MapLink. Afterwards the specified pointer will be
     set to NULL.

@@ -67,7 +67,10 @@ void DestroyMap(struct Map** map)
 }
 
 //  ---------------------------------------------------------------------------
-struct Tile* GetNeighbor(struct Map* map, struct Tile* tile, enum Direction direction)
+struct Tile* GetNeighbor(
+    const struct Map* map,
+    const struct Tile* tile, 
+    const enum Direction direction)
 {
     assert(map != NULL);
     assert(tile != NULL);

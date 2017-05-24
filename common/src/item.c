@@ -3,7 +3,7 @@
 #include <string.h>
 
 //  ---------------------------------------------------------------------------
-struct Item* CreateItem(char* name)
+struct Item* CreateItem(const char* name)
 {
     struct Item* item = malloc(sizeof(struct Item));
     item->Name = strdup(name);

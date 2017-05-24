@@ -29,14 +29,13 @@ struct Actor
     struct Tile* Tile;
 };
 
-int CanAct(struct Actor* actor);
 struct Actor* CreateActor(
     struct Map* map,
     const char *name,
-    int tileX,
-    int tileY, 
-    int tilesetId);
+    const int tileX,
+    const int tileY, 
+    const int tilesetId);
 void DestroyActor(struct Actor** actor);
-int IsFoe(struct Actor* actor, struct Actor* other);
+int ActorIsFoe(const struct Actor* actor, const struct Actor* other);
 
 #endif

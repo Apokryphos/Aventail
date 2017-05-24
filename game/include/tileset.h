@@ -14,7 +14,10 @@ struct Tileset
     SDL_Texture* Texture;
 };
 
-void GetTilesetRect(struct Tileset* tileset, int index, SDL_Rect* rect);
+void GetTilesetRect(
+    const struct Tileset* tileset,
+    const int index,
+    SDL_Rect* rect);
 void LoadTileset(struct Game* game, struct Tileset* tileset, const char* assetPath);
 
 #endif

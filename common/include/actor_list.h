@@ -19,7 +19,7 @@ struct ActorList
     struct ActorListNode* Last;
 };
 
-void AddActor(struct ActorList* list, struct Actor* actor);
+void AddActorToBack(struct ActorList* list, struct Actor* actor);
 void AddActorToFront(struct ActorList* list, struct Actor* actor);
 /*
     Allocates an ActorList. Free with DestroyActorList.
@@ -30,7 +30,7 @@ struct ActorList* CreateActorList();
     referenced by its nodes. Afterwards the specified pointer will be set to NULL.
 */
 void DestroyActorList(struct ActorList** list);
-struct Actor* FindActor(struct ActorList* list, FindActorFunction* find);
-void RemoveActor(struct ActorList* list, struct Actor* actor);
+struct Actor* FindActor(const struct ActorList* list, FindActorFunction* find);
+void RemoveActor(struct ActorList* list, const struct Actor* actor);
 
 #endif

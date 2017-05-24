@@ -14,9 +14,16 @@ struct Map
     struct Tile* Tiles;
 };
 
-struct Map* CreateMap(const int width, const int height, const int tileWidth, const int tileHeight);
+struct Map* CreateMap(
+    const int width,
+    const int height,
+    const int tileWidth,
+    const int tileHeight);
 void DestroyMap(struct Map** map);
-struct Tile* GetNeighbor(struct Map* map, struct Tile* tile, enum Direction direction);
+struct Tile* GetNeighbor(
+    const struct Map* map,
+    const struct Tile* tile,
+    const enum Direction direction);
 struct Tile* GetTile(const struct Map* map, const int x, const int y);
 int GetTileCount(const struct Map* map);
 int InBounds(const struct Map* map, const int x, const int y);

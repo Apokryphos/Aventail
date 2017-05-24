@@ -7,24 +7,15 @@
 #include <string.h>
 
 //  ---------------------------------------------------------------------------
-int CanAct(struct Actor* actor)
-{
-    return 
-        (actor->Type == ACTOR_TYPE_PLAYER || 
-        actor->Type == ACTOR_TYPE_VILLAIN) &&
-        actor->Health > 0 &&
-        actor->ActionPoints > 0;
-}
-
-//  ---------------------------------------------------------------------------
 struct Actor* CreateActor(
     struct Map* map,
     const char* name,
-    int tileX, 
-    int tileY,
-    int tilesetId)
+    const int tileX, 
+    const int tileY,
+    const int tilesetId)
 {
     assert(map != NULL);
+    assert(InBounds(map, tileX, tileY));
 
     struct Actor* actor = malloc(sizeof(struct Actor));
 
@@ -61,7 +52,7 @@ void DestroyActor(struct Actor** actor)
 }
 
 //  ---------------------------------------------------------------------------
-int IsFoe(struct Actor* actor, struct Actor* other)
+int ActorIsFoe(const struct Actor* actor, const struct Actor* other)
 {
     assert(actor != NULL);
     assert(other != NULL);

@@ -6,7 +6,7 @@
 const size_t TOKEN_BUFFER_SIZE = 512;
 
 //  ---------------------------------------------------------------------------
-size_t Tokenize(char* str, char** tokens[])
+size_t Tokenize(const char* str, char** tokens[])
 {
     //  Specified string is NULL
     if (str == NULL)
@@ -26,7 +26,7 @@ size_t Tokenize(char* str, char** tokens[])
     char* buffer[TOKEN_BUFFER_SIZE];
     size_t b = 0;
 
-    char* start = str;
+    const char* start = str;
 
     while (start < str + strLen)
     {
@@ -42,14 +42,14 @@ size_t Tokenize(char* str, char** tokens[])
             break;
         }
 
-        char* end = strchr(start, ',');
+        const char* end = strchr(start, ',');
         if (end == NULL)
         {
             end = &str[strLen];
         }
 
         //  Ignore trailing whitespace
-        char* lastChar = end;
+        const char* lastChar = end;
         while ((*lastChar == ',' ||
                  isspace(*lastChar) || 
                  *lastChar == '\0') && lastChar > start)

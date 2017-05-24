@@ -125,7 +125,7 @@ void LoadActorItems(struct Actor* actor, xmlNode* propertiesNode)
 }
 
 //  ---------------------------------------------------------------------------
-void LoadTmx(xmlDoc* doc, struct Map** map, struct ActorList** actors)
+void LoadTmx(const xmlDoc* doc, struct Map** map, struct ActorList** actors)
 {
     assert(doc != NULL);
     assert(*map == NULL);
@@ -231,7 +231,7 @@ void LoadTmx(xmlDoc* doc, struct Map** map, struct ActorList** actors)
                     if (strcmp(type, "Actor") == 0)
                     {
                         struct Actor* actor = CreateActor(*map, name, tileX, tileY, gid);
-                        AddActor(*actors, actor);
+                        AddActorToBack(*actors, actor);
                     }
                     else if (strcmp(type, "Villain") == 0)
                     {
@@ -239,7 +239,7 @@ void LoadTmx(xmlDoc* doc, struct Map** map, struct ActorList** actors)
                         actor->Type = ACTOR_TYPE_VILLAIN;
                         actor->Cash = cash;
                         LoadActorItems(actor, propertiesNode);
-                        AddActor(*actors, actor);
+                        AddActorToBack(*actors, actor);
                     }
                     else if (strcmp(type, "Container") == 0)
                     {
@@ -247,13 +247,13 @@ void LoadTmx(xmlDoc* doc, struct Map** map, struct ActorList** actors)
                         actor->Type = ACTOR_TYPE_CONTAINER;
                         actor->Cash = cash;
                         LoadActorItems(actor, propertiesNode);
-                        AddActor(*actors, actor);
+                        AddActorToBack(*actors, actor);
                     }
                     else if (strcmp(type, "Door") == 0)
                     {
                         struct Actor* actor = CreateActor(*map, name, tileX, tileY, gid);
                         actor->Type = ACTOR_TYPE_DOOR;
-                        AddActor(*actors, actor);
+                        AddActorToBack(*actors, actor);
                     }
                     else if (strcmp(type, "MapLink") == 0)
                     {

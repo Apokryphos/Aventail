@@ -8,7 +8,7 @@
 #include "render.h"
 #include "world.h"
 
-struct Panel GearPanel;
+static struct Panel GearPanel;
 
 //  ---------------------------------------------------------------------------
 void ProcessInventoryGameStateInput(struct Game* game)

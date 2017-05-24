@@ -6,12 +6,12 @@
 
 #define AUDIO_QUEUE_SIZE 16
 
-const int ReserveChannelCount = 2;
-const int StepsEnterSfxChannel = 0;
-const int StepsExitSfxChannel = 1;
+static const int ReserveChannelCount = 2;
+static const int StepsEnterSfxChannel = 0;
+static const int StepsExitSfxChannel = 1;
 
-Mix_Chunk* ChunkQueue[AUDIO_QUEUE_SIZE];
-int ChannelQueue[AUDIO_QUEUE_SIZE];
+static Mix_Chunk* ChunkQueue[AUDIO_QUEUE_SIZE];
+static int ChannelQueue[AUDIO_QUEUE_SIZE];
 
 static Mix_Chunk* AttackSfxMixChunk = NULL;
 static Mix_Chunk* CashPickupSfxMixChunk = NULL;
@@ -20,7 +20,7 @@ static Mix_Chunk* StepsEnterSfxMixChunk = NULL;
 static Mix_Chunk* StepsExitSfxMixChunk = NULL;
 
 //  ---------------------------------------------------------------------------
-static void LoadSfx(Mix_Chunk** chunk, struct Game* game, char* assetName)
+static void LoadSfx(Mix_Chunk** chunk, const struct Game* game, char* assetName)
 {
     assert(chunk != NULL);
     assert(*chunk == NULL);
@@ -32,7 +32,7 @@ static void LoadSfx(Mix_Chunk** chunk, struct Game* game, char* assetName)
 }
 
 //  ---------------------------------------------------------------------------
-int AudioInit(struct Game* game)
+int AudioInit(const struct Game* game)
 {
     int initFlags = MIX_INIT_OGG;
     int init = Mix_Init(initFlags);
@@ -110,7 +110,7 @@ void AudioUpdate()
 }
 
 //  ---------------------------------------------------------------------------
-void PlaySfx(enum SfxId id)
+void PlaySfx(const enum SfxId id)
 {
     //  Default is to play using any available channel
     int channel = -1;

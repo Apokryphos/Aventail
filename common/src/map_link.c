@@ -4,7 +4,10 @@
 #include <string.h>
 
 //  ---------------------------------------------------------------------------
-struct MapLink* CreateMapLink(char* destMap, int destX, int destY)
+struct MapLink* CreateMapLink(
+    const char* destMap,
+    const int destX,
+    const int destY)
 {
     assert(destMap != NULL);
     assert(destX >= 0);

@@ -1,16 +1,18 @@
 #include "input.h"
 #include <SDL2/SDL.h>
 
-void UpdateInput(struct Input* input, struct InputDevice* inputDevice)
+//  ---------------------------------------------------------------------------
+void UpdateInput(struct InputDevice* inputDevice)
 {
     //  Reset
     inputDevice->MoveDirection = DIRECTION_NONE;
     inputDevice->Cancel = 0;
     inputDevice->Inventory = 0;
 
-    while(SDL_PollEvent(&input->Event))
+    SDL_Event event;
+    while(SDL_PollEvent(&event))
     {
-        switch(input->Event.type)
+        switch(event.type)
         {
             case SDL_QUIT:
                 inputDevice->Quit = 1;
@@ -18,7 +20,7 @@ void UpdateInput(struct Input* input, struct InputDevice* inputDevice)
 
             case SDL_KEYDOWN:
                 {
-                    SDL_Keycode key = input->Event.key.keysym.sym;
+                    SDL_Keycode key = event.key.keysym.sym;
                     switch (key)
                     {
                         case SDLK_q:
@@ -47,8 +49,8 @@ void UpdateInput(struct Input* input, struct InputDevice* inputDevice)
                 break;
 
                 case SDL_MOUSEMOTION:
-                    inputDevice->CursorX = input->Event.motion.x;
-                    inputDevice->CursorY = input->Event.motion.y;
+                    inputDevice->CursorX = event.motion.x;
+                    inputDevice->CursorY = event.motion.y;
                     break;
 
             default:

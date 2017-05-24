@@ -41,7 +41,7 @@ void LoadMapLink(struct Game* game)
     game->World->Actors = CreateActorList();
 
     //  Add player actor back
-    AddActor(world->Actors, world->Player.Actor);
+    AddActorToBack(world->Actors, world->Player.Actor);
 
     LoadMap(game, destMap, &world->Map, world->Actors);
 
@@ -58,7 +58,7 @@ void LoadMapLink(struct Game* game)
 }
 
 //  ---------------------------------------------------------------------------
-void BeginTransition(
+void BeginMapLinkTransition(
     struct Game* game, 
     struct MapLink* link, 
     enum Direction direction)

@@ -92,7 +92,7 @@ void LoadActorsFromFile(FILE* file, struct Map* map, struct ActorList* actors)
             actor->Cash,
             GetInventoryItemCount(actor->Inventory));
 
-        AddActor(actors, actor);
+        AddActorToBack(actors, actor);
 
         free(name);
     }

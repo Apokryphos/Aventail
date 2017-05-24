@@ -19,8 +19,8 @@ static struct Tileset MapTileset;
 //  ---------------------------------------------------------------------------
 void DrawMap(
     SDL_Renderer* renderer, 
-    struct Map* map, 
-    struct ActorList* actors)
+    const struct Map* map, 
+    const struct ActorList* actors)
 {
     assert(renderer != NULL);
     assert(map != NULL);
@@ -70,7 +70,11 @@ void DrawMap(
 }
 
 //  ---------------------------------------------------------------------------
-void DrawTilesetTile(SDL_Renderer* renderer, int tilesetId, int x, int y)
+void DrawTilesetTile(
+    SDL_Renderer* renderer,
+    const int tilesetId,
+    const int x,
+    const int y)
 {
     SDL_Rect sourceRect;
 
@@ -86,7 +90,7 @@ void DrawTilesetTile(SDL_Renderer* renderer, int tilesetId, int x, int y)
 }
 
 //  ---------------------------------------------------------------------------
-void DrawPanel(SDL_Renderer* renderer, struct Panel* panel)
+void DrawPanel(SDL_Renderer* renderer, const struct Panel* panel)
 {
     assert(renderer != NULL);
     assert(panel != NULL);
@@ -204,8 +208,8 @@ void DrawPanel(SDL_Renderer* renderer, struct Panel* panel)
 void DrawText(
     SDL_Renderer* renderer, 
     const char* text,
-    int x,
-    int y)
+    const int x,
+    const int y)
 {
     assert(renderer != NULL);
     assert(text != NULL);
@@ -238,9 +242,9 @@ void DrawText(
 void DrawTextAlpha(
     SDL_Renderer* renderer, 
     const char* text,
-    int x,
-    int y,
-    int alpha)
+    const int x,
+    const int y,
+    const int alpha)
 {
     SDL_SetTextureAlphaMod(FontTileset.Texture, alpha);
     DrawText(renderer, text, x, y);
@@ -248,7 +252,11 @@ void DrawTextAlpha(
 }
 
 //  ---------------------------------------------------------------------------
-void GetTileRect(struct Map* map, struct Tile* tile, SDL_Rect* rect, int scaled)
+void GetTileRect(
+    const struct Map* map,
+    const struct Tile* tile,
+    SDL_Rect* rect,
+    const int scaled)
 {
     assert(map != NULL);
     assert(tile != NULL);

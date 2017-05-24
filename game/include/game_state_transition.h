@@ -11,7 +11,7 @@ struct MapLink;
     Direction specifies the direction of the transition wipe or DIRECTION_NONE
     for a fade.
 */
-void BeginTransition(struct Game* game, struct MapLink* link, enum Direction direction);
+void BeginMapLinkTransition(struct Game* game, struct MapLink* link, enum Direction direction);
 void TransitionGameStateDraw(struct Game* game);
 void TransitionGameStateUpdate(struct Game* game);
 

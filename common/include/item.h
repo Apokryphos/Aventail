@@ -7,7 +7,7 @@ struct Item
     char* Name;
 };
 
-struct Item* CreateItem(char* name);
+struct Item* CreateItem(const char* name);
 void DestroyItem(struct Item** item);
 
 #endif

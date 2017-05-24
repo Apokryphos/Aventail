@@ -4,11 +4,6 @@
 #include "direction.h"
 #include <SDL2/SDL_events.h>
 
-struct Input
-{
-    SDL_Event Event;
-};
-
 struct InputDevice
 {
     enum Direction MoveDirection;
@@ -19,6 +14,6 @@ struct InputDevice
     int Quit;
 };
 
-void UpdateInput(struct Input* input, struct InputDevice* inputDevice);
+void UpdateInput(struct InputDevice* inputDevice);
 
 #endif

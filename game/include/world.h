@@ -16,11 +16,6 @@ struct World
     struct Player Player;
 };
 
-struct Actor* CreateLootContainer(
-    struct World* world,
-    int x,
-    int y,
-    struct Inventory* inventory);
 struct Actor* CreatePlayerActor(struct World* world);
 /*
     Allocates a World. Free with DestroyWorld.
@@ -31,7 +26,6 @@ struct World* CreateWorld();
     specified pointer will be set to NULL.
 */
 void DestroyWorld(struct World** world);
-void LootActor(struct Actor* source, struct Actor* target, struct World* world);
 void SimulateWorld(struct Game* game, struct World* world);
 
 #endif

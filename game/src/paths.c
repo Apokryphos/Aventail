@@ -4,7 +4,7 @@
 #include <string.h>
 
 //  ---------------------------------------------------------------------------
-char* CreateAssetPath(
+static char* CreateAssetPath(
     const char* basePath, 
     const char* assetPath, 
     const char* assetFilename,

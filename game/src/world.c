@@ -12,8 +12,10 @@
 static struct Actor* ActiveActor = NULL;
 static const int BonesTilesetId = 95;
 
+static void LootActor(struct Actor* source, struct Actor* target, struct World* world);
+
 //  ---------------------------------------------------------------------------
-void Attack(struct Actor* source, struct Actor* target, struct World* world)
+static void Attack(struct Actor* source, struct Actor* target, struct World* world)
 {
     assert(source->ActionPoints > 0);
 
@@ -38,10 +40,20 @@ void Attack(struct Actor* source, struct Actor* target, struct World* world)
 }
 
 //  ---------------------------------------------------------------------------
-struct Actor* CreateLootContainer(
+static int CanAct(const struct Actor* actor)
+{
+    return 
+        (actor->Type == ACTOR_TYPE_PLAYER || 
+        actor->Type == ACTOR_TYPE_VILLAIN) &&
+        actor->Health > 0 &&
+        actor->ActionPoints > 0;
+}
+
+//  ---------------------------------------------------------------------------
+static struct Actor* CreateLootContainer(
     struct World* world,
-    int x,
-    int y,
+    const int x,
+    const int y,
     struct Inventory* inventory)
 {
     assert(world->Map != NULL);
@@ -100,7 +112,7 @@ void DestroyWorld(struct World** world)
 }
 
 //  ---------------------------------------------------------------------------
-void LootActor(struct Actor* source, struct Actor* target, struct World* world)
+static void LootActor(struct Actor* source, struct Actor* target, struct World* world)
 {
     if (target->Cash > 0)
     {
@@ -120,7 +132,7 @@ void LootActor(struct Actor* source, struct Actor* target, struct World* world)
 }
 
 //  ---------------------------------------------------------------------------
-void MoveActor(struct Actor* actor, struct Game* game, struct World* world)
+static void MoveActor(struct Actor* actor, struct Game* game, struct World* world)
 {
     assert(actor->ActionPoints > 0);
 
@@ -155,7 +167,7 @@ void MoveActor(struct Actor* actor, struct Game* game, struct World* world)
                 {
                     //  Attack first foe on tile
                     if (target == NULL &&
-                        IsFoe(actor, otherActor))
+                        ActorIsFoe(actor, otherActor))
                     {
                         target = otherActor;
                     }
@@ -191,7 +203,7 @@ void MoveActor(struct Actor* actor, struct Game* game, struct World* world)
                 if (actor == world->Player.Actor)
                 {
                     ActiveActor = NULL;
-                    BeginTransition(game, destTile->Link, DIRECTION_NONE);
+                    BeginMapLinkTransition(game, destTile->Link, DIRECTION_NONE);
                     return;
                 }
             }
@@ -200,21 +212,7 @@ void MoveActor(struct Actor* actor, struct Game* game, struct World* world)
 }
 
 //  ---------------------------------------------------------------------------
-// void MoveActors(struct Game* game, struct World* world)
-// {
-//     struct ActorListNode* actorNode = world->Actors->First;
-//     while (actorNode != NULL)
-//     {
-//         struct Actor* actor = actorNode->Actor;
-
-//         MoveActor(actor, game, world);
-
-//         actorNode = actorNode->Next;
-//     }
-// }
-
-//  ---------------------------------------------------------------------------
-void NextActiveActor(struct World* world)
+static void NextActiveActor(struct World* world)
 {
     ActiveActor = NULL;
 
@@ -234,7 +232,7 @@ void NextActiveActor(struct World* world)
 }
 
 //  ---------------------------------------------------------------------------
-void ResetActionPoints(struct World* world)
+static void ResetActionPoints(struct World* world)
 {
     struct ActorListNode* actorNode = world->Actors->First;
     while (actorNode != NULL)

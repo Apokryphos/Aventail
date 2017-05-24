@@ -5,7 +5,7 @@
 #include <stdio.h>
 
 //  ---------------------------------------------------------------------------
-void AddActor(struct ActorList* list, struct Actor* actor)
+void AddActorToBack(struct ActorList* list, struct Actor* actor)
 {
     assert(list != NULL);
     assert(actor != NULL);
@@ -46,7 +46,7 @@ void AddActorToFront(struct ActorList* list, struct Actor* actor)
 
     if (list->First == NULL)
     {
-        AddActor(list, actor);        
+        AddActorToBack(list, actor);        
     }
     else
     {
@@ -110,7 +110,7 @@ void DestroyActorList(struct ActorList** list)
 }
 
 //  ---------------------------------------------------------------------------
-struct Actor* FindActor(struct ActorList* list, FindActorFunction* find)
+struct Actor* FindActor(const struct ActorList* list, FindActorFunction* find)
 {
     assert(list != NULL);
     assert(list->Count > 0);
@@ -131,7 +131,7 @@ struct Actor* FindActor(struct ActorList* list, FindActorFunction* find)
 }
 
 //  ---------------------------------------------------------------------------
-void RemoveActor(struct ActorList* list, struct Actor* actor)
+void RemoveActor(struct ActorList* list, const struct Actor* actor)
 {
     assert(list != NULL);
     assert(list->Count > 0);

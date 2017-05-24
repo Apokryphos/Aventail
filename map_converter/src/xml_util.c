@@ -11,7 +11,7 @@ int HasAttribute(const xmlNode* node, const char* name)
 }
 
 //  ---------------------------------------------------------------------------
-int IsNode(const xmlNode* node, char* name)
+int IsNode(const xmlNode* node, const char* name)
 {
     return xmlStrcmp(node->name, (const xmlChar*)name) == 0;
 }

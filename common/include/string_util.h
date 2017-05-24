@@ -9,6 +9,6 @@
     Allocated tokens should be freed by the caller.
     Returns the number of tokens found and allocated.
 */
-size_t Tokenize(char* str, char** tokens[]);
+size_t Tokenize(const char* str, char** tokens[]);
 
 #endif

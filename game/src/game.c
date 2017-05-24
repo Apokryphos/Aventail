@@ -120,8 +120,6 @@ void GameMain()
     struct InputDevice inputDevice = {0};
     game.InputDevice = &inputDevice;
 
-    struct Input input;
-
     CreatePlayerActor(game.World);
 
     unsigned int lastTicks = 0;
@@ -132,7 +130,7 @@ void GameMain()
         ticks = SDL_GetTicks();
         game.ElapsedSeconds = (ticks - lastTicks) / 1000.0f;
 
-        UpdateInput(&input, game.InputDevice);
+        UpdateInput(game.InputDevice);
         game.Quit = game.InputDevice->Quit;
         
         switch (game.State)
