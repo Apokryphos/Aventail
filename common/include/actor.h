@@ -13,20 +13,20 @@ typedef void ActorOnTouchFunction(struct Actor* source, struct Actor* target);
 
 struct Actor
 {
+    enum Direction MoveDirection;
+    enum ActorType Type;
     int ActionPoints;
     int MaxActionPoints;
     int Collision;
     int TilesetId;
-    ActorOnTouchFunction* OnTouch;
-    enum Direction MoveDirection;
-    enum ActorType Type;
-    struct Map* Map;
-    struct Tile* Tile;
     int Health;
     int MaxHealth;
     int Cash;
     char* Name;
+    ActorOnTouchFunction* OnTouch;
     struct Inventory* Inventory;
+    struct Map* Map;
+    struct Tile* Tile;
 };
 
 int CanAct(struct Actor* actor);

@@ -14,9 +14,9 @@ struct ActorListNode
 
 struct ActorList
 {
+    int Count;
     struct ActorListNode* First;
     struct ActorListNode* Last;
-    int Count;
 };
 
 void AddActor(struct ActorList* list, struct Actor* actor);
