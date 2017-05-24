@@ -20,7 +20,6 @@ static float HoverTicks = 0;
 static const float HoverDuration = 0.33f;
 static SDL_Rect HoverActorRect;
 
-static struct Actor* HoverActor = NULL;
 static int HoverActorHealth = 0;
 static int HoverActorMaxHealth = 0;
 static int HoverActorCash = 0;
@@ -38,24 +37,14 @@ void ProcessLevelGameStateInput(struct Game* game)
     game->World->Player.Actor->MoveDirection = inputDevice->MoveDirection;
     inputDevice->MoveDirection = DIRECTION_NONE;
 
-    //  List player actor's inventory
     if (inputDevice->Inventory)
     {
         game->State = GAME_STATE_INVENTORY;
+    }
 
-        struct Inventory* playerInventory = game->World->Player.Actor->Inventory;
-        size_t itemCount = GetInventoryItemCount(playerInventory);
-
-        printf("[ITEMS: %zu]\n", itemCount);
-
-        for (size_t n = 0; n < itemCount; ++n)
-        {
-            struct Item* item = playerInventory->Items[n];
-            if (item != NULL)
-            {
-                printf("'%s'\n", item->Name);
-            }
-        }
+    if (inputDevice->DebugKillPlayerActor)
+    {
+        game->World->Player.Actor->Health = 0;
     }
 }
 
@@ -83,14 +72,24 @@ int CursorOverActor(struct Actor* actor)
 }
 
 //  ---------------------------------------------------------------------------
-void LevelGameStateDraw(struct Game* game)
+void LevelGameStateDraw(struct Game* game, int inTransition)
 {
+    if (game->World->Map != NULL)
+    {
+        DrawMap(game->Renderer, game->World->Map, game->World->Actors);
+    }
+
+    if (inTransition)
+    {
+        return;
+    }
+
     CursorX = game->InputDevice->CursorX;
     CursorY = game->InputDevice->CursorY;
 
-    HoverActor = FindActor(game->World->Actors, &CursorOverActor);
+    struct Actor* hoverActor = FindActor(game->World->Actors, &CursorOverActor);
 
-    if (HoverActor != NULL)
+    if (hoverActor != NULL)
     {
         HoverTicks += game->ElapsedSeconds;
         if (HoverTicks > HoverDuration)
@@ -98,11 +97,11 @@ void LevelGameStateDraw(struct Game* game)
             HoverTicks = HoverDuration;
         }
 
-        HoverActorType = HoverActor->Type;
+        HoverActorType = hoverActor->Type;
 
-        if (HoverActor->Cash != HoverActorCash)
+        if (hoverActor->Cash != HoverActorCash)
         {
-            HoverActorCash = HoverActor->Cash;
+            HoverActorCash = hoverActor->Cash;
 
             if (HoverActorCashString != NULL)
             {
@@ -111,11 +110,11 @@ void LevelGameStateDraw(struct Game* game)
             }
         }
 
-        if (HoverActor->Health != HoverActorHealth ||
-            HoverActor->MaxHealth != HoverActorMaxHealth)
+        if (hoverActor->Health != HoverActorHealth ||
+            hoverActor->MaxHealth != HoverActorMaxHealth)
         {
-            HoverActorHealth = HoverActor->Health;
-            HoverActorMaxHealth = HoverActor->MaxHealth;
+            HoverActorHealth = hoverActor->Health;
+            HoverActorMaxHealth = hoverActor->MaxHealth;
 
             if (HoverActorHealthString != NULL)
             {
@@ -135,7 +134,7 @@ void LevelGameStateDraw(struct Game* game)
         }
 
         if (HoverActorNameString != NULL &&
-            strcmp(HoverActor->Name, HoverActorNameString) != 0)
+            strcmp(hoverActor->Name, HoverActorNameString) != 0)
         {
             free(HoverActorNameString);
             HoverActorNameString = NULL;
@@ -143,10 +142,10 @@ void LevelGameStateDraw(struct Game* game)
 
         if (HoverActorNameString == NULL)
         {
-            HoverActorNameString = strdup(HoverActor->Name);
+            HoverActorNameString = strdup(hoverActor->Name);
         }
 
-        GetTileRect(HoverActor->Map, HoverActor->Tile, &HoverActorRect, 0);
+        GetTileRect(hoverActor->Map, hoverActor->Tile, &HoverActorRect, 0);
     }
     else
     {

@@ -14,21 +14,25 @@ struct Actor* CreateActor(
     const int tileY,
     const int tilesetId)
 {
-    assert(map != NULL);
-    assert(InBounds(map, tileX, tileY));
-
     struct Actor* actor = malloc(sizeof(struct Actor));
 
     actor->Name = strdup(name);
     actor->Inventory = CreateInventory();
     
+    actor->Map = map;
+
+    actor->Tile = NULL;
+    if (map != NULL)
+    {
+        assert(InBounds(map, tileX, tileY));
+        actor->Tile = GetTile(map, tileX, tileY);
+    }
+
     actor->MaxActionPoints = 1;
     actor->ActionPoints = actor->MaxActionPoints;
     actor->Collision = 1;
     actor->OnTouch = NULL;
-    actor->Map = map;
     actor->MoveDirection = DIRECTION_NONE;
-    actor->Tile = GetTile(map, tileX, tileY);
     actor->TilesetId = tilesetId;
     actor->Type = ACTOR_TYPE_NONE;
     actor->MaxHealth = 100;
@@ -49,6 +53,13 @@ void DestroyActor(struct Actor** actor)
         free(*actor);
         *actor = NULL;
     }
+}
+
+//  ---------------------------------------------------------------------------
+int ActorIsDead(const struct Actor* actor)
+{
+    assert(actor != NULL);
+    return actor->Health <= 0;
 }
 
 //  ---------------------------------------------------------------------------

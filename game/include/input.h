@@ -12,6 +12,7 @@ struct InputDevice
     int CursorY;
     int Inventory;
     int Quit;
+    int DebugKillPlayerActor;
 };
 
 void UpdateInput(struct InputDevice* inputDevice);

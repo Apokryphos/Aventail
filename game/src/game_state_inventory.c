@@ -22,7 +22,7 @@ void ProcessInventoryGameStateInput(struct Game* game)
 }
 
 //  ---------------------------------------------------------------------------
-void InventoryGameStateDraw(struct Game* game)
+void InventoryGameStateDraw(struct Game* game, int inTransition)
 {
     struct Actor* actor = game->World->Player.Actor;
 

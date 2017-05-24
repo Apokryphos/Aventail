@@ -36,6 +36,7 @@ struct Actor* CreateActor(
     const int tileY, 
     const int tilesetId);
 void DestroyActor(struct Actor** actor);
+int ActorIsDead(const struct Actor* actor);
 int ActorIsFoe(const struct Actor* actor, const struct Actor* other);
 
 #endif

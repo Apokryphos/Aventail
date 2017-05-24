@@ -8,6 +8,7 @@ void UpdateInput(struct InputDevice* inputDevice)
     inputDevice->MoveDirection = DIRECTION_NONE;
     inputDevice->Cancel = 0;
     inputDevice->Inventory = 0;
+    inputDevice->DebugKillPlayerActor = 0;
 
     SDL_Event event;
     while(SDL_PollEvent(&event))
@@ -31,6 +32,9 @@ void UpdateInput(struct InputDevice* inputDevice)
                             break;
                         case SDLK_i:
                             inputDevice->Inventory = 1;
+                            break;
+                        case SDLK_k:
+                            inputDevice->DebugKillPlayerActor = 1;
                             break;
                         case SDLK_UP:
                             inputDevice->MoveDirection = DIRECTION_UP;

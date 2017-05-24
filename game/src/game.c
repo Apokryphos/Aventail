@@ -2,13 +2,10 @@
 #include "actor.h"
 #include "audio.h"
 #include "game_state.h"
-#include "game_state_level.h"
-#include "game_state_inventory.h"
 #include "game_state_transition.h"
 #include "input.h"
 #include "map.h"
 #include "map_link.h"
-#include "map_load_util.h"
 #include "paths.h"
 #include "render.h"
 #include "tileset.h"
@@ -18,26 +15,6 @@
 #include <SDL2/SDL_mixer.h>
 #include <assert.h>
 #include <stdlib.h>
-
-//  ---------------------------------------------------------------------------
-void LoadMap(
-    struct Game* game, 
-    const char* assetFilename,
-    struct Map** map,
-    struct ActorList* actors)
-{
-    assert(*map == NULL);
-    assert(assetFilename != NULL);
-
-    char *fullpath = CreateMapPath(game->BasePath, assetFilename);
-    printf("%s\n", fullpath);
-    FILE *file = fopen(fullpath, "rb");
-    assert(file != NULL);
-    free(fullpath);
-    *map = LoadMapFromFile(file);
-    LoadActorsFromFile(file, *map, actors);
-    fclose(file);
-}
 
 //  ---------------------------------------------------------------------------
 void GameInit(struct Game* game, int width, int height)
@@ -115,12 +92,13 @@ void GameMain()
     }
 
     game.World = CreateWorld();
-    LoadMap(&game, "map01", &game.World->Map, game.World->Actors);
+    
+    CreatePlayerActor(game.World);
+
+    BeginMapLoadTransition(&game, "map01");
 
     struct InputDevice inputDevice = {0};
     game.InputDevice = &inputDevice;
-
-    CreatePlayerActor(game.World);
 
     unsigned int lastTicks = 0;
     unsigned int ticks = 0;
@@ -133,39 +111,12 @@ void GameMain()
         UpdateInput(game.InputDevice);
         game.Quit = game.InputDevice->Quit;
         
-        switch (game.State)
-        {
-            case GAME_STATE_LEVEL:
-                LevelGameStateUpdate(&game);
-                break;
-            case GAME_STATE_TRANSITION:
-                TransitionGameStateUpdate(&game);
-                break;
-            case GAME_STATE_INVENTORY:
-                InventoryGameStateUpdate(&game);
-                break;
-        }
+        UpdateGameState(&game);
 
         AudioUpdate();
 
         SDL_RenderClear(game.Renderer);
-
-        switch (game.State)
-        {
-            case GAME_STATE_TRANSITION:
-                DrawMap(game.Renderer, game.World->Map, game.World->Actors);
-                TransitionGameStateDraw(&game);
-                break;
-            case GAME_STATE_LEVEL:
-                DrawMap(game.Renderer, game.World->Map, game.World->Actors);
-                LevelGameStateDraw(&game);
-                break;
-            case GAME_STATE_INVENTORY:
-                InventoryGameStateDraw(&game);
-                break;
-
-        }
-
+        DrawGameState(&game, game.State, 0);
         SDL_RenderPresent(game.Renderer);
     }
 
