@@ -11,6 +11,7 @@ struct Item* CreateItem(const char* name)
     item->HealAmount = 0;
     item->Stats.Attack = 0;
     item->Stats.Defend = 0;
+    item->Type = ITEM_TYPE_NONE;
     return item;
 }
 

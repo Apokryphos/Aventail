@@ -3,11 +3,20 @@
 
 #include "stats.h"
 
+enum ItemType
+{
+    ITEM_TYPE_NONE,
+    ITEM_TYPE_CONSUMABLE,
+    ITEM_TYPE_ARMOR,
+    ITEM_TYPE_WEAPON,
+};
+
 struct Item
 {
+    enum ItemType Type;
     int TilesetId;
-    char* Name;
     int HealAmount;
+    char* Name;
     struct Stats Stats;
 };
 

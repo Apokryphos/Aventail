@@ -9,10 +9,13 @@ void LoadItemDefinition(struct Item* item)
     {
         item->TilesetId = 130;
         item->Stats.Attack = 3;
+        item->Type = ITEM_TYPE_WEAPON;
+        
     }
     else if (strcasecmp(item->Name, "health vial") == 0)
     {
         item->TilesetId = 97;
         item->HealAmount = 10;
+        item->Type = ITEM_TYPE_CONSUMABLE;
     }
 }
