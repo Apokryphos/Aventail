@@ -8,6 +8,9 @@ struct Item* CreateItem(const char* name)
     struct Item* item = malloc(sizeof(struct Item));
     item->Name = strdup(name);
     item->TilesetId = 91;
+    item->HealAmount = 0;
+    item->Stats.Attack = 0;
+    item->Stats.Defend = 0;
     return item;
 }
 

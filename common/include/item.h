@@ -7,6 +7,7 @@ struct Item
 {
     int TilesetId;
     char* Name;
+    int HealAmount;
     struct Stats Stats;
 };
 

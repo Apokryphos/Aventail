@@ -4,6 +4,7 @@
 #include "actor_list.h"
 #include "inventory.h"
 #include "item.h"
+#include "item_defs.h"
 #include "map.h"
 #include "map_file.h"
 #include "map_link.h"
@@ -61,6 +62,8 @@ void LoadActorsFromFile(FILE* file, struct Map* map, struct ActorList* actors)
             itemName[nameLen] = '\0';
 
             struct Item* item = CreateItem(itemName);
+
+            LoadItemDefinition(item);
 
             AddInventoryItem(actor->Inventory, item);
 
