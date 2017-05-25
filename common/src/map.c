@@ -95,6 +95,14 @@ int GetTileCount(const struct Map* map)
 }
 
 //  ---------------------------------------------------------------------------
+size_t GetTileIndex(const struct Map* map, struct Tile* tile)
+{
+    assert(map != NULL);
+    assert(tile != NULL);
+    return tile->Y * map->Width + tile->X;
+}
+
+//  ---------------------------------------------------------------------------
 int InBounds(const struct Map* map, const int x, const int y)
 {
     assert(map != NULL);

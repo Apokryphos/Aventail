@@ -1,9 +1,11 @@
 #include "world.h"
 #include "actor.h"
 #include "actor_list.h"
+#include "a_star.h"
 #include "audio.h"
 #include "inventory.h"
 #include "map.h"
+#include "point.h"
 #include "tile.h"
 #include "game_state_transition.h"
 #include <assert.h>
@@ -247,6 +249,22 @@ static void ResetActionPoints(struct World* world)
 //  ---------------------------------------------------------------------------
 void SimulateWorld(struct Game* game, struct World* world)
 {
+    static struct Map* lastMap = NULL;
+    static struct AStar* aStar = NULL;
+
+    if (lastMap != world->Map && world != NULL)
+    {
+        lastMap = world->Map;
+        
+        if (aStar != NULL)
+        {
+            DestroyAStar(&aStar);
+            aStar = NULL;
+        }
+
+        aStar = CreateAStar(world->Map);
+    }
+
     if (ActiveActor == NULL)
     {
         ActiveActor = world->Player.Actor;
@@ -257,7 +275,33 @@ void SimulateWorld(struct Game* game, struct World* world)
     {
         if (ActiveActor->Type == ACTOR_TYPE_VILLAIN)
         {
-            ActiveActor->MoveDirection = GetRandomDirection();
+            struct AStarPath* path = BuildAStarPath(
+                aStar,
+                ActiveActor->Tile,
+                world->Player.Actor->Tile,
+                world->Map,
+                world->Actors);
+
+            if (path == NULL)
+            {
+                ActiveActor->MoveDirection = GetRandomDirection();
+            }
+            else
+            {
+                struct Point* nextPoint =
+                    GetNextPathPoint(path, ActiveActor->Tile);
+
+                if (nextPoint != NULL)
+                {
+                    ActiveActor->MoveDirection = GetDirectionByDelta(
+                        ActiveActor->Tile->X,
+                        ActiveActor->Tile->Y,
+                        nextPoint->X,
+                        nextPoint->Y);
+                }
+
+                DestroyAStarPath(&path);
+            }
         }
 
         if (ActiveActor->ActionPoints > 0)

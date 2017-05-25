@@ -2,6 +2,7 @@
 #define MAP_HEADER_INCLUDED
 
 #include "direction.h"
+#include <stddef.h>
 
 struct Tile;
 
@@ -26,6 +27,7 @@ struct Tile* GetNeighbor(
     const enum Direction direction);
 struct Tile* GetTile(const struct Map* map, const int x, const int y);
 int GetTileCount(const struct Map* map);
+size_t GetTileIndex(const struct Map* map, struct Tile* tile);
 int InBounds(const struct Map* map, const int x, const int y);
 
 #endif

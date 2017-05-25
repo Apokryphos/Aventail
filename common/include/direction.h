@@ -11,6 +11,11 @@ enum Direction
 };
 
 void GetDelta(const enum Direction direction, int* dx, int* dy);
+const enum Direction GetDirectionByDelta(
+    int startX,
+    int startY,
+    int destX,
+    int destY);
 enum Direction GetOppositeDirection(const enum Direction direction);
 enum Direction GetRandomDirection();
 

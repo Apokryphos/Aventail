@@ -35,6 +35,51 @@ void GetDelta(const enum Direction direction, int* dx, int* dy)
 }
 
 //  ---------------------------------------------------------------------------
+const enum Direction GetDirectionByDelta(
+    int startX,
+    int startY,
+    int destX,
+    int destY)
+{
+    int dx = destX - startX;
+    int dy = destY - startY;
+
+    if (dx == 0)
+    {
+        if (dy == 0)
+        {
+            return DIRECTION_NONE;
+        }
+        else if (dy < 0)
+        {
+            return DIRECTION_UP;
+        }
+        else 
+        {
+            return DIRECTION_DOWN;
+        }
+    }
+    else if (dy == 0)
+    {
+        if (dx == 0)
+        {
+            return DIRECTION_NONE;
+        }
+        else if (dx < 0)
+        {
+            return DIRECTION_LEFT;
+        }
+        else 
+        {
+            return DIRECTION_RIGHT;
+        }
+    }
+
+    //  Diagonals not supported
+    return DIRECTION_NONE;
+}
+
+//  ---------------------------------------------------------------------------
 enum Direction GetOppositeDirection(const enum Direction direction)
 {
     switch (direction)
