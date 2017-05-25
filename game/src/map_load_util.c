@@ -1,4 +1,5 @@
 #include "actor.h"
+#include "actor_defs.h"
 #include "actor_funcs.h"
 #include "actor_list.h"
 #include "inventory.h"
@@ -80,6 +81,8 @@ void LoadActorsFromFile(FILE* file, struct Map* map, struct ActorList* actors)
         }
 
         actor->Cash = cash;
+
+        LoadActorDefinition(actor);
 
         printf(
             "[Actor] NAME: %s GID: %d POS: %d, %d COL: %d TYPE: %d CASH: %d ITEMS: %zu\n",

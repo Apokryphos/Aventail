@@ -2,6 +2,7 @@
 #include "direction.h"
 #include "inventory.h"
 #include "map.h"
+#include "stats.h"
 #include <assert.h>
 #include <stdlib.h>
 #include <string.h>
@@ -38,6 +39,9 @@ struct Actor* CreateActor(
     actor->MaxHealth = 100;
     actor->Health = actor->MaxHealth;
     actor->Cash = 0;
+    actor->Stats.Attack = 0;
+    actor->Stats.Defend = 0;
+
     return actor;
 }
 

@@ -3,6 +3,7 @@
 
 #include "actor_type.h"
 #include "direction.h"
+#include "stats.h"
 
 struct Actor;
 struct Map;
@@ -27,6 +28,7 @@ struct Actor
     struct Inventory* Inventory;
     struct Map* Map;
     struct Tile* Tile;
+    struct Stats Stats;
 };
 
 struct Actor* CreateActor(

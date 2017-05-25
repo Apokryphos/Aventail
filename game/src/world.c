@@ -1,5 +1,6 @@
 #include "world.h"
 #include "actor.h"
+#include "actor_defs.h"
 #include "actor_list.h"
 #include "a_star.h"
 #include "audio.h"
@@ -27,7 +28,13 @@ static void Attack(struct Actor* source, struct Actor* target, struct World* wor
 
         --source->ActionPoints;
 
-        target->Health -= 50;
+        int damage = 1;
+        if (source->Stats.Attack > target->Stats.Defend)
+        {
+            damage = (source->Stats.Attack - target->Stats.Defend) + 1;
+        }
+
+        target->Health -= damage;
 
         if (target->Health <= 0)
         {
@@ -77,6 +84,7 @@ struct Actor* CreatePlayerActor(struct World* world)
 
     struct Actor* actor = CreateActor(NULL, "Player", -1, -1, 190);
     actor->Type = ACTOR_TYPE_PLAYER;
+    LoadPlayerDefinition(actor);
     AddActorToFront(world->Actors, actor);
     world->Player.Actor = actor;
 
