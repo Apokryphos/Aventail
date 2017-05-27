@@ -204,7 +204,9 @@ static int GetItemTypeIconTilesetId(enum ItemType itemType)
 //  ---------------------------------------------------------------------------
 static struct Panel* CreateItemTypePanel(enum ItemType itemType)
 {
-    struct Panel* panel = CreatePanel(NULL, PANEL_BORDER_STYLE_1);
+    struct Panel* panel = CreatePanel(
+        GetItemTypeCategoryString(itemType),
+        PANEL_BORDER_STYLE_1);
 
     panel->Width = 24;
     panel->Height = 24;
@@ -223,13 +225,14 @@ static void InitInventoryGuiScreen(SDL_Renderer* renderer)
     for (int t = 0; t < ITEM_TYPE_COUNT; ++t)
     {
         struct Panel* panel = CreateItemTypePanel((enum ItemType)t);
-        panel->X = 16 + (t * panel->Width);
-        panel->Y = 16;
+        panel->X = 42 + (t * panel->Width);
+        panel->Y = 32;
         ItemTypePanels[t] = panel;
         AddGuiScreenPanel(InventoryGuiScreen, panel);
     }
 
     InventoryWidget = CreateInventoryWidget(InventoryGuiScreen);
+    InventoryWidget->Panel->ShowTitle = 0;
 
     //SDL_Rect viewport;
     //SDL_RenderGetViewport(renderer, &viewport);
@@ -295,6 +298,13 @@ void InventoryGameStateUpdate(struct Game* game)
 
     InventoryWidget->ItemType = SelectedItemType;
     UpdateInventoryWidget(InventoryWidget, actor->Inventory);
+
+    struct Panel* selectedPanel = GetSelectedItemTypePanel();
+    for (int p = 0; p < ITEM_TYPE_COUNT; ++p)
+    {
+        struct Panel* panel = ItemTypePanels[p];
+        panel->ShowTitle = panel == selectedPanel;
+    }
 
     UpdateCursor();
 }

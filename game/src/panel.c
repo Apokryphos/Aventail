@@ -20,6 +20,7 @@ struct Panel* CreatePanel(const char* title, enum PanelBorderStyle style)
     panel->Background = 0;
     panel->Width = 0;
     panel->Height = 0;
+    panel->ShowTitle = 1;
     panel->X = 0;
     panel->Y = 0;
     panel->Title = title != NULL ? strdup(title): NULL;

@@ -24,22 +24,40 @@ struct StatusWidget* CreateStatusWidget(struct GuiScreen* guiScreen)
 
     widget->NamePanel = CreatePanel(NULL, PANEL_BORDER_STYLE_NONE);
     widget->NamePanel->Width = 8;
-    widget->NamePanel->Height = 8;
+    widget->NamePanel->Height = 16;
     AddGuiScreenPanel(guiScreen, widget->NamePanel);
 
     widget->HealthGaugePanel = CreatePanel(NULL, PANEL_BORDER_STYLE_NONE);
     widget->HealthGaugePanel->Width = 8;
-    widget->HealthGaugePanel->Height = 8;
+    widget->HealthGaugePanel->Height = 16;
     AddGuiScreenPanel(guiScreen, widget->HealthGaugePanel);
+
+    widget->AttackPanel = CreatePanel(NULL, PANEL_BORDER_STYLE_NONE);
+    widget->AttackPanel->Width = 8;
+    widget->AttackPanel->Height = 16;
+    AddGuiScreenPanel(guiScreen, widget->AttackPanel);
+
+    widget->DefendPanel = CreatePanel(NULL, PANEL_BORDER_STYLE_NONE);
+    widget->DefendPanel->Width = 8;
+    widget->DefendPanel->Height = 16;
+    AddGuiScreenPanel(guiScreen, widget->DefendPanel);
+
+    widget->VitalityPanel = CreatePanel(NULL, PANEL_BORDER_STYLE_NONE);
+    widget->VitalityPanel->Width = 8;
+    widget->VitalityPanel->Height = 16;
+    AddGuiScreenPanel(guiScreen, widget->VitalityPanel);
 
     widget->CashPanel = CreatePanel(NULL, PANEL_BORDER_STYLE_NONE);
     widget->CashPanel->Width = 8;
-    widget->CashPanel->Height = 8;
+    widget->CashPanel->Height = 16;
     AddGuiScreenPanel(guiScreen, widget->CashPanel);
 
     widget->ActorName = NULL;
     widget->HealthGaugeString = CreateGuiGaugeString();
     widget->CashIntString = CreateGuiIntString();
+    widget->AttackIntString = CreateGuiIntString();
+    widget->DefendIntString = CreateGuiIntString();
+    widget->VitalityIntString = CreateGuiIntString();
 
     return widget;
 }
@@ -58,10 +76,19 @@ void SetStatusWidgetPosition(struct StatusWidget* widget, int x, int y)
     widget->NamePanel->Y = widget->Panel->Y + 16;
 
     widget->HealthGaugePanel->X = left;
-    widget->HealthGaugePanel->Y = widget->NamePanel->Y + widget->NamePanel->Height + 8;
+    widget->HealthGaugePanel->Y = widget->NamePanel->Y + widget->NamePanel->Height * 2;
+
+    widget->AttackPanel->X = left;
+    widget->AttackPanel->Y = widget->HealthGaugePanel->Y + widget->HealthGaugePanel->Height * 2;
+
+    widget->DefendPanel->X = left;
+    widget->DefendPanel->Y = widget->AttackPanel->Y + widget->AttackPanel->Height;
+
+    widget->VitalityPanel->X = left;
+    widget->VitalityPanel->Y = widget->DefendPanel->Y + widget->DefendPanel->Height;
 
     widget->CashPanel->X = left;
-    widget->CashPanel->Y = widget->HealthGaugePanel->Y + widget->HealthGaugePanel->Height + 8;
+    widget->CashPanel->Y = widget->VitalityPanel->Y + widget->VitalityPanel->Height * 2;
 }
 
 //  ---------------------------------------------------------------------------
@@ -88,4 +115,13 @@ void UpdateStatusWidget(struct StatusWidget* widget, struct Actor* actor)
 
     SetGuiIntString(widget->CashIntString, "Cash", actor->Cash);
     widget->CashPanel->Text = widget->CashIntString->String;
+
+    SetGuiIntString(widget->AttackIntString, "Attack", actor->Stats.Attack);
+    widget->AttackPanel->Text = widget->AttackIntString->String;
+
+    SetGuiIntString(widget->DefendIntString, "Defend", actor->Stats.Defend);
+    widget->DefendPanel->Text = widget->DefendIntString->String;
+
+    SetGuiIntString(widget->VitalityIntString, "Vitality", actor->Stats.Vitality);
+    widget->VitalityPanel->Text = widget->VitalityIntString->String;
 }

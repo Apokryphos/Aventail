@@ -15,6 +15,12 @@ struct StatusWidget
     struct GuiGaugeString* HealthGaugeString;
     struct Panel* CashPanel;
     struct GuiIntString* CashIntString;
+    struct Panel* AttackPanel;
+    struct GuiIntString* AttackIntString;
+    struct Panel* DefendPanel;
+    struct GuiIntString* DefendIntString;
+    struct Panel* VitalityPanel;
+    struct GuiIntString* VitalityIntString;
 };
 
 struct StatusWidget* CreateStatusWidget(struct GuiScreen* guiScreen);

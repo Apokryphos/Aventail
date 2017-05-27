@@ -13,4 +13,6 @@ enum ItemType
     ITEM_TYPE_ACCESSORY,
 };
 
+const char* GetItemTypeCategoryString(const enum ItemType itemType);
+
 #endif

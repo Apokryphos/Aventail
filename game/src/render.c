@@ -18,7 +18,7 @@ static struct Tileset GuiTileset;
 static struct Tileset MapTileset;
 
 void DrawText(
-    SDL_Renderer* renderer, 
+    SDL_Renderer* renderer,
     const char* text,
     const int x,
     const int y);
@@ -57,8 +57,8 @@ void DrawScreenFade(SDL_Renderer* renderer, float progress)
 
 //  ---------------------------------------------------------------------------
 void DrawMap(
-    SDL_Renderer* renderer, 
-    const struct Map* map, 
+    SDL_Renderer* renderer,
+    const struct Map* map,
     const struct ActorList* actors)
 {
     assert(renderer != NULL);
@@ -83,7 +83,7 @@ void DrawMap(
             }
 
             GetTilesetRect(&MapTileset, tilesetId, &sourceRect);
-            
+
             destRect.x = x * destRect.w;
             destRect.y = y * destRect.h;
             SDL_RenderCopy(renderer, MapTileset.Texture, &sourceRect, &destRect);
@@ -101,7 +101,7 @@ void DrawMap(
 
             destRect.x = actor->Tile->X * destRect.w;
             destRect.y = actor->Tile->Y * destRect.h;
-            SDL_RenderCopy(renderer, MapTileset.Texture, &sourceRect, &destRect);  
+            SDL_RenderCopy(renderer, MapTileset.Texture, &sourceRect, &destRect);
         }
 
         actorNode = actorNode->Previous;
@@ -336,7 +336,7 @@ void DrawPanel(SDL_Renderer* renderer, const struct Panel* panel)
         return;
     }
 
-    if (panel->Title != NULL)
+    if (panel->ShowTitle && panel->Title != NULL)
     {
         DrawPanelTitle(renderer, panel, panel->Title);
     }
@@ -397,7 +397,7 @@ void DrawPanel(SDL_Renderer* renderer, const struct Panel* panel)
 
 //  ---------------------------------------------------------------------------
 void DrawText(
-    SDL_Renderer* renderer, 
+    SDL_Renderer* renderer,
     const char* text,
     const int x,
     const int y)
@@ -406,11 +406,11 @@ void DrawText(
     assert(text != NULL);
     assert(FontTileset.Texture != NULL);
 
-    SDL_Rect destRect = 
-    { 
-        .x = x, 
-        .y = y, 
-        .w = FontTileset.TileWidth, 
+    SDL_Rect destRect =
+    {
+        .x = x,
+        .y = y,
+        .w = FontTileset.TileWidth,
         .h = FontTileset.TileHeight
     };
     SDL_Rect sourceRect;
@@ -431,7 +431,7 @@ void DrawText(
 
 //  ---------------------------------------------------------------------------
 void DrawTextAlpha(
-    SDL_Renderer* renderer, 
+    SDL_Renderer* renderer,
     const char* text,
     const int x,
     const int y,

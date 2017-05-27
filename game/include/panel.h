@@ -38,6 +38,7 @@ struct Panel
     int Alpha;
     int Width;
     int Height;
+    int ShowTitle;
     int X;
     int Y;
     struct PanelIcon Icon;
