@@ -2,9 +2,10 @@
 #include "game_state.h"
 #include "gui.h"
 #include "gui_screen.h"
-#include "input.h"
+#include "input_device.h"
 #include "render.h"
 #include "world.h"
+#include <stdlib.h>
 
 struct GuiScreen* StatusGuiScreen = NULL;
 

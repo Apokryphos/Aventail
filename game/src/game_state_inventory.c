@@ -2,7 +2,7 @@
 #include "game.h"
 #include "gui.h"
 #include "gui_screen.h"
-#include "input.h"
+#include "input_device.h"
 #include "inventory.h"
 #include "inventory_widget.h"
 #include "item.h"

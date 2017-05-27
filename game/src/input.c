@@ -1,4 +1,4 @@
-#include "input.h"
+#include "input_device.h"
 #include <SDL2/SDL.h>
 
 //  ---------------------------------------------------------------------------

@@ -5,6 +5,7 @@
 #include "game_state_transition.h"
 #include "gui.h"
 #include "input.h"
+#include "input_device.h"
 #include "map.h"
 #include "map_link.h"
 #include "paths.h"
@@ -39,11 +40,11 @@ void GameInit(struct Game* game, int width, int height)
     if (AudioInit(game) != 0)
     {
   		printf("SDL2_mixer failed to initialize: %sn", Mix_GetError());
-		exit(1);      
+		exit(1);
     }
 
     game->Window = SDL_CreateWindow(
-        "Aventail", 
+        "Aventail",
         SDL_WINDOWPOS_UNDEFINED,
         SDL_WINDOWPOS_UNDEFINED,
         width,
@@ -93,7 +94,7 @@ void GameMain()
     }
 
     game.World = CreateWorld();
-    
+
     CreatePlayerActor(game.World);
 
     BeginMapLoadTransition(&game, "map01");
@@ -111,7 +112,7 @@ void GameMain()
 
         UpdateInput(game.InputDevice);
         game.Quit = game.InputDevice->Quit;
-        
+
         UpdateGameState(&game);
 
         GuiUpdate(&game);

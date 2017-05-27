@@ -3,7 +3,7 @@
 #include "actor_list.h"
 #include "gui.h"
 #include "inventory.h"
-#include "input.h"
+#include "input_device.h"
 #include "item.h"
 #include "map.h"
 #include "tile.h"
