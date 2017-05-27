@@ -46,6 +46,10 @@ void ProcessLevelGameStateInput(struct Game* game)
     {
         game->State = GAME_STATE_INVENTORY;
     }
+    else if (inputDevice->Status)
+    {
+        game->State = GAME_STATE_STATUS;
+    }
 
     if (inputDevice->DebugKillPlayerActor)
     {
@@ -66,7 +70,7 @@ int CursorOverActor(struct Actor* actor)
         SDL_Rect rect;
         GetTileRect(actor->Map, actor->Tile, &rect, 1);
 
-        return 
+        return
             CursorX >= rect.x &&
             CursorX <= rect.x + rect.w &&
             CursorY >= rect.y &&
@@ -83,7 +87,7 @@ void LevelGameStateDraw(struct Game* game, int inTransition)
     {
         DrawMap(game->Renderer, game->World->Map, game->World->Actors);
     }
-    
+
     GuiDraw(game);
 
     if (inTransition)
@@ -204,22 +208,22 @@ void LevelGameStateDraw(struct Game* game, int inTransition)
             alpha);
 
         DrawTextAlpha(
-            game->Renderer, 
-            HoverActorHealthString, 
-            destRect.x + padding / 2, 
+            game->Renderer,
+            HoverActorHealthString,
+            destRect.x + padding / 2,
             destRect.y + lineHeight + padding / 2,
             alpha);
 
         if (HoverActorType == ACTOR_TYPE_PLAYER)
         {
             DrawTextAlpha(
-                game->Renderer, 
-                HoverActorCashString, 
-                destRect.x + padding / 2, 
+                game->Renderer,
+                HoverActorCashString,
+                destRect.x + padding / 2,
                 destRect.y + lineHeight + lineHeight + padding / 2,
                 alpha);
         }
-        
+
         SDL_SetRenderDrawColor(game->Renderer, 0, 0, 0, 255);
 
         if (alpha != 255)

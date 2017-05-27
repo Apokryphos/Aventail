@@ -154,6 +154,10 @@ static void ProcessInventoryGameStateInput(struct Game* game)
     {
         ExitInventoryGameState(game, GAME_STATE_GEAR);
     }
+    else if (inputDevice->Status)
+    {
+        ExitInventoryGameState(game, GAME_STATE_STATUS);
+    }
     else
     {
         switch (InventoryGuiState)

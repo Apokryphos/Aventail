@@ -14,6 +14,7 @@ struct InputDevice
     int Inventory;
     int Gear;
     int Remove;
+    int Status;
     int Quit;
     int DebugKillPlayerActor;
 };

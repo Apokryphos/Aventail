@@ -160,9 +160,13 @@ static void ProcessInventoryGameStateInput(struct Game* game)
     {
         ExitGearGameState(game, GAME_STATE_LEVEL);
     }
-    if (inputDevice->Inventory)
+    else if (inputDevice->Inventory)
     {
         ExitGearGameState(game, GAME_STATE_INVENTORY);
+    }
+    else if (inputDevice->Status)
+    {
+        ExitGearGameState(game, GAME_STATE_STATUS);
     }
     else
     {
@@ -256,7 +260,7 @@ static struct GearSlotWidget* GetSelectedGearSlotGui()
 }
 
 //  ---------------------------------------------------------------------------
-static void UpdateGearSlotCursor()
+static void UpdateCursor()
 {
     if (GearGuiState == GUI_STATE_SELECT_GEAR_SLOT)
     {
@@ -321,5 +325,5 @@ void GearGameStateUpdate(struct Game* game)
     InventoryWidget->ItemType = GetSelectedGearSlotItemType();
     UpdateInventoryWidget(InventoryWidget, actor->Inventory);
 
-    UpdateGearSlotCursor();
+    UpdateCursor();
 }
