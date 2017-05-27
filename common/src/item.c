@@ -1,4 +1,5 @@
 #include "item.h"
+#include <assert.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -19,8 +20,15 @@ struct Item* CreateItem(const char* name)
 //  ---------------------------------------------------------------------------
 void DestroyItem(struct Item** item)
 {
-    if (*item == NULL)
+    assert(*item != NULL);
+
+    if (*item != NULL)
     {
+        if ((*item)->Name != NULL)
+        {
+            free((*item)->Name);
+        }
+
         free(*item);
         *item = NULL;
     }

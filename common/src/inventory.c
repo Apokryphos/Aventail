@@ -46,7 +46,7 @@ void DestroyInventory(struct Inventory** inventory)
         {
             if ((*inventory)->Items[n] != NULL)
             {
-                free((*inventory)->Items[n]);
+                DestroyItem(&(*inventory)->Items[n]);
             }
         }
 
