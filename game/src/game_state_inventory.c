@@ -20,20 +20,24 @@ enum GuiState
     GUI_STATE_SELECT_INVENTORY_ITEM_SLOT,
 };
 
+/*
+    The currently selected ItemType used to filter the InventoryWidget's display
+*/
 static enum ItemType SelectedItemType = ITEM_TYPE_NONE;
+static enum GuiState InventoryGuiState = GUI_STATE_SELECT_ITEM_TYPE;
 
 static struct GuiScreen* InventoryGuiScreen = NULL;
 static struct Panel* ItemTypePanels[ITEM_TYPE_COUNT];
 static struct InventoryWidget* InventoryWidget = NULL;
 
-static enum GuiState InventoryGuiState = GUI_STATE_SELECT_ITEM_TYPE;
-
 //  ---------------------------------------------------------------------------
-static void ExitInventoryGameState(struct Game* game)
+static void ExitInventoryGameState(
+    struct Game* game,
+    enum GameState gameState)
 {
     SelectedItemType = ITEM_TYPE_NONE;
-    InventoryWidget->SelectedSlotIndex = 0;
-    game->State = GAME_STATE_LEVEL;
+    InventoryWidget->SelectedItemIndex = 0;
+    game->State = gameState;
     DeactivateGui();
     InventoryGuiScreen->Enabled = 0;
 }
@@ -84,12 +88,12 @@ static void ProcessSelectItemTypeStateInput(struct Game* game)
         if (InventoryWidget->ItemCount > 0)
         {
             InventoryGuiState = GUI_STATE_SELECT_INVENTORY_ITEM_SLOT;
-            InventoryWidget->SelectedSlotIndex = 0;
+            InventoryWidget->SelectedItemIndex = 0;
         }
     }
     else if (inputDevice->Cancel)
     {
-        ExitInventoryGameState(game);
+        ExitInventoryGameState(game, GAME_STATE_LEVEL);
     }
     else if (inputDevice->MoveDirection == DIRECTION_RIGHT)
     {
@@ -105,25 +109,25 @@ static void ProcessSelectItemTypeStateInput(struct Game* game)
 static void ProcessSelectInventoryItemSlotStateInput(struct Game* game)
 {
     assert(InventoryGuiState == GUI_STATE_SELECT_INVENTORY_ITEM_SLOT);
-    
+
     struct InputDevice* inputDevice = game->InputDevice;
-    
+
     if (inputDevice->Cancel)
     {
-        InventoryWidget->SelectedSlotIndex = 0;
+        InventoryWidget->SelectedItemIndex = 0;
         InventoryGuiState = GUI_STATE_SELECT_ITEM_TYPE;
-    } 
+    }
     else if (inputDevice->Accept)
     {
         if (InventoryWidget->ItemCount > 0)
         {
             // struct Actor* actor = game->World->Player.Actor;
-            //struct Item* item = InventoryWidget->Items[InventoryWidget->SelectedSlotIndex];
+            //struct Item* item = InventoryWidget->Items[InventoryWidget->SelectedItemIndex];
             // EquipItem(actor, item);
             // RemoveInventoryItem(actor->Inventory, item);
             // UpdateInventoryWidget(InventoryWidget, actor->Inventory);
 
-            // InventoryWidget->SelectedSlotIndex = 0;
+            // InventoryWidget->SelectedItemIndex = 0;
             // InventoryGuiState = GUI_STATE_SELECT_GEAR_SLOT;
         }
     }
@@ -144,7 +148,11 @@ static void ProcessInventoryGameStateInput(struct Game* game)
 
     if (inputDevice->Inventory)
     {
-        ExitInventoryGameState(game);
+        ExitInventoryGameState(game, GAME_STATE_LEVEL);
+    }
+    else if (inputDevice->Gear)
+    {
+        ExitInventoryGameState(game, GAME_STATE_GEAR);
     }
     else
     {
@@ -199,7 +207,7 @@ static struct Panel* CreateItemTypePanel(enum ItemType itemType)
     panel->Background = 1;
     panel->Icon.Style = PANEL_ICON_STYLE_NORMAL;
     panel->Icon.TilesetId = GetItemTypeIconTilesetId(itemType);
- 
+
     return panel;
 }
 
@@ -233,8 +241,10 @@ static struct Panel* GetSelectedItemTypePanel()
 }
 
 //  ---------------------------------------------------------------------------
-static void UpdateItemTypeCursor()
+static void UpdateCursor()
 {
+    EnableCursor(1);
+
     if (InventoryGuiState == GUI_STATE_SELECT_ITEM_TYPE)
     {
         struct Panel* selectedPanel = GetSelectedItemTypePanel();
@@ -245,7 +255,7 @@ static void UpdateItemTypeCursor()
     }
     else if (InventoryGuiState == GUI_STATE_SELECT_INVENTORY_ITEM_SLOT)
     {
-        assert(InventoryWidget->SelectedSlotIndex < MaxInventoryItems);
+        assert(InventoryWidget->SelectedItemIndex < MaxInventoryItems);
 
         assert(InventoryWidget->SelectedItemSlotWidget != NULL);
         assert(InventoryWidget->SelectedItemSlotWidget->ItemIconPanel != NULL);
@@ -265,17 +275,16 @@ void InventoryGameStateUpdate(struct Game* game)
 
     InventoryGuiScreen->Enabled = 1;
 
-    if (InventoryWidget->SelectedSlotIndex > InventoryWidget->ItemCount -1)
+    if (InventoryWidget->SelectedItemIndex > InventoryWidget->ItemCount -1)
     {
-        InventoryWidget->SelectedSlotIndex = InventoryWidget->ItemCount -1;
+        InventoryWidget->SelectedItemIndex = InventoryWidget->ItemCount -1;
     }
-    if (InventoryWidget->SelectedSlotIndex < 0)
+    if (InventoryWidget->SelectedItemIndex < 0)
     {
-        InventoryWidget->SelectedSlotIndex = 0;
+        InventoryWidget->SelectedItemIndex = 0;
     }
 
     ActivateGui();
-    EnableCursor(1);
     ProcessInventoryGameStateInput(game);
 
     struct Actor* actor = game->World->Player.Actor;
@@ -283,5 +292,5 @@ void InventoryGameStateUpdate(struct Game* game)
     InventoryWidget->ItemType = SelectedItemType;
     UpdateInventoryWidget(InventoryWidget, actor->Inventory);
 
-    UpdateItemTypeCursor();
+    UpdateCursor();
 }

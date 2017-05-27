@@ -30,6 +30,7 @@ struct GearSlotWidget
 static const int GearSlotCount = 4;
 
 static int SelectedGearSlot = 0;
+static enum GuiState GearGuiState = GUI_STATE_SELECT_GEAR_SLOT;
 
 static struct GuiScreen* GearGuiScreen = NULL;
 static struct GearSlotWidget WeaponSlotWidget;
@@ -37,8 +38,6 @@ static struct GearSlotWidget ArmorSlotWidget;
 static struct GearSlotWidget ShieldSlotWidget;
 static struct GearSlotWidget AccessorySlotWidget;
 static struct InventoryWidget* InventoryWidget = NULL;
-
-static enum GuiState GearGuiState = GUI_STATE_SELECT_GEAR_SLOT;
 
 //  ---------------------------------------------------------------------------
 static enum ItemType GetSelectedGearSlotItemType()
@@ -58,11 +57,13 @@ static enum ItemType GetSelectedGearSlotItemType()
 }
 
 //  ---------------------------------------------------------------------------
-static void ExitGearGameState(struct Game* game)
+static void ExitGearGameState(
+    struct Game* game,
+    enum GameState gameState)
 {
     SelectedGearSlot = 0;
-    InventoryWidget->SelectedSlotIndex = 0;
-    game->State = GAME_STATE_LEVEL;
+    InventoryWidget->SelectedItemIndex = 0;
+    game->State = gameState;
     DeactivateGui();
     GearGuiScreen->Enabled = 0;
 }
@@ -86,12 +87,12 @@ static void ProcessSelectGearSlotStateInput(struct Game* game)
         if (InventoryWidget->ItemCount > 0)
         {
             GearGuiState = GUI_STATE_SELECT_INVENTORY_ITEM_SLOT;
-            InventoryWidget->SelectedSlotIndex = 0;
+            InventoryWidget->SelectedItemIndex = 0;
         }
     }
     else if (inputDevice->Cancel)
     {
-        ExitGearGameState(game);
+        ExitGearGameState(game, GAME_STATE_LEVEL);
     }
     else if (inputDevice->MoveDirection == DIRECTION_DOWN)
     {
@@ -115,26 +116,26 @@ static void ProcessSelectGearSlotStateInput(struct Game* game)
 static void ProcessSelectInventoryItemSlotStateInput(struct Game* game)
 {
     assert(GearGuiState == GUI_STATE_SELECT_INVENTORY_ITEM_SLOT);
-    
+
     struct InputDevice* inputDevice = game->InputDevice;
-    
+
     if (inputDevice->Cancel)
     {
-        InventoryWidget->SelectedSlotIndex = 0;
+        InventoryWidget->SelectedItemIndex = 0;
         GearGuiState = GUI_STATE_SELECT_GEAR_SLOT;
-    } 
+    }
 
     if (inputDevice->Accept)
     {
         if (InventoryWidget->ItemCount > 0)
         {
             struct Actor* actor = game->World->Player.Actor;
-            struct Item* item = InventoryWidget->Items[InventoryWidget->SelectedSlotIndex];
+            struct Item* item = InventoryWidget->Items[InventoryWidget->SelectedItemIndex];
             EquipItem(actor, item);
             RemoveInventoryItem(actor->Inventory, item);
             UpdateInventoryWidget(InventoryWidget, actor->Inventory);
 
-            InventoryWidget->SelectedSlotIndex = 0;
+            InventoryWidget->SelectedItemIndex = 0;
             GearGuiState = GUI_STATE_SELECT_GEAR_SLOT;
         }
     }
@@ -157,7 +158,11 @@ static void ProcessInventoryGameStateInput(struct Game* game)
 
     if (inputDevice->Gear)
     {
-        ExitGearGameState(game);
+        ExitGearGameState(game, GAME_STATE_LEVEL);
+    }
+    if (inputDevice->Inventory)
+    {
+        ExitGearGameState(game, GAME_STATE_INVENTORY);
     }
     else
     {
@@ -235,7 +240,7 @@ static void InitGearGuiScreen(SDL_Renderer* renderer)
 static struct GearSlotWidget* GetSelectedGearSlotGui()
 {
     assert(SelectedGearSlot < 4);
-        
+
     switch (SelectedGearSlot)
     {
         default:
@@ -256,7 +261,7 @@ static void UpdateGearSlotCursor()
     if (GearGuiState == GUI_STATE_SELECT_GEAR_SLOT)
     {
         assert(SelectedGearSlot < 4);
-        
+
         struct GearSlotWidget* selectedGearSlot = GetSelectedGearSlotGui();
 
         SetCursorPosition(
@@ -265,7 +270,7 @@ static void UpdateGearSlotCursor()
     }
     else if (GearGuiState == GUI_STATE_SELECT_INVENTORY_ITEM_SLOT)
     {
-        assert(InventoryWidget->SelectedSlotIndex < MaxInventoryItems);
+        assert(InventoryWidget->SelectedItemIndex < MaxInventoryItems);
 
         assert(InventoryWidget->SelectedItemSlotWidget != NULL);
         assert(InventoryWidget->SelectedItemSlotWidget->ItemIconPanel != NULL);
@@ -294,13 +299,13 @@ void GearGameStateUpdate(struct Game* game)
     GearGuiScreen->Enabled = 1;
 
     assert(SelectedGearSlot >= 0 && SelectedGearSlot < 4);
-    if (InventoryWidget->SelectedSlotIndex > InventoryWidget->ItemCount -1)
+    if (InventoryWidget->SelectedItemIndex > InventoryWidget->ItemCount -1)
     {
-        InventoryWidget->SelectedSlotIndex = InventoryWidget->ItemCount -1;
+        InventoryWidget->SelectedItemIndex = InventoryWidget->ItemCount -1;
     }
-    if (InventoryWidget->SelectedSlotIndex < 0)
+    if (InventoryWidget->SelectedItemIndex < 0)
     {
-        InventoryWidget->SelectedSlotIndex = 0;
+        InventoryWidget->SelectedItemIndex = 0;
     }
 
     ActivateGui();

@@ -15,12 +15,12 @@ struct InventoryWidget* CreateInventoryWidget(struct GuiScreen* guiScreen)
 
     widget->ItemType = ITEM_TYPE_NONE;
     widget->ItemCount = 0;
-    widget->SelectedSlotIndex = 0;
+    widget->SelectedItemIndex = 0;
     widget->SelectedItemSlotWidget = NULL;
 
     widget->Panel = CreatePanel("Inventory", PANEL_BORDER_STYLE_2);
     widget->Panel->Width = 196;
-    widget->Panel->Height = INVENTORY_WIDGET_MAX_VISIBLE_ITEMS * 40;//280;
+    widget->Panel->Height = INVENTORY_WIDGET_MAX_VISIBLE_ITEMS * 40;
     widget->Panel->Background = 1;
     AddGuiScreenPanel(guiScreen, widget->Panel);
 
@@ -82,13 +82,13 @@ void SelectNextInventoryWidgetItemSlot(struct InventoryWidget* widget)
 {
     if (widget->ItemCount > 0)
     {
-        if (widget->SelectedSlotIndex < widget->ItemCount - 1)
+        if (widget->SelectedItemIndex < widget->ItemCount - 1)
         {
-            ++widget->SelectedSlotIndex;
+            ++widget->SelectedItemIndex;
         }
         else
         {
-            widget->SelectedSlotIndex = 0;
+            widget->SelectedItemIndex = 0;
         }
     }
 }
@@ -98,13 +98,13 @@ void SelectPreviousInventoryWidgetItemSlot(struct InventoryWidget* widget)
 {
     if (widget->ItemCount > 0)
     {
-        if (widget->SelectedSlotIndex > 0)
+        if (widget->SelectedItemIndex > 0)
         {
-            --widget->SelectedSlotIndex;
+            --widget->SelectedItemIndex;
         }
         else
         {
-            widget->SelectedSlotIndex = widget->ItemCount - 1;
+            widget->SelectedItemIndex = widget->ItemCount - 1;
         }
     }
 }
@@ -115,23 +115,23 @@ void SetInventoryWidgetPosition(struct InventoryWidget* widget, int x, int y)
     widget->Panel->X = x;
     widget->Panel->Y = y;
 
-    widget->ScrollArrowBottomPanel->X = 
-        widget->Panel->X + 
-        widget->Panel->Width / 2 - 
+    widget->ScrollArrowBottomPanel->X =
+        widget->Panel->X +
+        widget->Panel->Width / 2 -
         widget->ScrollArrowBottomPanel->Width / 2;
 
-    widget->ScrollArrowBottomPanel->Y = 
-        widget->Panel->Y + 
-        widget->Panel->Height - 
+    widget->ScrollArrowBottomPanel->Y =
+        widget->Panel->Y +
+        widget->Panel->Height -
         widget->ScrollArrowBottomPanel->Height * 2 + 2;
 
-    widget->ScrollArrowTopPanel->X = 
+    widget->ScrollArrowTopPanel->X =
         widget->Panel->X +
         widget->Panel->Width / 2 -
         widget->ScrollArrowTopPanel->Width / 2;
 
-    widget->ScrollArrowTopPanel->Y = 
-        widget->Panel->Y + 
+    widget->ScrollArrowTopPanel->Y =
+        widget->Panel->Y +
         widget->ScrollArrowTopPanel->Height - 2;
 
     const int itemPanelHeight = 32;
@@ -141,7 +141,7 @@ void SetInventoryWidgetPosition(struct InventoryWidget* widget, int x, int y)
             widget->ItemSlotWidgets[p],
             x,
             y + (p * itemPanelHeight) + (p * 4));
-    }   
+    }
 }
 
 //  ---------------------------------------------------------------------------
@@ -152,7 +152,7 @@ void UpdateInventoryWidget(
     GetInventoryItemsByType(
         inventory,
         widget->ItemType,
-        widget->Items, 
+        widget->Items,
         &widget->ItemCount);
 
     //  Hide all of the item slot widgets
@@ -164,7 +164,7 @@ void UpdateInventoryWidget(
     if (widget->ItemCount > 0)
     {
         //  Position
-        int p = widget->SelectedSlotIndex;
+        int p = widget->SelectedItemIndex;
         //  Visible range
         int v = INVENTORY_WIDGET_MAX_VISIBLE_ITEMS;
         //  Visible range mid-point (halfway)
@@ -197,7 +197,8 @@ void UpdateInventoryWidget(
         }
         else
         {
-            //  Drawing the items between the start and end
+            //  Drawing the items between start and end with items
+            //  available for scrolling both above and below
             start = p - h;
             end = p + h + 1;
 
@@ -205,12 +206,14 @@ void UpdateInventoryWidget(
             widget->ScrollArrowBottomPanel->Visible = 1;
         }
 
+        // Update the currently selected ItemSlotWidget
         widget->SelectedItemSlotWidget = widget->ItemSlotWidgets[p - start];
 
         assert(start >= 0);
         assert(start <= end);
         assert(end <= MaxInventoryItems);
 
+        //  Iterate through the widget's visible Items and update ItemSlotWidgets
         int s = 0;
         for (int n = start; n < end; ++n)
         {
