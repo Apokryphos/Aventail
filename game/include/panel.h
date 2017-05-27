@@ -8,6 +8,7 @@ enum PanelBorderStyle
     PANEL_BORDER_STYLE_NONE,
     PANEL_BORDER_STYLE_1,
     PANEL_BORDER_STYLE_2,
+    PANEL_BORDER_STYLE_3,
 };
 
 enum PanelIconStyle

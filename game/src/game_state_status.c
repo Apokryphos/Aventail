@@ -3,11 +3,15 @@
 #include "gui.h"
 #include "gui_screen.h"
 #include "input_device.h"
+#include "panel.h"
 #include "render.h"
+#include "status_widget.h"
 #include "world.h"
+#include <SDL2/SDL.h>
 #include <stdlib.h>
 
 struct GuiScreen* StatusGuiScreen = NULL;
+struct StatusWidget* StatusWidget = NULL;
 
 //  ---------------------------------------------------------------------------
 static void ExitStatusGameState(
@@ -43,6 +47,16 @@ static void InitStatusGuiScreen(SDL_Renderer* renderer)
 {
     StatusGuiScreen = CreateGuiScreen();
 
+    StatusWidget = CreateStatusWidget(StatusGuiScreen);
+
+    //  Center status widget
+    SDL_Rect viewport;
+    SDL_RenderGetViewport(renderer, &viewport);
+    SetStatusWidgetPosition(
+        StatusWidget,
+        (viewport.w / 2) - (StatusWidget->Panel->Width / 2),
+        (viewport.h / 2) - (StatusWidget->Panel->Height / 2));
+
     AddGuiScreen(StatusGuiScreen);
 }
 
@@ -67,4 +81,6 @@ void StatusGameStateUpdate(struct Game* game)
     EnableCursor(0);
 
     ProcessStatusGameStateInput(game);
+
+    UpdateStatusWidget(StatusWidget, game->World->Player.Actor);
 }

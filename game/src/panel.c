@@ -6,6 +6,7 @@ static const int Style1CornerTilesetId = 1065;
 static const int Style1SideTilesetId = 1072;
 static const int Style2CornerTilesetId = 1067;
 static const int Style2SideTilesetId = 1073;
+static const int Style3CornerTilesetId = 1070;
 
 //  ---------------------------------------------------------------------------
 struct Panel* CreatePanel(const char* title, enum PanelBorderStyle style)
@@ -64,6 +65,10 @@ void GetPanelBorderTilesetIds(
             break;
         case PANEL_BORDER_STYLE_2:
             *cornerTilesetId = Style2CornerTilesetId;
+            *sideTilesetId = Style2SideTilesetId;
+            break;
+        case PANEL_BORDER_STYLE_3:
+            *cornerTilesetId = Style3CornerTilesetId;
             *sideTilesetId = Style2SideTilesetId;
             break;
     }
