@@ -1,6 +1,7 @@
 #include "game.h"
 #include "game_state.h"
 #include "game_state_game_over.h"
+#include "game_state_gear.h"
 #include "game_state_level.h"
 #include "game_state_inventory.h"
 #include "game_state_transition.h"
@@ -16,6 +17,9 @@ void DrawGameState(struct Game* game, enum GameState gameState, int inTransition
     {
         case GAME_STATE_LEVEL:
             LevelGameStateDraw(game, inTransition);
+            break;
+        case GAME_STATE_GEAR:
+            GearGameStateDraw(game, inTransition);
             break;
         case GAME_STATE_INVENTORY:
             InventoryGameStateDraw(game, inTransition);
@@ -42,6 +46,9 @@ void UpdateGameState(struct Game* game)
     {
         case GAME_STATE_LEVEL:
             LevelGameStateUpdate(game);
+            break;
+        case GAME_STATE_GEAR:
+            GearGameStateUpdate(game);
             break;
         case GAME_STATE_INVENTORY:
             InventoryGameStateUpdate(game);

@@ -41,6 +41,9 @@ struct Actor* CreateActor(
     actor->Cash = 0;
     actor->Stats.Attack = 0;
     actor->Stats.Defend = 0;
+    actor->Stats.Vitality = 0;
+
+    actor->Gear = (struct Gear) { 0 };
 
     return actor;
 }
@@ -52,6 +55,7 @@ void DestroyActor(struct Actor** actor)
 
     if (*actor != NULL)
     {
+        RemoveAllGearItems(*actor);
         DestroyInventory(&(*actor)->Inventory);
         free((*actor)->Name);
         free(*actor);

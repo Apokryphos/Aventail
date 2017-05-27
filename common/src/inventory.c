@@ -1,7 +1,7 @@
 #include "inventory.h"
 #include <stdlib.h>
 
-const size_t MaxInventoryItems = 10;
+const size_t MaxInventoryItems = 30;
 
 //  ---------------------------------------------------------------------------
 int AddInventoryItem(struct Inventory* inventory, struct Item* item)
@@ -68,6 +68,31 @@ size_t GetInventoryItemCount(const struct Inventory* inventory)
         }
     }
     return count;
+}
+
+//  ---------------------------------------------------------------------------
+void GetInventoryItemsByType(
+    const struct Inventory* inventory,
+    const enum ItemType itemType,
+    struct Item** items,
+    size_t* count)
+{
+    *count = 0;
+    for (size_t n = 0; n < MaxInventoryItems; ++n)
+    {
+        items[n] = NULL;
+    }
+
+    int s = 0;
+    for (size_t n = 0; n < MaxInventoryItems; ++n)
+    {
+        if (inventory->Items[n] != NULL &&
+            (itemType == ITEM_TYPE_NONE || inventory->Items[n]->Type == itemType))
+        {
+            items[s++] = inventory->Items[n];
+            ++(*count);
+        }
+    }
 }
 
 //  ---------------------------------------------------------------------------

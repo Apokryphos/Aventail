@@ -15,6 +15,11 @@ int AddInventoryItem(struct Inventory* inventory, struct Item* item);
 struct Inventory* CreateInventory();
 void DestroyInventory(struct Inventory** inventory);
 size_t GetInventoryItemCount(const struct Inventory* inventory);
+void  GetInventoryItemsByType(
+    const struct Inventory* inventory,
+    const enum ItemType itemType,
+    struct Item** items,
+    size_t* count);
 int GiveInventoryItems(struct Inventory* source, struct Inventory* dest);
 int InventoryIsFull();
 int RemoveInventoryItem(struct Inventory* inventory, struct Item* item);

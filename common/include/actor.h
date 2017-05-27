@@ -3,6 +3,7 @@
 
 #include "actor_type.h"
 #include "direction.h"
+#include "gear.h"
 #include "stats.h"
 
 struct Actor;
@@ -29,6 +30,7 @@ struct Actor
     struct Map* Map;
     struct Tile* Tile;
     struct Stats Stats;
+    struct Gear Gear;
 };
 
 struct Actor* CreateActor(

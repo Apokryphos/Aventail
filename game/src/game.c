@@ -3,6 +3,7 @@
 #include "audio.h"
 #include "game_state.h"
 #include "game_state_transition.h"
+#include "gui.h"
 #include "input.h"
 #include "map.h"
 #include "map_link.h"
@@ -42,7 +43,7 @@ void GameInit(struct Game* game, int width, int height)
     }
 
     game->Window = SDL_CreateWindow(
-        "Game", 
+        "Aventail", 
         SDL_WINDOWPOS_UNDEFINED,
         SDL_WINDOWPOS_UNDEFINED,
         width,
@@ -112,6 +113,8 @@ void GameMain()
         game.Quit = game.InputDevice->Quit;
         
         UpdateGameState(&game);
+
+        GuiUpdate(&game);
 
         AudioUpdate();
 

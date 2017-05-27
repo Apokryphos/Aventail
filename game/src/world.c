@@ -4,7 +4,9 @@
 #include "actor_list.h"
 #include "a_star.h"
 #include "audio.h"
+#include "gear.h"
 #include "inventory.h"
+#include "item_defs.h"
 #include "map.h"
 #include "point.h"
 #include "tile.h"
@@ -28,10 +30,13 @@ static void Attack(struct Actor* source, struct Actor* target, struct World* wor
 
         --source->ActionPoints;
 
+        struct Stats sourceStats = AddStats(source->Stats, source->Gear.Stats);
+        struct Stats targetStats = AddStats(target->Stats, target->Gear.Stats);
+
         int damage = 1;
-        if (source->Stats.Attack > target->Stats.Defend)
+        if (sourceStats.Attack > targetStats.Defend)
         {
-            damage = (source->Stats.Attack - target->Stats.Defend) + 1;
+            damage = (sourceStats.Attack - targetStats.Defend) + 1;
         }
 
         target->Health -= damage;
@@ -87,6 +92,46 @@ struct Actor* CreatePlayerActor(struct World* world)
     LoadPlayerDefinition(actor);
     AddActorToFront(world->Actors, actor);
     world->Player.Actor = actor;
+
+    //  Some starting inventory to test with
+    struct Item* armor = CreateItem("Leather Cuirass");
+    LoadItemDefinition(armor);
+    EquipItem(actor, armor);
+
+    // struct Item* weapon = CreateItem("Bronze Sword");
+    // LoadItemDefinition(weapon);
+    // EquipItem(actor, weapon);
+
+    struct Item* armor2 = CreateItem("Chainmail");
+    LoadItemDefinition(armor2);
+    AddInventoryItem(actor->Inventory, armor2);
+
+    // struct Item* shield1 = CreateItem("Buckler");
+    // LoadItemDefinition(shield1);
+    // AddInventoryItem(actor->Inventory, shield1);
+
+    // AddInventoryItem(actor->Inventory, CreateWeapon("Dagger"));
+    // AddInventoryItem(actor->Inventory, CreateWeapon("Dirk"));
+    // AddInventoryItem(actor->Inventory, CreateWeapon("Knife"));
+    // AddInventoryItem(actor->Inventory, CreateWeapon("Shiv"));
+    // AddInventoryItem(actor->Inventory, CreateWeapon("Katana"));
+    // AddInventoryItem(actor->Inventory, CreateWeapon("Nodachi"));
+    // AddInventoryItem(actor->Inventory, CreateWeapon("Short Sword"));
+    // AddInventoryItem(actor->Inventory, CreateWeapon("Great Sword"));
+    // AddInventoryItem(actor->Inventory, CreateWeapon("Claymore"));
+    // AddInventoryItem(actor->Inventory, CreateWeapon("Longsword"));
+    // AddInventoryItem(actor->Inventory, CreateWeapon("Broadsword"));
+    // AddInventoryItem(actor->Inventory, CreateWeapon("Sabre"));
+    // AddInventoryItem(actor->Inventory, CreateWeapon("Rapier"));
+    // AddInventoryItem(actor->Inventory, CreateWeapon("Cutlass"));
+
+    // struct Item* weapon2 = CreateItem("Iron Short Sword");
+    // LoadItemDefinition(weapon2);
+    // AddInventoryItem(actor->Inventory, weapon2);
+
+    struct Item* accessory1 = CreateItem("Healing Ring");
+    LoadItemDefinition(accessory1);
+    AddInventoryItem(actor->Inventory, accessory1);
 
     return actor;
 }

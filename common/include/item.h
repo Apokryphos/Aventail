@@ -1,15 +1,8 @@
 #ifndef ITEM_HEADER_INCLUDED
 #define ITEM_HEADER_INCLUDED
 
+#include "item_type.h"
 #include "stats.h"
-
-enum ItemType
-{
-    ITEM_TYPE_NONE,
-    ITEM_TYPE_CONSUMABLE,
-    ITEM_TYPE_ARMOR,
-    ITEM_TYPE_WEAPON,
-};
 
 struct Item
 {

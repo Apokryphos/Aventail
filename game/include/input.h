@@ -7,10 +7,13 @@
 struct InputDevice
 {
     enum Direction MoveDirection;
+    int Accept;
     int Cancel;
     int CursorX;
     int CursorY;
     int Inventory;
+    int Gear;
+    int Remove;
     int Quit;
     int DebugKillPlayerActor;
 };

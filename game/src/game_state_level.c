@@ -1,6 +1,7 @@
 #include "game.h"
 #include "actor.h"
 #include "actor_list.h"
+#include "gui.h"
 #include "inventory.h"
 #include "input.h"
 #include "item.h"
@@ -37,7 +38,11 @@ void ProcessLevelGameStateInput(struct Game* game)
     game->World->Player.Actor->MoveDirection = inputDevice->MoveDirection;
     inputDevice->MoveDirection = DIRECTION_NONE;
 
-    if (inputDevice->Inventory)
+    if (inputDevice->Gear)
+    {
+        game->State = GAME_STATE_GEAR;
+    }
+    else if (inputDevice->Inventory)
     {
         game->State = GAME_STATE_INVENTORY;
     }
@@ -78,6 +83,8 @@ void LevelGameStateDraw(struct Game* game, int inTransition)
     {
         DrawMap(game->Renderer, game->World->Map, game->World->Actors);
     }
+    
+    GuiDraw(game);
 
     if (inTransition)
     {

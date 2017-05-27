@@ -1,6 +1,8 @@
 #ifndef RENDER_HEADER_INCLUDED
 #define RENDER_HEADER_INCLUDED
 
+#include "flip_flag.h"
+
 struct ActorList;
 struct Map;
 struct Panel;
@@ -17,8 +19,16 @@ void DrawTilesetTile(
     SDL_Renderer* renderer,
     const int tilesetId,
     const int x,
-    const int y);
+    const int y,
+    enum FlipFlag flip);
+void DrawGuiTilesetTile(
+    SDL_Renderer* renderer,
+    const int tilesetId,
+    const int x,
+    const int y,
+    enum FlipFlag flip);
 void DrawPanel(SDL_Renderer* renderer, const struct Panel* panel);
+void DrawScreenFade(SDL_Renderer* renderer, float progress);
 void DrawText(
     SDL_Renderer* renderer, 
     const char* text,

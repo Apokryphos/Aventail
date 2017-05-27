@@ -7,8 +7,11 @@ void UpdateInput(struct InputDevice* inputDevice)
     //  Reset
     inputDevice->MoveDirection = DIRECTION_NONE;
     inputDevice->Cancel = 0;
+    inputDevice->Gear = 0;
     inputDevice->Inventory = 0;
     inputDevice->DebugKillPlayerActor = 0;
+    inputDevice->Accept = 0;
+    inputDevice->Remove = 0;
 
     SDL_Event event;
     while(SDL_PollEvent(&event))
@@ -29,6 +32,15 @@ void UpdateInput(struct InputDevice* inputDevice)
                             break;
                         case SDLK_ESCAPE:
                             inputDevice->Cancel = 1;
+                            break;
+                        case SDLK_RETURN:
+                            inputDevice->Accept = 1;
+                            break;
+                        case SDLK_r:
+                            inputDevice->Remove = 1;
+                            break;
+                        case SDLK_g:
+                            inputDevice->Gear = 1;
                             break;
                         case SDLK_i:
                             inputDevice->Inventory = 1;
