@@ -20,7 +20,7 @@ struct Item* CreateItem(const char* name)
 //  ---------------------------------------------------------------------------
 void DestroyItem(struct Item** item)
 {
-    assert(*item != NULL);
+    assert(item != NULL);
 
     if (*item != NULL)
     {
