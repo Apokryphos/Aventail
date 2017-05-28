@@ -8,26 +8,26 @@ struct Tile;
 
 struct Map
 {
-    int Width;
-    int Height;
-    int TileWidth;
-    int TileHeight;
-    struct Tile* Tiles;
+    int width;
+    int height;
+    int tile_width;
+    int tile_height;
+    struct Tile* tiles;
 };
 
-struct Map* CreateMap(
+struct Map* create_map(
     const int width,
     const int height,
-    const int tileWidth,
-    const int tileHeight);
-void DestroyMap(struct Map** map);
-struct Tile* GetNeighbor(
+    const int tile_width,
+    const int tile_height);
+void destroy_map(struct Map** map);
+struct Tile* get_tile_neighbor(
     const struct Map* map,
     const struct Tile* tile,
     const enum Direction direction);
-struct Tile* GetTile(const struct Map* map, const int x, const int y);
-int GetTileCount(const struct Map* map);
-size_t GetTileIndex(const struct Map* map, struct Tile* tile);
-int InBounds(const struct Map* map, const int x, const int y);
+struct Tile* get_map_tile(const struct Map* map, const int x, const int y);
+int get_map_tile_count(const struct Map* map);
+size_t get_map_tile_index(const struct Map* map, struct Tile* tile);
+int in_map_bounds(const struct Map* map, const int x, const int y);
 
 #endif

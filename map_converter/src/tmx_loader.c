@@ -147,7 +147,7 @@ void LoadTmx(const xmlDoc* doc, struct Map** map, struct ActorList** actors)
     printf("Map Size: %d x %d\n", mapWidth, mapHeight);
     printf("Tile Size: %d x %d\n", tileWidth, tileHeight);
 
-    *map = CreateMap(mapWidth, mapHeight, tileWidth, tileHeight);
+    *map = create_map(mapWidth, mapHeight, tileWidth, tileHeight);
     *actors = create_actor_list();
 
     xmlNode* node = root->xmlChildrenNode;
@@ -172,7 +172,7 @@ void LoadTmx(const xmlDoc* doc, struct Map** map, struct ActorList** actors)
                             int gid;
                             ReadIntAttribute(tileNode, "gid", &gid);
 
-                            struct Tile* tile = GetTile(*map, tileX, tileY);
+                            struct Tile* tile = get_map_tile(*map, tileX, tileY);
                             tile->TilesetId = gid - 1;
 
                             tile->Collision = IsCollision(tile->TilesetId);
@@ -207,8 +207,8 @@ void LoadTmx(const xmlDoc* doc, struct Map** map, struct ActorList** actors)
                     ReadIntAttribute(objectNode, "x", &tileX);
                     ReadIntAttribute(objectNode, "y", &tileY);
 
-                    tileX /= (*map)->TileWidth;
-                    tileY /= (*map)->TileHeight;
+                    tileX /= (*map)->tile_width;
+                    tileY /= (*map)->tile_height;
 
                     if (HasAttribute(objectNode, "gid"))
                     {
@@ -266,7 +266,7 @@ void LoadTmx(const xmlDoc* doc, struct Map** map, struct ActorList** actors)
 
                         struct MapLink* link = create_map_link(destMap, destX, destY);
 
-                        struct Tile* tile = GetTile(*map, tileX, tileY);
+                        struct Tile* tile = get_map_tile(*map, tileX, tileY);
                         tile->Link = link;
 
                         free(destMap);

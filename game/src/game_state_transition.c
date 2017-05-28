@@ -51,7 +51,7 @@ void UnloadMap(struct World* world)
     remove_actor_from_actor_list(world->Actors, world->Player.Actor);
 
     destroy_actor_list(&world->Actors);
-    DestroyMap(&world->Map);
+    destroy_map(&world->Map);
 
     world->Actors = create_actor_list();
 
@@ -65,7 +65,7 @@ void LoadMapLink(struct Game* game)
     assert(TransitionLink != NULL);
     assert(TransitionLink->dest_map != NULL);
 
-    //  Copy destination link data before DestroyMap frees it
+    //  Copy destination link data before destroy_map frees it
     char* destMap = strdup(TransitionLink->dest_map);
     int destX = TransitionLink->dest_x;
     int destY = TransitionLink->dest_y;
@@ -80,9 +80,9 @@ void LoadMapLink(struct Game* game)
 
     free(destMap);
 
-    struct Tile* destTile = GetTile(world->Map, destX, destY);
+    struct Tile* destTile = get_map_tile(world->Map, destX, destY);
     assert(destTile != NULL);
-    assert(InBounds(world->Map, destX, destY));
+    assert(in_map_bounds(world->Map, destX, destY));
 
     world->Player.Actor->map = world->Map;
     world->Player.Actor->tile = destTile;
@@ -237,7 +237,7 @@ void TransitionGameStateUpdate(struct Game* game)
                     TransitionMapName = NULL;
 
                     game->World->Player.Actor->map = game->World->Map;
-                    game->World->Player.Actor->tile = GetTile(game->World->Map, 12, 10);
+                    game->World->Player.Actor->tile = get_map_tile(game->World->Map, 12, 10);
 
                 }
 

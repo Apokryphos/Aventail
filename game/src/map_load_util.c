@@ -114,14 +114,14 @@ struct Map* LoadMapFromFile(FILE* file)
     fread(&tileWidth, sizeof(int), 1, file);
     fread(&tileHeight, sizeof(int), 1, file);
 
-    struct Map* map = CreateMap(width, height, tileWidth, tileHeight);
+    struct Map* map = create_map(width, height, tileWidth, tileHeight);
 
-    int tileCount = GetTileCount(map);
+    int tileCount = get_map_tile_count(map);
     printf("Loading %d tiles...\n", tileCount);
 
     for (int t = 0; t < tileCount; ++t)
     {
-        struct Tile* tile = &map->Tiles[t];
+        struct Tile* tile = &map->tiles[t];
         fread(&tile->TilesetId, sizeof(int), 1, file);
         fread(&tile->Collision, sizeof(int), 1, file);
     }
@@ -152,7 +152,7 @@ struct Map* LoadMapFromFile(FILE* file)
 
         free(destMap);
 
-        struct Tile* tile = &map->Tiles[tileY * map->Width + tileX];
+        struct Tile* tile = &map->tiles[tileY * map->width + tileX];
         tile->Link = link;
 
         printf(

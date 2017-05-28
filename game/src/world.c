@@ -158,7 +158,7 @@ void DestroyWorld(struct World** world)
 
     if ((*world)->Map != NULL)
     {
-        DestroyMap(&(*world)->Map);
+        destroy_map(&(*world)->Map);
     }
 
     free(*world);
@@ -197,7 +197,7 @@ static void MoveActor(struct Actor* actor, struct Game* game, struct World* worl
 
     struct Actor* target = NULL;
 
-    struct Tile* destTile = GetNeighbor(
+    struct Tile* destTile = get_tile_neighbor(
         actor->map,
         actor->tile,
         actor->move_direction);

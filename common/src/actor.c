@@ -25,8 +25,8 @@ struct Actor* create_actor(
     actor->tile = NULL;
     if (map != NULL)
     {
-        assert(InBounds(map, tile_x, tile_y));
-        actor->tile = GetTile(map, tile_x, tile_y);
+        assert(in_map_bounds(map, tile_x, tile_y));
+        actor->tile = get_map_tile(map, tile_x, tile_y);
     }
 
     actor->max_action_points = 1;

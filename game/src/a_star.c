@@ -10,90 +10,90 @@
 #include <stdlib.h>
 
 //  ---------------------------------------------------------------------------
-static void ResetAStar(struct AStar* aStar)
+static void ResetAStar(struct AStar* a_star)
 {
-    aStar->ClosedCount = 0;
-    aStar->OpenCount = 0;
+    a_star->ClosedCount = 0;
+    a_star->OpenCount = 0;
 
-    for (size_t n = 0; n < aStar->NodeCount; ++n)
+    for (size_t n = 0; n < a_star->NodeCount; ++n)
     {
-        struct Tile* tile = &aStar->Map->Tiles[n];
+        struct Tile* tile = &a_star->Map->tiles[n];
 
-        aStar->Nodes[n].F = 0;
-        aStar->Nodes[n].G = 0;
-        aStar->Nodes[n].H = 0;
-        aStar->Nodes[n].Walkable = tile->Collision == 0;
-        aStar->Nodes[n].Parent = NULL;
-        aStar->Nodes[n].X = tile->X;
-        aStar->Nodes[n].Y = tile->Y;
+        a_star->Nodes[n].F = 0;
+        a_star->Nodes[n].G = 0;
+        a_star->Nodes[n].H = 0;
+        a_star->Nodes[n].Walkable = tile->Collision == 0;
+        a_star->Nodes[n].Parent = NULL;
+        a_star->Nodes[n].X = tile->X;
+        a_star->Nodes[n].Y = tile->Y;
 
-        aStar->Closed[n] = 0;
-        aStar->Open[n] = 0;
+        a_star->Closed[n] = 0;
+        a_star->Open[n] = 0;
     }
 }
 
 //  ---------------------------------------------------------------------------
 static void UpdateAStar(
-    struct AStar* aStar,
+    struct AStar* a_star,
     struct Map* map,
-    struct ActorList* actorList)
+    struct ActorList* actor_list)
 {
-    assert(aStar->Map == map);
+    assert(a_star->Map == map);
 
-    ResetAStar(aStar);
+    ResetAStar(a_star);
 
     //  Mark tiles occupied by actors as unwalkable
-    struct ActorListNode* actorNode = actorList->front;
-    while (actorNode != NULL)
+    struct ActorListNode* actor_node = actor_list->front;
+    while (actor_node != NULL)
     {
-        struct Tile* tile = actorNode->actor->tile;
+        struct Tile* tile = actor_node->actor->tile;
         if (tile != NULL)
         {
-            size_t index = tile->Y * aStar->Map->Width + tile->X;
-            aStar->Nodes[index].Walkable = 0;
+            size_t index = tile->Y * a_star->Map->width + tile->X;
+            a_star->Nodes[index].Walkable = 0;
         }
 
-        actorNode = actorNode->next;
+        actor_node = actor_node->next;
     }
 }
 
 //  ---------------------------------------------------------------------------
 struct AStar* CreateAStar(struct Map* map)
 {
-    struct AStar* aStar = malloc(sizeof(struct AStar));
-    aStar->Map = map;
+    struct AStar* a_star = malloc(sizeof(struct AStar));
+    a_star->Map = map;
 
-    aStar->NodeCount = GetTileCount(map);
-    aStar->Closed = malloc(sizeof(int) * aStar->NodeCount);
-    aStar->Open = malloc(sizeof(int) * aStar->NodeCount);
-    aStar->Nodes = malloc(sizeof(struct AStarNode) * aStar->NodeCount);
+    a_star->NodeCount = get_map_tile_count(map);
+    a_star->Closed = malloc(sizeof(int) * a_star->NodeCount);
+    a_star->Open = malloc(sizeof(int) * a_star->NodeCount);
+    a_star->Nodes = malloc(sizeof(struct AStarNode) * a_star->NodeCount);
 
-    ResetAStar(aStar);
+    ResetAStar(a_star);
 
-    return aStar;
+    return a_star;
 }
 
 //  ---------------------------------------------------------------------------
-void DestroyAStar(struct AStar** aStar)
+void DestroyAStar(struct AStar** a_star)
 {
-    if (*aStar != NULL)
+    if (*a_star != NULL)
     {
-        free((*aStar)->Closed);
-        free((*aStar)->Open);
-        free((*aStar)->Nodes);
-        free(*aStar);
-        *aStar = NULL;
+        free((*a_star)->Closed);
+        free((*a_star)->Open);
+        free((*a_star)->Nodes);
+        free(*a_star);
+        *a_star = NULL;
     }
 }
 
 //  ---------------------------------------------------------------------------
-static int InClosedList(struct AStar* aStar, size_t nodeIndex)
+static int InClosedList(struct AStar* a_star, size_t nodeIndex)
 {
-    assert(nodeIndex < aStar->NodeCount);
+    assert(nodeIndex < a_star->NodeCount);
 
-    for (size_t n = 0; n < aStar->ClosedCount; ++n)
+    for (size_t n = 0; n < a_star->ClosedCount; ++n)
     {
-        if (aStar->Closed[n] == nodeIndex)
+        if (a_star->Closed[n] == nodeIndex)
         {
             return 1;
         }
@@ -103,13 +103,13 @@ static int InClosedList(struct AStar* aStar, size_t nodeIndex)
 }
 
 //  ---------------------------------------------------------------------------
-static int InOpenList(struct AStar* aStar, size_t nodeIndex)
+static int InOpenList(struct AStar* a_star, size_t nodeIndex)
 {
-    assert(nodeIndex < aStar->NodeCount);
+    assert(nodeIndex < a_star->NodeCount);
 
-    for (size_t n = 0; n < aStar->OpenCount; ++n)
+    for (size_t n = 0; n < a_star->OpenCount; ++n)
     {
-        if (aStar->Open[n] == nodeIndex)
+        if (a_star->Open[n] == nodeIndex)
         {
             return 1;
         }
@@ -122,51 +122,51 @@ static int InOpenList(struct AStar* aStar, size_t nodeIndex)
 /*
     Returns the node index into AStar->Nodes of the lowest F cost node.
 */
-static size_t GetLowestCostNodeIndex(struct AStar* aStar)
+static size_t GetLowestCostNodeIndex(struct AStar* a_star)
 {
     int cost = INT_MAX;
     size_t index = (size_t) - 1;
-    for (size_t n = 0; n < aStar->OpenCount; ++n)
+    for (size_t n = 0; n < a_star->OpenCount; ++n)
     {
-        struct AStarNode* node = &aStar->Nodes[aStar->Open[n]];
+        struct AStarNode* node = &a_star->Nodes[a_star->Open[n]];
         if (node->F < cost)
         {
             //  Node index is the index stored in the open list
-            index = aStar->Open[n];
+            index = a_star->Open[n];
             cost = node->F;
         }
     }
 
-    assert(index < aStar->NodeCount);
+    assert(index < a_star->NodeCount);
     return index;
 }
 
 //  ---------------------------------------------------------------------------
-static void RemoveFromOpen(struct AStar* aStar, size_t nodeIndex)
+static void RemoveFromOpen(struct AStar* a_star, size_t nodeIndex)
 {
-    assert(aStar->OpenCount > 0);
-    assert(nodeIndex < aStar->NodeCount);
+    assert(a_star->OpenCount > 0);
+    assert(nodeIndex < a_star->NodeCount);
 
     //  Get the index into the open array
     size_t openIndex = (size_t)-1;
-    for (size_t n = 0; n < aStar->OpenCount; ++n)
+    for (size_t n = 0; n < a_star->OpenCount; ++n)
     {
-        if (aStar->Open[n] == nodeIndex)
+        if (a_star->Open[n] == nodeIndex)
         {
             openIndex = n;
             break;
         }
     }
 
-    assert(openIndex < aStar->OpenCount);
+    assert(openIndex < a_star->OpenCount);
 
     //  Swap with last array element
-    if (openIndex != aStar->OpenCount - 1)
+    if (openIndex != a_star->OpenCount - 1)
     {
-        aStar->Open[openIndex] = aStar->Open[aStar->OpenCount - 1];
+        a_star->Open[openIndex] = a_star->Open[a_star->OpenCount - 1];
     }
 
-    --aStar->OpenCount;
+    --a_star->OpenCount;
 }
 
 //  ---------------------------------------------------------------------------
@@ -190,36 +190,36 @@ static int CalculateGCost(struct AStarNode* node, struct AStarNode* parentNode)
 
 //  ---------------------------------------------------------------------------
 struct AStarPath* BuildAStarPath(
-    struct AStar* aStar,
+    struct AStar* a_star,
     struct Tile* start,
     struct Tile* goal,
     struct Map* map,
-    struct ActorList* actorList)
+    struct ActorList* actor_list)
 {
-    assert(aStar != NULL);
+    assert(a_star != NULL);
     assert(start != NULL);
     assert(goal != NULL);
     assert(map != NULL);
-    assert(actorList != NULL);
+    assert(actor_list != NULL);
     assert(start != goal);
 
-    UpdateAStar(aStar, map, actorList);
+    UpdateAStar(a_star, map, actor_list);
 
-    size_t startIndex = GetTileIndex(aStar->Map, start);
-    size_t goalIndex = GetTileIndex(aStar->Map, goal);
+    size_t startIndex = get_map_tile_index(a_star->Map, start);
+    size_t goalIndex = get_map_tile_index(a_star->Map, goal);
 
     //  Mark start and goal as walkable or else no path can be found
-    aStar->Nodes[startIndex].Walkable = 1;
-    aStar->Nodes[goalIndex].Walkable = 1;
+    a_star->Nodes[startIndex].Walkable = 1;
+    a_star->Nodes[goalIndex].Walkable = 1;
 
-    struct AStarNode* goalNode = &aStar->Nodes[goalIndex];
+    struct AStarNode* goalNode = &a_star->Nodes[goalIndex];
 
     //  Add start node to open list
-    aStar->Open[aStar->OpenCount++] = GetTileIndex(aStar->Map, start);
+    a_star->Open[a_star->OpenCount++] = get_map_tile_index(a_star->Map, start);
 
-    while (aStar->OpenCount > 0)
+    while (a_star->OpenCount > 0)
     {
-        size_t currentIndex = GetLowestCostNodeIndex(aStar);
+        size_t currentIndex = GetLowestCostNodeIndex(a_star);
 
         //  Found goal
         if (currentIndex == goalIndex)
@@ -227,14 +227,14 @@ struct AStarPath* BuildAStarPath(
             break;
         }
 
-        RemoveFromOpen(aStar, currentIndex);
+        RemoveFromOpen(a_star, currentIndex);
 
         //  Add current node to closed list
-        aStar->Closed[aStar->ClosedCount++] = currentIndex;
+        a_star->Closed[a_star->ClosedCount++] = currentIndex;
 
-        struct AStarNode* currentNode = &aStar->Nodes[currentIndex];
+        struct AStarNode* currentNode = &a_star->Nodes[currentIndex];
 
-        struct Tile* currentTile = &aStar->Map->Tiles[currentIndex];
+        struct Tile* currentTile = &a_star->Map->tiles[currentIndex];
 
         for (int d = 1; d < 5; ++d)
         {
@@ -243,8 +243,8 @@ struct AStarPath* BuildAStarPath(
             int dx, dy;
             get_direction_delta(direction, &dx, &dy);
 
-            struct Tile* neighborTile = GetTile(
-                aStar->Map,
+            struct Tile* neighborTile = get_map_tile(
+                a_star->Map,
                 currentTile->X + dx,
                 currentTile->Y + dy);
 
@@ -252,13 +252,13 @@ struct AStarPath* BuildAStarPath(
 
             if (neighborTile != NULL)
             {
-                size_t neighborIndex = GetTileIndex(aStar->Map, neighborTile);
-                struct AStarNode* neighborNode = &aStar->Nodes[neighborIndex];
+                size_t neighborIndex = get_map_tile_index(a_star->Map, neighborTile);
+                struct AStarNode* neighborNode = &a_star->Nodes[neighborIndex];
 
                 if (neighborNode->Walkable &&
-                    InClosedList(aStar, neighborIndex) == 0)
+                    InClosedList(a_star, neighborIndex) == 0)
                 {
-                    if (InOpenList(aStar, neighborIndex))
+                    if (InOpenList(a_star, neighborIndex))
                     {
                         //  Check if this cost is lower
                         int gCost = CalculateGCost(neighborNode, currentNode);
@@ -273,7 +273,7 @@ struct AStarPath* BuildAStarPath(
                     else
                     {
                         //  Add to open list
-                        aStar->Open[aStar->OpenCount++] = neighborIndex;
+                        a_star->Open[a_star->OpenCount++] = neighborIndex;
                         neighborNode->Parent = currentNode;
                         neighborNode->G = CalculateGCost(neighborNode, currentNode);
                         neighborNode->H = CalculateHCost(neighborNode, goalNode);

@@ -83,17 +83,17 @@ void save_actors_to_file(FILE* file, const struct ActorList* actors)
 void save_map_to_file(FILE* file, const struct Map* map)
 {
     printf("Saving map header...\n");
-    fwrite(&map->Width, sizeof(int), 1, file);
-    fwrite(&map->Height, sizeof(int), 1, file);
-    fwrite(&map->TileHeight, sizeof(int), 1, file);
-    fwrite(&map->TileHeight, sizeof(int), 1, file);
+    fwrite(&map->width, sizeof(int), 1, file);
+    fwrite(&map->height, sizeof(int), 1, file);
+    fwrite(&map->tile_height, sizeof(int), 1, file);
+    fwrite(&map->tile_height, sizeof(int), 1, file);
 
     int mapLinkCount = 0;
-    int tileCount = GetTileCount(map);
+    int tileCount = get_map_tile_count(map);
     printf("Saving %d tiles...\n", tileCount);
     for (int t = 0; t < tileCount; ++t)
     {
-        struct Tile* tile = &map->Tiles[t];
+        struct Tile* tile = &map->tiles[t];
         fwrite(&tile->TilesetId, sizeof(int), 1, file);
         fwrite(&tile->Collision, sizeof(int), 1, file);
 
@@ -107,7 +107,7 @@ void save_map_to_file(FILE* file, const struct Map* map)
     fwrite(&mapLinkCount, sizeof(int), 1, file);
     for (int t = 0; t < tileCount; ++t)
     {
-        struct Tile* tile = &map->Tiles[t];
+        struct Tile* tile = &map->tiles[t];
         struct MapLink* link = tile->Link;
 
         if (link != NULL)
