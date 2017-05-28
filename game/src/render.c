@@ -468,7 +468,7 @@ int GfxInit(struct Game* game)
     assert(GuiTileset.Texture == NULL);
     assert(MapTileset.Texture == NULL);
 
-    SDL_RenderSetScale(game->Renderer, RenderScale, RenderScale);
+    SDL_RenderSetScale(game->renderer, RenderScale, RenderScale);
 
     LoadTileset(game, &FontTileset, "font");
     if (FontTileset.Texture == NULL)

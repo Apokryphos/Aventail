@@ -17,16 +17,16 @@ void GameOverGameStateUpdate(struct Game* game)
 {
     static float GameOverTicks = 0;
 
-    GameOverTicks += game->ElapsedSeconds;
+    GameOverTicks += game->elapsed_seconds;
     if (GameOverTicks >= GameOverDuration)
     {
         GameOverTicks = 0;
 
         //  TODO: Player is destroyed and recreated here...hacky.
-        remove_actor_from_actor_list(game->World->Actors, game->World->Player.actor);
-        destroy_actor(&game->World->Player.actor);
-        game->World->Player.actor = NULL;
-        CreatePlayerActor(game->World);
+        remove_actor_from_actor_list(game->world->actors, game->world->player.actor);
+        destroy_actor(&game->world->player.actor);
+        game->world->player.actor = NULL;
+        create_player_actor(game->world);
 
         BeginMapLoadTransition(game, "map01");
     }

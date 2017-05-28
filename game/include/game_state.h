@@ -15,7 +15,10 @@ enum GameState
     GAME_STATE_GAME_OVER,
 };
 
-void DrawGameState(struct Game* game, enum GameState gameState, int inTransition);
-void UpdateGameState(struct Game* game);
+void draw_active_game_state(
+    struct Game* game,
+    enum GameState game_state,
+    int in_transition);
+void update_active_game_state(struct Game* game);
 
 #endif

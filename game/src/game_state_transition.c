@@ -25,22 +25,22 @@ static const float TransitionDuration = 0.66f;
 static float TransitionTicks = 0;
 
 //  ---------------------------------------------------------------------------
-void LoadMap(
+static void load_map(
     struct Game* game,
-    const char* assetFilename,
+    const char* asset_filename,
     struct Map** map,
     struct ActorList* actors)
 {
     assert(*map == NULL);
-    assert(assetFilename != NULL);
+    assert(asset_filename != NULL);
 
-    char *fullpath = create_map_file_path(game->BasePath, assetFilename);
+    char *fullpath = create_map_file_path(game->base_path, asset_filename);
     printf("%s\n", fullpath);
     FILE *file = fopen(fullpath, "rb");
     assert(file != NULL);
     free(fullpath);
-    *map = LoadMapFromFile(file);
-    LoadActorsFromFile(file, *map, actors);
+    *map = load_map_from_file(file);
+    load_actors_from_file(file, *map, actors);
     fclose(file);
 }
 
@@ -48,15 +48,15 @@ void LoadMap(
 void UnloadMap(struct World* world)
 {
     //  Remove player from actors so it doesn't get freed
-    remove_actor_from_actor_list(world->Actors, world->Player.actor);
+    remove_actor_from_actor_list(world->actors, world->player.actor);
 
-    destroy_actor_list(&world->Actors);
-    destroy_map(&world->Map);
+    destroy_actor_list(&world->actors);
+    destroy_map(&world->map);
 
-    world->Actors = create_actor_list();
+    world->actors = create_actor_list();
 
     //  Add player actor back
-    add_actor_to_actor_list_back(world->Actors, world->Player.actor);
+    add_actor_to_actor_list_back(world->actors, world->player.actor);
 }
 
 //  ---------------------------------------------------------------------------
@@ -72,31 +72,31 @@ void LoadMapLink(struct Game* game)
 
     TransitionLink = NULL;
 
-    struct World* world = game->World;
+    struct World* world = game->world;
 
     UnloadMap(world);
 
-    LoadMap(game, destMap, &world->Map, world->Actors);
+    load_map(game, destMap, &world->map, world->actors);
 
     free(destMap);
 
-    struct Tile* destTile = get_map_tile(world->Map, destX, destY);
+    struct Tile* destTile = get_map_tile(world->map, destX, destY);
     assert(destTile != NULL);
-    assert(in_map_bounds(world->Map, destX, destY));
+    assert(in_map_bounds(world->map, destX, destY));
 
-    world->Player.actor->map = world->Map;
-    world->Player.actor->tile = destTile;
+    world->player.actor->map = world->map;
+    world->player.actor->tile = destTile;
 
-    PlaySfx(SFX_STEPS_ENTER);
+    play_sfx(SFX_STEPS_ENTER);
 }
 
 //  ---------------------------------------------------------------------------
 void BeginGameStateTransition(struct Game* game, enum GameState state)
 {
-    BeginGameState = game->State;
+    BeginGameState = game->state;
     EndGameState = state;
 
-    game->State = GAME_STATE_TRANSITION;
+    game->state = GAME_STATE_TRANSITION;
 
     TransitionLink = NULL;
     TransitionDirection = DIRECTION_NONE;
@@ -110,26 +110,26 @@ void BeginMapLinkTransition(
     struct MapLink* link,
     enum Direction direction)
 {
-    BeginGameState = game->State;
+    BeginGameState = game->state;
     EndGameState = GAME_STATE_LOAD_MAP;
 
-    game->State = GAME_STATE_TRANSITION;
+    game->state = GAME_STATE_TRANSITION;
 
     TransitionLink = link;
     TransitionDirection = direction;
     TransitionTicks = 0;
     TransitionPhase = 0;
 
-    PlaySfx(SFX_STEPS_EXIT);
+    play_sfx(SFX_STEPS_EXIT);
 }
 
 //  ---------------------------------------------------------------------------
 void BeginMapLoadTransition(struct Game* game, const char* mapName)
 {
-    BeginGameState = game->State;
+    BeginGameState = game->state;
     EndGameState = GAME_STATE_LOAD_MAP;
 
-    game->State = GAME_STATE_TRANSITION;
+    game->state = GAME_STATE_TRANSITION;
 
     TransitionMapName = strdup(mapName);
 
@@ -146,7 +146,7 @@ static void DrawTransitionEffect(struct Game* game)
     float progress = (TransitionTicks / TransitionDuration);
 
     SDL_Rect destRect;
-    SDL_RenderGetViewport(game->Renderer, &destRect);
+    SDL_RenderGetViewport(game->renderer, &destRect);
 
     switch (TransitionDirection)
     {
@@ -179,15 +179,15 @@ static void DrawTransitionEffect(struct Game* game)
 
     if (alpha != 255)
     {
-        SDL_SetRenderDrawBlendMode(game->Renderer, SDL_BLENDMODE_BLEND);
+        SDL_SetRenderDrawBlendMode(game->renderer, SDL_BLENDMODE_BLEND);
     }
 
-    SDL_SetRenderDrawColor(game->Renderer, 0, 0, 0, alpha);
-    SDL_RenderFillRect(game->Renderer, &destRect);
+    SDL_SetRenderDrawColor(game->renderer, 0, 0, 0, alpha);
+    SDL_RenderFillRect(game->renderer, &destRect);
 
     if (alpha != 255)
     {
-        SDL_SetRenderDrawBlendMode(game->Renderer, SDL_BLENDMODE_NONE);
+        SDL_SetRenderDrawBlendMode(game->renderer, SDL_BLENDMODE_NONE);
     }
 }
 
@@ -196,11 +196,11 @@ void TransitionGameStateDraw(struct Game* game)
 {
     if (TransitionPhase == 0)
     {
-        DrawGameState(game, BeginGameState, 1);
+        draw_active_game_state(game, BeginGameState, 1);
     }
     else
     {
-        DrawGameState(game, EndGameState, 1);
+        draw_active_game_state(game, EndGameState, 1);
     }
 
     DrawTransitionEffect(game);
@@ -211,7 +211,7 @@ void TransitionGameStateUpdate(struct Game* game)
 {
     assert(game != NULL);
 
-    TransitionTicks += game->ElapsedSeconds;
+    TransitionTicks += game->elapsed_seconds;
     if (TransitionTicks >= TransitionDuration)
     {
         TransitionTicks -= TransitionDuration;
@@ -227,17 +227,17 @@ void TransitionGameStateUpdate(struct Game* game)
                 }
                 else
                 {
-                    if (game->World->Map != NULL)
+                    if (game->world->map != NULL)
                     {
-                        UnloadMap(game->World);
+                        UnloadMap(game->world);
                     }
 
-                    LoadMap(game, TransitionMapName, &game->World->Map, game->World->Actors);
+                    load_map(game, TransitionMapName, &game->world->map, game->world->actors);
                     free(TransitionMapName);
                     TransitionMapName = NULL;
 
-                    game->World->Player.actor->map = game->World->Map;
-                    game->World->Player.actor->tile = get_map_tile(game->World->Map, 12, 10);
+                    game->world->player.actor->map = game->world->map;
+                    game->world->player.actor->tile = get_map_tile(game->world->map, 12, 10);
 
                 }
 
@@ -246,7 +246,7 @@ void TransitionGameStateUpdate(struct Game* game)
         }
         else
         {
-            game->State = EndGameState;
+            game->state = EndGameState;
         }
     }
 }

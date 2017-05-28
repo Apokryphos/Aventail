@@ -11,21 +11,21 @@ struct Map;
 
 struct World
 {
-    struct Map* Map;
-    struct ActorList* Actors;
-    struct Player Player;
+    struct Map* map;
+    struct ActorList* actors;
+    struct Player player;
 };
 
-struct Actor* CreatePlayerActor(struct World* world);
+struct Actor* create_player_actor(struct World* world);
 /*
-    Allocates a World. Free with DestroyWorld.
+    Allocates a World. Free with destroy_world.
 */
-struct World* CreateWorld();
+struct World* create_world();
 /**
     Frees the specified World and its ActorList and Map. Afterwards the
     specified pointer will be set to NULL.
 */
-void DestroyWorld(struct World** world);
-void SimulateWorld(struct Game* game, struct World* world);
+void destroy_world(struct World** world);
+void simulate_world(struct Game* game, struct World* world);
 
 #endif

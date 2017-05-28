@@ -31,7 +31,7 @@ void GetTilesetRect(
 //  ---------------------------------------------------------------------------
 void LoadTileset(struct Game* game, struct Tileset* tileset, const char* assetPath)
 {
-    LoadTexture(game, &tileset->Texture, assetPath);
+    load_texture(game, &tileset->Texture, assetPath);
 
     tileset->TileWidth = 16;
     tileset->TileHeight = 16;

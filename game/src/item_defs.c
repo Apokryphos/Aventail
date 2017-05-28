@@ -3,7 +3,7 @@
 #include <string.h>
 
 //  ---------------------------------------------------------------------------
-struct Item* CreateWeapon(const char* name)
+struct Item* create_weapon(const char* name)
 {
     assert(name != NULL);
 
@@ -16,7 +16,7 @@ struct Item* CreateWeapon(const char* name)
 }
 
 //  ---------------------------------------------------------------------------
-void LoadItemDefinition(struct Item* item)
+void load_item_definition(struct Item* item)
 {
     assert(item != NULL);
 

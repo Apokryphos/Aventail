@@ -2,7 +2,7 @@
 #include <string.h>
 
 //  ---------------------------------------------------------------------------
-void LoadActorDefinition(struct Actor* actor)
+void load_actor_definition(struct Actor* actor)
 {
     //  Simple definitions until loading from data files is supported
     if (strcasecmp(actor->name, "slime") == 0)
@@ -22,7 +22,7 @@ void LoadActorDefinition(struct Actor* actor)
 }
 
 //  ---------------------------------------------------------------------------
-void LoadPlayerDefinition(struct Actor* actor)
+void load_player_definition(struct Actor* actor)
 {
     actor->max_health = 20;
     actor->health = actor->max_health;

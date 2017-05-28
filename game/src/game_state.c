@@ -10,43 +10,46 @@
 #include <stdio.h>
 
 //  ---------------------------------------------------------------------------
-void DrawGameState(struct Game* game, enum GameState gameState, int inTransition)
+void draw_active_game_state(
+    struct Game* game,
+    enum GameState game_state,
+    int in_transition)
 {
-    assert(gameState != GAME_STATE_NONE);
+    assert(game_state != GAME_STATE_NONE);
 
-    switch (gameState)
+    switch (game_state)
     {
         case GAME_STATE_LEVEL:
-            LevelGameStateDraw(game, inTransition);
+            LevelGameStateDraw(game, in_transition);
             break;
         case GAME_STATE_GEAR:
-            GearGameStateDraw(game, inTransition);
+            GearGameStateDraw(game, in_transition);
             break;
         case GAME_STATE_INVENTORY:
-            InventoryGameStateDraw(game, inTransition);
+            InventoryGameStateDraw(game, in_transition);
             break;
         case GAME_STATE_STATUS:
-            StatusGameStateDraw(game, inTransition);
+            StatusGameStateDraw(game, in_transition);
             break;
         case GAME_STATE_GAME_OVER:
-            GameOverGameStateDraw(game, inTransition);
+            GameOverGameStateDraw(game, in_transition);
             break;
         case GAME_STATE_TRANSITION:
-            assert(inTransition == 0);
+            assert(in_transition == 0);
             TransitionGameStateDraw(game);
             break;
         default:
-            printf("DrawGameState: Unhandled GameState.\n");
+            printf("draw_active_game_state: Unhandled GameState.\n");
             break;
     }
 }
 
 //  ---------------------------------------------------------------------------
-void UpdateGameState(struct Game* game)
+void update_active_game_state(struct Game* game)
 {
-    assert(game->State != GAME_STATE_NONE);
+    assert(game->state != GAME_STATE_NONE);
 
-    switch (game->State)
+    switch (game->state)
     {
         case GAME_STATE_LEVEL:
             LevelGameStateUpdate(game);
@@ -67,7 +70,7 @@ void UpdateGameState(struct Game* game)
             TransitionGameStateUpdate(game);
             break;
         default:
-            printf("UpdateGameState: Unhandled GameState.\n");
+            printf("update_active_game_state: Unhandled GameState.\n");
             break;
     }
 }

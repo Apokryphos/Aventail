@@ -6,10 +6,10 @@ struct Item;
 /*
     Debug function to create a quick weapon.
 */
-struct Item* CreateWeapon(const char* name);
+struct Item* create_weapon(const char* name);
 /*
     Loads item data for the specified item using it's name.
 */
-void LoadItemDefinition(struct Item* item);
+void load_item_definition(struct Item* item);
 
 #endif

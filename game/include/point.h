@@ -3,8 +3,8 @@
 
 struct Point
 {
-    int X;
-    int Y;
+    int x;
+    int y;
 };
 
 #endif

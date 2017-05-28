@@ -3,7 +3,7 @@
 
 struct Actor;
 
-void LoadActorDefinition(struct Actor* actor);
-void LoadPlayerDefinition(struct Actor* actor);
+void load_actor_definition(struct Actor* actor);
+void load_player_definition(struct Actor* actor);
 
 #endif

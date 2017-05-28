@@ -4,13 +4,13 @@
 #include <stdio.h>
 
 //  ---------------------------------------------------------------------------
-void ActivateContainer(struct Actor* source, struct Actor* target)
+void activate_container(struct Actor* source, struct Actor* target)
 {
-    int playSfx = 0;
+    int play_cash_sfx = 0;
 
     if (target->cash > 0)
     {
-        playSfx = 1;
+        play_cash_sfx = 1;
         source->cash += target->cash;
         target->cash = 0;
     }
@@ -19,14 +19,14 @@ void ActivateContainer(struct Actor* source, struct Actor* target)
     {
         if (move_inventory_items(target->inventory, source->inventory))
         {
-            playSfx = 1;
+            play_cash_sfx = 1;
         }
     }
 
     //  Play sound effect
-    if (playSfx)
+    if (play_cash_sfx)
     {
-        PlaySfx(SFX_CASH_PICKUP_01);
+        play_sfx(SFX_CASH_PICKUP_01);
     }
 
     //  Check if container is empty and change sprite if it is
@@ -38,13 +38,13 @@ void ActivateContainer(struct Actor* source, struct Actor* target)
 }
 
 //  ---------------------------------------------------------------------------
-void ActivateDoor(struct Actor* source, struct Actor* target)
+void activate_door(struct Actor* source, struct Actor* target)
 {
     if (target->collision)
     {
         target->collision = 0;
 
-        PlaySfx(SFX_DOOR);
+        play_sfx(SFX_DOOR);
 
         switch (target->tileset_id)
         {

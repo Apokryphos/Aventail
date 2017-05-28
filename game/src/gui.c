@@ -73,7 +73,7 @@ static void DrawGuiScreen(SDL_Renderer* renderer, struct GuiScreen* screen)
         {
             //screen->Panels[p]->Alpha = (int)(255 * FadeProgress);
             DrawPanel(renderer, screen->Panels[p]);
-        }   
+        }
     }
 }
 
@@ -81,24 +81,24 @@ static void DrawGuiScreen(SDL_Renderer* renderer, struct GuiScreen* screen)
 void EnableCursor(int enable)
 {
     CursorEnabled = enable == 0 ? 0 : 1;
-}     
+}
 
 //  ---------------------------------------------------------------------------
 void GuiDraw(struct Game* game)
 {
     if (FadeProgress > 0)
     {
-        DrawScreenFade(game->Renderer, 0.9f * FadeProgress);       
+        DrawScreenFade(game->renderer, 0.9f * FadeProgress);
     }
 
     if (GuiActive)
     {
         for (int s = 0; s < GuiScreenCount; ++s)
         {
-            DrawGuiScreen(game->Renderer, GuiScreens[s]);
+            DrawGuiScreen(game->renderer, GuiScreens[s]);
         }
 
-        DrawCursor(game->Renderer);
+        DrawCursor(game->renderer);
     }
 }
 
@@ -106,24 +106,24 @@ void GuiDraw(struct Game* game)
 void GuiUpdate(struct Game* game)
 {
     static float FadeTicks = 0;
-    
+
     if (GuiActive)
     {
-        FadeTicks += game->ElapsedSeconds;
+        FadeTicks += game->elapsed_seconds;
         if (FadeTicks > FadeDuration)
         {
             FadeTicks = FadeDuration;
         }
 
-        AddTimeBlinkStateData(&CursorBlink, game->ElapsedSeconds);
+        AddTimeBlinkStateData(&CursorBlink, game->elapsed_seconds);
     }
     else
     {
-        FadeTicks -= game->ElapsedSeconds;
+        FadeTicks -= game->elapsed_seconds;
         if (FadeTicks < 0)
         {
             FadeTicks = 0;
-        }  
+        }
     }
 
     FadeProgress = (FadeTicks / FadeDuration);
@@ -134,4 +134,4 @@ void SetCursorPosition(int x, int y)
 {
     CursorX = x;
     CursorY = y;
-} 
+}

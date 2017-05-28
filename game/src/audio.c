@@ -6,37 +6,40 @@
 
 #define AUDIO_QUEUE_SIZE 16
 
-static const int ReserveChannelCount = 2;
-static const int StepsEnterSfxChannel = 0;
-static const int StepsExitSfxChannel = 1;
+static const int CHANNEL_RESERVE_COUNT = 2;
+static const int STEPS_ENTER_SFX_CHANNEL = 0;
+static const int STEPS_EXIT_SFX_CHANNEL = 1;
 
-static Mix_Chunk* ChunkQueue[AUDIO_QUEUE_SIZE];
-static int ChannelQueue[AUDIO_QUEUE_SIZE];
+static Mix_Chunk* chunk_queue[AUDIO_QUEUE_SIZE];
+static int channel_queue[AUDIO_QUEUE_SIZE];
 
-static Mix_Chunk* AttackSfxMixChunk = NULL;
-static Mix_Chunk* CashPickupSfxMixChunk = NULL;
-static Mix_Chunk* DoorSfxMixChunk = NULL;
-static Mix_Chunk* StepsEnterSfxMixChunk = NULL;
-static Mix_Chunk* StepsExitSfxMixChunk = NULL;
+static Mix_Chunk* attack_mix_chunk = NULL;
+static Mix_Chunk* cash_pickup_mix_chunk = NULL;
+static Mix_Chunk* door_mix_chunk = NULL;
+static Mix_Chunk* steps_enter_mix_chunk = NULL;
+static Mix_Chunk* steps_exit_mix_chunk = NULL;
 
 //  ---------------------------------------------------------------------------
-static void LoadSfx(Mix_Chunk** chunk, const struct Game* game, char* assetName)
+static void load_sfx(
+    Mix_Chunk** chunk,
+    const struct Game* game,
+    char* asset_name)
 {
     assert(chunk != NULL);
     assert(*chunk == NULL);
-    assert(assetName != NULL);
+    assert(asset_name != NULL);
 
-    char* fullPath = create_sfx_file_path(game->BasePath, assetName);
-    *chunk = Mix_LoadWAV(fullPath);
-    free(fullPath);
+    char* full_path = create_sfx_file_path(game->base_path, asset_name);
+    *chunk = Mix_LoadWAV(full_path);
+    free(full_path);
 }
 
 //  ---------------------------------------------------------------------------
-int AudioInit(const struct Game* game)
+int init_audio(const struct Game* game)
 {
-    int initFlags = MIX_INIT_OGG;
-    int init = Mix_Init(initFlags);
-    if ((init & initFlags) != initFlags)
+    int init_flags = MIX_INIT_OGG;
+    int init = Mix_Init(init_flags);
+    if ((init & init_flags) != init_flags)
     {
         printf("Mix_Init failed to initialize OGG support.\n");
         printf("%s\n", Mix_GetError());
@@ -48,36 +51,36 @@ int AudioInit(const struct Game* game)
         return -1;
     }
 
-    LoadSfx(&AttackSfxMixChunk, game, "attack01");
-    LoadSfx(&CashPickupSfxMixChunk, game, "cash_pickup_01");
-    LoadSfx(&DoorSfxMixChunk, game, "door");
-    LoadSfx(&StepsEnterSfxMixChunk, game, "steps_enter");
-    LoadSfx(&StepsExitSfxMixChunk, game, "steps_exit");
+    load_sfx(&attack_mix_chunk, game, "attack01");
+    load_sfx(&cash_pickup_mix_chunk, game, "cash_pickup_01");
+    load_sfx(&door_mix_chunk, game, "door");
+    load_sfx(&steps_enter_mix_chunk, game, "steps_enter");
+    load_sfx(&steps_exit_mix_chunk, game, "steps_exit");
 
     //  Reserve a channel for stair effects
-    Mix_ReserveChannels(ReserveChannelCount);
+    Mix_ReserveChannels(CHANNEL_RESERVE_COUNT);
 
     //  Init queue
     for (size_t c = 0; c < AUDIO_QUEUE_SIZE; ++c)
     {
-        ChunkQueue[c] = NULL;
-        ChannelQueue[c] = -1;
+        chunk_queue[c] = NULL;
+        channel_queue[c] = -1;
     }
 
     return 0;
 }
 
 //  ---------------------------------------------------------------------------
-void AudioShutdown()
+void shutdown_audio()
 {
     //  Halt playback on all channels
     Mix_HaltChannel(-1);
 
-    Mix_FreeChunk(AttackSfxMixChunk);
-    Mix_FreeChunk(CashPickupSfxMixChunk);
-    Mix_FreeChunk(DoorSfxMixChunk);
-    Mix_FreeChunk(StepsEnterSfxMixChunk);
-    Mix_FreeChunk(StepsExitSfxMixChunk);
+    Mix_FreeChunk(attack_mix_chunk);
+    Mix_FreeChunk(cash_pickup_mix_chunk);
+    Mix_FreeChunk(door_mix_chunk);
+    Mix_FreeChunk(steps_enter_mix_chunk);
+    Mix_FreeChunk(steps_exit_mix_chunk);
 
     Mix_CloseAudio();
     Mix_Quit();
@@ -85,32 +88,32 @@ void AudioShutdown()
     //  Clear queue
     for (size_t c = 0; c < AUDIO_QUEUE_SIZE; ++c)
     {
-        ChunkQueue[c] = NULL;
-        ChannelQueue[c] = -1;
+        chunk_queue[c] = NULL;
+        channel_queue[c] = -1;
     }
 }
 
 //  ---------------------------------------------------------------------------
-void AudioUpdate()
+void update_audio()
 {
     //  Attempt to play any queued sound effects
     for (size_t c = 0; c < AUDIO_QUEUE_SIZE; ++c)
     {
-        if (ChunkQueue[c] != NULL)
+        if (chunk_queue[c] != NULL)
         {
-            int played = Mix_PlayChannel(ChannelQueue[c], ChunkQueue[c], 0);
+            int played = Mix_PlayChannel(channel_queue[c], chunk_queue[c], 0);
 
             if (played != -1)
             {
-                ChunkQueue[c] = NULL;
-                ChannelQueue[c] = -1;
+                chunk_queue[c] = NULL;
+                channel_queue[c] = -1;
             }
         }
     }
 }
 
 //  ---------------------------------------------------------------------------
-void PlaySfx(const enum SfxId id)
+void play_sfx(const enum SfxId id)
 {
     //  Default is to play using any available channel
     int channel = -1;
@@ -118,21 +121,21 @@ void PlaySfx(const enum SfxId id)
     switch (id)
     {
         case SFX_ATTACK_01:
-            chunk = AttackSfxMixChunk;
+            chunk = attack_mix_chunk;
             break;
         case SFX_CASH_PICKUP_01:
-            chunk = CashPickupSfxMixChunk;
+            chunk = cash_pickup_mix_chunk;
             break;
         case SFX_DOOR:
-            chunk = DoorSfxMixChunk;
+            chunk = door_mix_chunk;
             break;
         case SFX_STEPS_ENTER:
-            channel = StepsEnterSfxChannel;
-            chunk = StepsEnterSfxMixChunk;
+            channel = STEPS_ENTER_SFX_CHANNEL;
+            chunk = steps_enter_mix_chunk;
             break;
         case SFX_STEPS_EXIT:
-            channel = StepsExitSfxChannel;
-            chunk = StepsExitSfxMixChunk;
+            channel = STEPS_EXIT_SFX_CHANNEL;
+            chunk = steps_exit_mix_chunk;
             break;
     }
 
@@ -144,13 +147,13 @@ void PlaySfx(const enum SfxId id)
     //  before the exiting sound effect finishes playing. SDL_Delay or
     //  elapsed time bookkeeping could be used but it's preferable to avoid
     //  that for now as map load times are likely to increase.
-    if (channel == StepsEnterSfxChannel)
+    if (channel == STEPS_ENTER_SFX_CHANNEL)
     {
-        Mix_HaltChannel(StepsExitSfxChannel);
+        Mix_HaltChannel(STEPS_EXIT_SFX_CHANNEL);
     }
-    else if (channel == StepsExitSfxChannel)
+    else if (channel == STEPS_EXIT_SFX_CHANNEL)
     {
-        Mix_HaltChannel(StepsEnterSfxChannel);
+        Mix_HaltChannel(STEPS_ENTER_SFX_CHANNEL);
     }
 
     int played = -1;
@@ -164,10 +167,10 @@ void PlaySfx(const enum SfxId id)
         //  Add to queue if channel wasn't available
         for (size_t c = 0; c < AUDIO_QUEUE_SIZE; ++c)
         {
-            if (ChunkQueue[c] == NULL)
+            if (chunk_queue[c] == NULL)
             {
-                ChunkQueue[c] = chunk;
-                ChannelQueue[c] = channel;
+                chunk_queue[c] = chunk;
+                channel_queue[c] = channel;
                 break;
             }
         }

@@ -2,41 +2,47 @@
 #include "actor.h"
 #include "actor_defs.h"
 #include "actor_list.h"
-#include "a_star.h"
+#include "path_finder.h"
 #include "audio.h"
+#include "game_state_transition.h"
 #include "gear.h"
 #include "inventory.h"
 #include "item_defs.h"
 #include "map.h"
 #include "point.h"
 #include "tile.h"
-#include "game_state_transition.h"
 #include <assert.h>
 #include <stdlib.h>
 
-static struct Actor* ActiveActor = NULL;
-static const int BonesTilesetId = 95;
+static struct Actor* active_actor = NULL;
+static const int BONES_TILESET_ID = 95;
 
-static void LootActor(struct Actor* source, struct Actor* target, struct World* world);
+static void loot_actor(
+    struct Actor* source,
+    struct Actor* target,
+    struct World* world);
 
 //  ---------------------------------------------------------------------------
-static void Attack(struct Actor* source, struct Actor* target, struct World* world)
+static void attack_actor(
+    struct Actor* source,
+    struct Actor* target,
+    struct World* world)
 {
     assert(source->action_points > 0);
 
     if (source->health > 0 && target->health > 0)
     {
-        PlaySfx(SFX_ATTACK_01);
+        play_sfx(SFX_ATTACK_01);
 
         --source->action_points;
 
-        struct Stats sourceStats = add_stats(source->stats, source->gear.stats);
-        struct Stats targetStats = add_stats(target->stats, target->gear.stats);
+        struct Stats source_stats = add_stats(source->stats, source->gear.stats);
+        struct Stats target_stats = add_stats(target->stats, target->gear.stats);
 
         int damage = 1;
-        if (sourceStats.attack > targetStats.defend)
+        if (source_stats.attack > target_stats.defend)
         {
-            damage = (sourceStats.attack - targetStats.defend) + 1;
+            damage = (source_stats.attack - target_stats.defend) + 1;
         }
 
         target->health -= damage;
@@ -46,15 +52,15 @@ static void Attack(struct Actor* source, struct Actor* target, struct World* wor
             target->collision = 0;
             target->health = 0;
             target->move_direction = DIRECTION_NONE;
-            target->tileset_id = BonesTilesetId;
+            target->tileset_id = BONES_TILESET_ID;
 
-            LootActor(source, target, world);
+            loot_actor(source, target, world);
         }
     }
 }
 
 //  ---------------------------------------------------------------------------
-static int CanAct(const struct Actor* actor)
+static int actor_can_act(const struct Actor* actor)
 {
     return
         (actor->type == ACTOR_TYPE_PLAYER ||
@@ -64,18 +70,18 @@ static int CanAct(const struct Actor* actor)
 }
 
 //  ---------------------------------------------------------------------------
-static struct Actor* CreateLootContainer(
+static struct Actor* create_loot_container(
     struct World* world,
     const int x,
     const int y,
     struct Inventory* inventory)
 {
-    assert(world->Map != NULL);
+    assert(world->map != NULL);
     assert(inventory != NULL);
 
-    struct Actor* actor = create_actor(world->Map, "Loot", x, y, 91);
+    struct Actor* actor = create_actor(world->map, "Loot", x, y, 91);
     actor->type = ACTOR_TYPE_CONTAINER;
-    add_actor_to_actor_list_front(world->Actors, actor);
+    add_actor_to_actor_list_front(world->actors, actor);
 
     move_inventory_items(inventory, actor->inventory);
 
@@ -83,82 +89,82 @@ static struct Actor* CreateLootContainer(
 }
 
 //  ---------------------------------------------------------------------------
-struct Actor* CreatePlayerActor(struct World* world)
+struct Actor* create_player_actor(struct World* world)
 {
-    assert(world->Player.actor == NULL);
+    assert(world->player.actor == NULL);
 
     struct Actor* actor = create_actor(NULL, "Player", -1, -1, 190);
     actor->type = ACTOR_TYPE_PLAYER;
-    LoadPlayerDefinition(actor);
-    add_actor_to_actor_list_front(world->Actors, actor);
-    world->Player.actor = actor;
+    load_player_definition(actor);
+    add_actor_to_actor_list_front(world->actors, actor);
+    world->player.actor = actor;
 
     //  Some starting inventory to test with
     struct Item* armor = create_item("Leather Cuirass");
-    LoadItemDefinition(armor);
+    load_item_definition(armor);
     equip_item(actor, armor);
 
     // struct Item* weapon = create_item("Bronze Sword");
-    // LoadItemDefinition(weapon);
+    // load_item_definition(weapon);
     // equip_item(actor, weapon);
 
     struct Item* armor2 = create_item("Chainmail");
-    LoadItemDefinition(armor2);
+    load_item_definition(armor2);
     add_item_to_inventory(actor->inventory, armor2);
 
     // struct Item* shield1 = create_item("Buckler");
-    // LoadItemDefinition(shield1);
+    // load_item_definition(shield1);
     // add_item_to_inventory(actor->inventory, shield1);
 
-    // add_item_to_inventory(actor->inventory, CreateWeapon("Dagger"));
-    // add_item_to_inventory(actor->inventory, CreateWeapon("Dirk"));
-    // add_item_to_inventory(actor->inventory, CreateWeapon("Knife"));
-    // add_item_to_inventory(actor->inventory, CreateWeapon("Shiv"));
-    // add_item_to_inventory(actor->inventory, CreateWeapon("Katana"));
-    // add_item_to_inventory(actor->inventory, CreateWeapon("Nodachi"));
-    // add_item_to_inventory(actor->inventory, CreateWeapon("Short Sword"));
-    // add_item_to_inventory(actor->inventory, CreateWeapon("Great Sword"));
-    // add_item_to_inventory(actor->inventory, CreateWeapon("Claymore"));
-    // add_item_to_inventory(actor->inventory, CreateWeapon("Longsword"));
-    // add_item_to_inventory(actor->inventory, CreateWeapon("Broadsword"));
-    // add_item_to_inventory(actor->inventory, CreateWeapon("Sabre"));
-    // add_item_to_inventory(actor->inventory, CreateWeapon("Rapier"));
-    // add_item_to_inventory(actor->inventory, CreateWeapon("Cutlass"));
+    // add_item_to_inventory(actor->inventory, create_weapon("Dagger"));
+    // add_item_to_inventory(actor->inventory, create_weapon("Dirk"));
+    // add_item_to_inventory(actor->inventory, create_weapon("Knife"));
+    // add_item_to_inventory(actor->inventory, create_weapon("Shiv"));
+    // add_item_to_inventory(actor->inventory, create_weapon("Katana"));
+    // add_item_to_inventory(actor->inventory, create_weapon("Nodachi"));
+    // add_item_to_inventory(actor->inventory, create_weapon("Short Sword"));
+    // add_item_to_inventory(actor->inventory, create_weapon("Great Sword"));
+    // add_item_to_inventory(actor->inventory, create_weapon("Claymore"));
+    // add_item_to_inventory(actor->inventory, create_weapon("Longsword"));
+    // add_item_to_inventory(actor->inventory, create_weapon("Broadsword"));
+    // add_item_to_inventory(actor->inventory, create_weapon("Sabre"));
+    // add_item_to_inventory(actor->inventory, create_weapon("Rapier"));
+    // add_item_to_inventory(actor->inventory, create_weapon("Cutlass"));
 
     // struct Item* weapon2 = create_item("Iron Short Sword");
-    // LoadItemDefinition(weapon2);
+    // load_item_definition(weapon2);
     // add_item_to_inventory(actor->inventory, weapon2);
 
     struct Item* accessory1 = create_item("Healing Ring");
-    LoadItemDefinition(accessory1);
+    load_item_definition(accessory1);
     add_item_to_inventory(actor->inventory, accessory1);
 
     return actor;
 }
 
 //  ---------------------------------------------------------------------------
-struct World* CreateWorld()
+struct World* create_world()
 {
     struct World* world = malloc(sizeof(struct World));
-    world->Actors = create_actor_list();
-    world->Player.actor = NULL;
-    world->Map = NULL;
+    world->actors = create_actor_list();
+    world->player.actor = NULL;
+    world->map = NULL;
     return world;
 }
 
 //  ---------------------------------------------------------------------------
-void DestroyWorld(struct World** world)
+void destroy_world(struct World** world)
 {
     if (*world == NULL)
     {
         return;
     }
 
-    destroy_actor_list(&(*world)->Actors);
+    destroy_actor_list(&(*world)->actors);
 
-    if ((*world)->Map != NULL)
+    if ((*world)->map != NULL)
     {
-        destroy_map(&(*world)->Map);
+        destroy_map(&(*world)->map);
     }
 
     free(*world);
@@ -166,7 +172,10 @@ void DestroyWorld(struct World** world)
 }
 
 //  ---------------------------------------------------------------------------
-static void LootActor(struct Actor* source, struct Actor* target, struct World* world)
+static void loot_actor(
+    struct Actor* source,
+    struct Actor* target,
+    struct World* world)
 {
     if (target->cash > 0)
     {
@@ -180,13 +189,16 @@ static void LootActor(struct Actor* source, struct Actor* target, struct World* 
 
         if (get_inventory_item_count(target->inventory) > 0)
         {
-            CreateLootContainer(world, target->tile->x, target->tile->y, target->inventory);
+            create_loot_container(world, target->tile->x, target->tile->y, target->inventory);
         }
     }
 }
 
 //  ---------------------------------------------------------------------------
-static void MoveActor(struct Actor* actor, struct Game* game, struct World* world)
+static void MoveActor(
+    struct Actor* actor,
+    struct Game* game,
+    struct World* world)
 {
     assert(actor->action_points > 0);
 
@@ -208,45 +220,45 @@ static void MoveActor(struct Actor* actor, struct Game* game, struct World* worl
     //  Check if destination tile is valid
     if (dest_tile != NULL && dest_tile->collision == 0)
     {
-        int canMove = 1;
+        int can_move = 1;
 
-        struct ActorListNode* otherActorNode = world->Actors->front;
-        while (otherActorNode != NULL)
+        struct ActorListNode* other_actor_node = world->actors->front;
+        while (other_actor_node != NULL)
         {
-            struct Actor* otherActor = otherActorNode->actor;
+            struct Actor* other_actor = other_actor_node->actor;
 
             //  Check if another actor occupies destination tile
             //  and is collidable
-            if (otherActor->tile == dest_tile &&
-                otherActor != actor)
+            if (other_actor->tile == dest_tile &&
+                other_actor != actor)
             {
-                if (otherActor->collision)
+                if (other_actor->collision)
                 {
                     //  Attack first foe on tile
                     if (target == NULL &&
-                        is_actor_foe(actor, otherActor))
+                        is_actor_foe(actor, other_actor))
                     {
-                        target = otherActor;
+                        target = other_actor;
                     }
 
-                    canMove = 0;
+                    can_move = 0;
                 }
 
-                if (otherActor->on_touch != NULL)
+                if (other_actor->on_touch != NULL)
                 {
-                    (*otherActor->on_touch)(actor, otherActor);
+                    (*other_actor->on_touch)(actor, other_actor);
                 }
             }
-            otherActorNode = otherActorNode->next;
+            other_actor_node = other_actor_node->next;
         }
 
         //  Attack target if any
         if (target != NULL)
         {
-            Attack(actor, target, world);
+            attack_actor(actor, target, world);
         }
         //  Move actor to destination tile
-        else if (canMove)
+        else if (can_move)
         {
             --actor->action_points;
 
@@ -257,9 +269,9 @@ static void MoveActor(struct Actor* actor, struct Game* game, struct World* worl
             else
             {
                 //  Map links are currently usable by player only
-                if (actor == world->Player.actor)
+                if (actor == world->player.actor)
                 {
-                    ActiveActor = NULL;
+                    active_actor = NULL;
                     BeginMapLinkTransition(game, dest_tile->link, DIRECTION_NONE);
                     return;
                 }
@@ -269,119 +281,119 @@ static void MoveActor(struct Actor* actor, struct Game* game, struct World* worl
 }
 
 //  ---------------------------------------------------------------------------
-static void NextActiveActor(struct World* world)
+static void next_active_actor(struct World* world)
 {
-    ActiveActor = NULL;
+    active_actor = NULL;
 
-    struct ActorListNode* actorNode = world->Actors->front;
-    while (actorNode != NULL)
+    struct ActorListNode* actor_node = world->actors->front;
+    while (actor_node != NULL)
     {
-        struct Actor* actor = actorNode->actor;
+        struct Actor* actor = actor_node->actor;
 
-        if (CanAct(actor))
+        if (actor_can_act(actor))
         {
-            ActiveActor = actor;
+            active_actor = actor;
             return;
         }
 
-        actorNode = actorNode->next;
+        actor_node = actor_node->next;
     }
 }
 
 //  ---------------------------------------------------------------------------
-static void ResetActionPoints(struct World* world)
+static void reset_action_points(struct World* world)
 {
-    struct ActorListNode* actorNode = world->Actors->front;
-    while (actorNode != NULL)
+    struct ActorListNode* actor_node = world->actors->front;
+    while (actor_node != NULL)
     {
-        struct Actor* actor = actorNode->actor;
+        struct Actor* actor = actor_node->actor;
 
         actor->action_points = actor->max_action_points;
 
-        actorNode = actorNode->next;
+        actor_node = actor_node->next;
     }
 }
 
 //  ---------------------------------------------------------------------------
-void SimulateWorld(struct Game* game, struct World* world)
+void simulate_world(struct Game* game, struct World* world)
 {
-    static struct Map* lastMap = NULL;
-    static struct AStar* aStar = NULL;
+    static struct Map* last_map = NULL;
+    static struct PathFinder* path_finder = NULL;
 
-    if (lastMap != world->Map && world != NULL)
+    if (last_map != world->map && world != NULL)
     {
-        lastMap = world->Map;
+        last_map = world->map;
 
-        if (aStar != NULL)
+        if (path_finder != NULL)
         {
-            DestroyAStar(&aStar);
-            aStar = NULL;
+            destroy_path_finder(&path_finder);
+            path_finder = NULL;
         }
 
-        aStar = CreateAStar(world->Map);
+        path_finder = create_path_finder(world->map);
     }
 
-    if (ActiveActor == NULL)
+    if (active_actor == NULL)
     {
-        ActiveActor = world->Player.actor;
-        ResetActionPoints(world);
+        active_actor = world->player.actor;
+        reset_action_points(world);
     }
 
-    if (ActiveActor != NULL)
+    if (active_actor != NULL)
     {
-        if (ActiveActor->type == ACTOR_TYPE_VILLAIN)
+        if (active_actor->type == ACTOR_TYPE_VILLAIN)
         {
-            struct AStarPath* path = BuildAStarPath(
-                aStar,
-                ActiveActor->tile,
-                world->Player.actor->tile,
-                world->Map,
-                world->Actors);
+            struct Path* path = build_path(
+                path_finder,
+                active_actor->tile,
+                world->player.actor->tile,
+                world->map,
+                world->actors);
 
             if (path == NULL)
             {
-                ActiveActor->move_direction = get_random_direction();
+                active_actor->move_direction = get_random_direction();
             }
             else
             {
-                struct Point* nextPoint =
-                    GetNextPathPoint(path, ActiveActor->tile);
+                struct Point* next_point =
+                    get_next_path_point(path, active_actor->tile);
 
-                if (nextPoint != NULL)
+                if (next_point != NULL)
                 {
-                    ActiveActor->move_direction = get_direction_by_delta(
-                        ActiveActor->tile->x,
-                        ActiveActor->tile->y,
-                        nextPoint->X,
-                        nextPoint->Y);
+                    active_actor->move_direction = get_direction_by_delta(
+                        active_actor->tile->x,
+                        active_actor->tile->y,
+                        next_point->x,
+                        next_point->y);
                 }
 
-                DestroyAStarPath(&path);
+                destroy_path(&path);
             }
         }
 
-        if (ActiveActor->action_points > 0)
+        if (active_actor->action_points > 0)
         {
-            MoveActor(ActiveActor, game, world);
+            MoveActor(active_actor, game, world);
 
-            if (ActiveActor != NULL &&
-                ActiveActor->type == ACTOR_TYPE_VILLAIN &&
-                ActiveActor->action_points > 0)
+            if (active_actor != NULL &&
+                active_actor->type == ACTOR_TYPE_VILLAIN &&
+                active_actor->action_points > 0)
             {
                 //  Villains always expend action points to prevent
                 //  their turn from never ending
-                --ActiveActor->action_points;
+                --active_actor->action_points;
             }
         }
         else
         {
-            NextActiveActor(world);
+            next_active_actor(world);
         }
     }
 
-    if (is_actor_dead(world->Player.actor))
+    if (is_actor_dead(world->player.actor))
     {
-        ActiveActor = NULL;
+        active_actor = NULL;
         BeginGameStateTransition(game, GAME_STATE_GAME_OVER);
     }
 }

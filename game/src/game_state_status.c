@@ -18,7 +18,7 @@ static void ExitStatusGameState(
     struct Game* game,
     enum GameState gameState)
 {
-    game->State = gameState;
+    game->state = gameState;
     DeactivateGui();
     StatusGuiScreen->Enabled = 0;
 }
@@ -26,7 +26,7 @@ static void ExitStatusGameState(
 //  ---------------------------------------------------------------------------
 static void ProcessStatusGameStateInput(struct Game* game)
 {
-    struct InputDevice* inputDevice = game->InputDevice;
+    struct InputDevice* inputDevice = game->input_device;
 
     if (inputDevice->Cancel || inputDevice->Status)
     {
@@ -63,7 +63,7 @@ static void InitStatusGuiScreen(SDL_Renderer* renderer)
 //  ---------------------------------------------------------------------------
 void StatusGameStateDraw(struct Game* game, int inTransition)
 {
-    DrawMap(game->Renderer, game->World->Map, game->World->Actors);
+    DrawMap(game->renderer, game->world->map, game->world->actors);
     GuiDraw(game);
 }
 
@@ -72,7 +72,7 @@ void StatusGameStateUpdate(struct Game* game)
 {
     if (StatusGuiScreen == NULL)
     {
-        InitStatusGuiScreen(game->Renderer);
+        InitStatusGuiScreen(game->renderer);
     }
 
     StatusGuiScreen->Enabled = 1;
@@ -82,5 +82,5 @@ void StatusGameStateUpdate(struct Game* game)
 
     ProcessStatusGameStateInput(game);
 
-    UpdateStatusWidget(StatusWidget, game->World->Player.actor);
+    UpdateStatusWidget(StatusWidget, game->world->player.actor);
 }

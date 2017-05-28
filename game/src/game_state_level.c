@@ -33,27 +33,27 @@ static char* HoverActorNameString = NULL;
 //  ---------------------------------------------------------------------------
 void ProcessLevelGameStateInput(struct Game* game)
 {
-    struct InputDevice* inputDevice = game->InputDevice;
+    struct InputDevice* inputDevice = game->input_device;
 
-    game->World->Player.actor->move_direction = inputDevice->MoveDirection;
+    game->world->player.actor->move_direction = inputDevice->MoveDirection;
     inputDevice->MoveDirection = DIRECTION_NONE;
 
     if (inputDevice->Gear)
     {
-        game->State = GAME_STATE_GEAR;
+        game->state = GAME_STATE_GEAR;
     }
     else if (inputDevice->Inventory)
     {
-        game->State = GAME_STATE_INVENTORY;
+        game->state = GAME_STATE_INVENTORY;
     }
     else if (inputDevice->Status)
     {
-        game->State = GAME_STATE_STATUS;
+        game->state = GAME_STATE_STATUS;
     }
 
     if (inputDevice->DebugKillPlayerActor)
     {
-        game->World->Player.actor->health = 0;
+        game->world->player.actor->health = 0;
     }
 }
 
@@ -83,9 +83,9 @@ int CursorOverActor(struct Actor* actor)
 //  ---------------------------------------------------------------------------
 void LevelGameStateDraw(struct Game* game, int inTransition)
 {
-    if (game->World->Map != NULL)
+    if (game->world->map != NULL)
     {
-        DrawMap(game->Renderer, game->World->Map, game->World->Actors);
+        DrawMap(game->renderer, game->world->map, game->world->actors);
     }
 
     GuiDraw(game);
@@ -95,14 +95,14 @@ void LevelGameStateDraw(struct Game* game, int inTransition)
         return;
     }
 
-    CursorX = game->InputDevice->CursorX;
-    CursorY = game->InputDevice->CursorY;
+    CursorX = game->input_device->CursorX;
+    CursorY = game->input_device->CursorY;
 
-    struct Actor* hoverActor = find_actor_in_actor_list(game->World->Actors, &CursorOverActor);
+    struct Actor* hoverActor = find_actor_in_actor_list(game->world->actors, &CursorOverActor);
 
     if (hoverActor != NULL)
     {
-        HoverTicks += game->ElapsedSeconds;
+        HoverTicks += game->elapsed_seconds;
         if (HoverTicks > HoverDuration)
         {
             HoverTicks = HoverDuration;
@@ -160,7 +160,7 @@ void LevelGameStateDraw(struct Game* game, int inTransition)
     }
     else
     {
-        HoverTicks -= game->ElapsedSeconds;
+        HoverTicks -= game->elapsed_seconds;
         if (HoverTicks < 0)
         {
             HoverTicks = 0;
@@ -192,23 +192,23 @@ void LevelGameStateDraw(struct Game* game, int inTransition)
 
         if (alpha != 255)
         {
-            SDL_SetRenderDrawBlendMode(game->Renderer, SDL_BLENDMODE_BLEND);
+            SDL_SetRenderDrawBlendMode(game->renderer, SDL_BLENDMODE_BLEND);
         }
 
-        SDL_SetRenderDrawColor(game->Renderer, 0, 0, 0, alpha);
-        SDL_RenderFillRect(game->Renderer, &destRect);
-        SDL_SetRenderDrawColor(game->Renderer, 255, 255, 255, alpha);
-        SDL_RenderDrawRect(game->Renderer, &destRect);
+        SDL_SetRenderDrawColor(game->renderer, 0, 0, 0, alpha);
+        SDL_RenderFillRect(game->renderer, &destRect);
+        SDL_SetRenderDrawColor(game->renderer, 255, 255, 255, alpha);
+        SDL_RenderDrawRect(game->renderer, &destRect);
 
         DrawTextAlpha(
-            game->Renderer,
+            game->renderer,
             HoverActorNameString,
             destRect.x + padding / 2,
             destRect.y + padding / 2,
             alpha);
 
         DrawTextAlpha(
-            game->Renderer,
+            game->renderer,
             HoverActorHealthString,
             destRect.x + padding / 2,
             destRect.y + lineHeight + padding / 2,
@@ -217,18 +217,18 @@ void LevelGameStateDraw(struct Game* game, int inTransition)
         if (HoverActorType == ACTOR_TYPE_PLAYER)
         {
             DrawTextAlpha(
-                game->Renderer,
+                game->renderer,
                 HoverActorCashString,
                 destRect.x + padding / 2,
                 destRect.y + lineHeight + lineHeight + padding / 2,
                 alpha);
         }
 
-        SDL_SetRenderDrawColor(game->Renderer, 0, 0, 0, 255);
+        SDL_SetRenderDrawColor(game->renderer, 0, 0, 0, 255);
 
         if (alpha != 255)
         {
-            SDL_SetRenderDrawBlendMode(game->Renderer, SDL_BLENDMODE_NONE);
+            SDL_SetRenderDrawBlendMode(game->renderer, SDL_BLENDMODE_NONE);
         }
     }
 }
@@ -237,5 +237,5 @@ void LevelGameStateDraw(struct Game* game, int inTransition)
 void LevelGameStateUpdate(struct Game* game)
 {
     ProcessLevelGameStateInput(game);
-    SimulateWorld(game, game->World);
+    simulate_world(game, game->world);
 }
