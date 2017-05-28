@@ -3,7 +3,7 @@
 #include <string.h>
 
 //  ---------------------------------------------------------------------------
-int GuiStringMatches(const char* guiString, const char* value)
+int gui_string_compare(const char* guiString, const char* value)
 {
     return
         ((guiString == NULL && value == NULL) ||
@@ -11,11 +11,11 @@ int GuiStringMatches(const char* guiString, const char* value)
 }
 
 //  ---------------------------------------------------------------------------
-void SetGuiString(char **string, const char* value)
+void set_gui_string(char **string, const char* value)
 {
     assert(string != NULL);
 
-    if (GuiStringMatches(*string, value) == 0)
+    if (gui_string_compare(*string, value) == 0)
     {
         if (*string != NULL)
         {

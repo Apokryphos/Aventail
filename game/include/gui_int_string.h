@@ -3,17 +3,17 @@
 
 struct GuiIntString
 {
-    int Value;
-    char* Label;
-    char* String;
+    int value;
+    char* label;
+    char* string;
 };
 
-struct GuiIntString* CreateGuiIntString();
+struct GuiIntString* create_gui_int_string();
 
-void DestroyGuiIntString(struct GuiIntString** intString);
+void destroy_gui_int_string(struct GuiIntString** gui_string);
 
-void SetGuiIntString(
-    struct GuiIntString* intString,
+void set_gui_int_string(
+    struct GuiIntString* gui_string,
     const char* label,
     int value);
 

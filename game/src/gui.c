@@ -17,11 +17,11 @@ static const int CURSOR_TILESET_ID = 270;
 static int cursor_enabled = 0;
 static struct BlinkStateData cursor_blink =
 {
-    .OnDuration = 1.0f,
-    .OffDuration = 0.16f,
-    .Enabled = 1,
-    .Ticks = 0,
-    .Visible = 1,
+    .on_duration = 1.0f,
+    .off_duration = 0.16f,
+    .enabled = 1,
+    .ticks = 0,
+    .visible = 1,
 };
 static int cursor_x = 0;
 static int cursor_y = 0;
@@ -57,9 +57,9 @@ void deactivate_gui()
 //  ---------------------------------------------------------------------------
 static void draw_gui_cursor(SDL_Renderer* renderer)
 {
-    if (cursor_enabled && cursor_blink.Visible)
+    if (cursor_enabled && cursor_blink.visible)
     {
-        DrawTilesetTile(
+        draw_tileset_tile(
             renderer,
             CURSOR_TILESET_ID,
             cursor_x,
@@ -76,7 +76,7 @@ static void draw_gui_screen(SDL_Renderer* renderer, struct GuiScreen* screen)
         for (int p = 0; p < screen->PanelCount; ++p)
         {
             //screen->Panels[p]->Alpha = (int)(255 * fade_progress);
-            DrawPanel(renderer, screen->Panels[p]);
+            draw_panel(renderer, screen->Panels[p]);
         }
     }
 }
@@ -92,7 +92,7 @@ void draw_gui(struct Game* game)
 {
     if (fade_progress > 0)
     {
-        DrawScreenFade(game->renderer, 0.9f * fade_progress);
+        draw_screen_fade(game->renderer, 0.9f * fade_progress);
     }
 
     if (gui_active)
@@ -119,7 +119,7 @@ void update_gui(struct Game* game)
             fade_ticks = FADE_DURATION;
         }
 
-        AddTimeBlinkStateData(&cursor_blink, game->elapsed_seconds);
+        add_blink_state_data_time(&cursor_blink, game->elapsed_seconds);
     }
     else
     {

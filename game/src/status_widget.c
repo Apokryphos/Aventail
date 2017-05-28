@@ -10,7 +10,7 @@
 #include <string.h>
 
 //  ---------------------------------------------------------------------------
-struct StatusWidget* CreateStatusWidget(struct GuiScreen* guiScreen)
+struct StatusWidget* create_status_widget(struct GuiScreen* guiScreen)
 {
     assert(guiScreen != NULL);
 
@@ -53,17 +53,17 @@ struct StatusWidget* CreateStatusWidget(struct GuiScreen* guiScreen)
     AddGuiScreenPanel(guiScreen, widget->CashPanel);
 
     widget->ActorName = NULL;
-    widget->HealthGaugeString = CreateGuiGaugeString();
-    widget->CashIntString = CreateGuiIntString();
-    widget->AttackIntString = CreateGuiIntString();
-    widget->DefendIntString = CreateGuiIntString();
-    widget->VitalityIntString = CreateGuiIntString();
+    widget->HealthGaugeString = create_gui_gauge_string();
+    widget->CashIntString = create_gui_int_string();
+    widget->AttackIntString = create_gui_int_string();
+    widget->DefendIntString = create_gui_int_string();
+    widget->VitalityIntString = create_gui_int_string();
 
     return widget;
 }
 
 //  ---------------------------------------------------------------------------
-void SetStatusWidgetPosition(struct StatusWidget* widget, int x, int y)
+void set_status_widget_position(struct StatusWidget* widget, int x, int y)
 {
     assert(widget != NULL);
 
@@ -92,7 +92,7 @@ void SetStatusWidgetPosition(struct StatusWidget* widget, int x, int y)
 }
 
 //  ---------------------------------------------------------------------------
-void UpdateStatusWidget(struct StatusWidget* widget, struct Actor* actor)
+void update_status_widget(struct StatusWidget* widget, struct Actor* actor)
 {
     assert(widget != NULL);
 
@@ -103,25 +103,25 @@ void UpdateStatusWidget(struct StatusWidget* widget, struct Actor* actor)
         actorName = actor->name;
     }
 
-    SetGuiString(&widget->ActorName, actorName);
+    set_gui_string(&widget->ActorName, actorName);
     widget->NamePanel->Text = widget->ActorName;
 
-    SetGuiGaugeString(
+    set_gui_gauge_string(
         widget->HealthGaugeString,
         "Health",
         actor->health,
         actor->max_health);
-    widget->HealthGaugePanel->Text = widget->HealthGaugeString->String;
+    widget->HealthGaugePanel->Text = widget->HealthGaugeString->string;
 
-    SetGuiIntString(widget->CashIntString, "Cash", actor->cash);
-    widget->CashPanel->Text = widget->CashIntString->String;
+    set_gui_int_string(widget->CashIntString, "Cash", actor->cash);
+    widget->CashPanel->Text = widget->CashIntString->string;
 
-    SetGuiIntString(widget->AttackIntString, "Attack", actor->stats.attack);
-    widget->AttackPanel->Text = widget->AttackIntString->String;
+    set_gui_int_string(widget->AttackIntString, "Attack", actor->stats.attack);
+    widget->AttackPanel->Text = widget->AttackIntString->string;
 
-    SetGuiIntString(widget->DefendIntString, "Defend", actor->stats.defend);
-    widget->DefendPanel->Text = widget->DefendIntString->String;
+    set_gui_int_string(widget->DefendIntString, "Defend", actor->stats.defend);
+    widget->DefendPanel->Text = widget->DefendIntString->string;
 
-    SetGuiIntString(widget->VitalityIntString, "Vitality", actor->stats.vitality);
-    widget->VitalityPanel->Text = widget->VitalityIntString->String;
+    set_gui_int_string(widget->VitalityIntString, "Vitality", actor->stats.vitality);
+    widget->VitalityPanel->Text = widget->VitalityIntString->string;
 }

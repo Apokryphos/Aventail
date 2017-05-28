@@ -3,20 +3,20 @@
 
 struct GuiGaugeString
 {
-    int Value;
-    int MaxValue;
-    char* Label;
-    char* String;
+    int value;
+    int max_value;
+    char* label;
+    char* string;
 };
 
-struct GuiGaugeString* CreateGuiGaugeString();
+struct GuiGaugeString* create_gui_gauge_string();
 
-void DestroyGuiGaugeString(struct GuiGaugeString** gaugeString);
+void destroy_gui_gauge_string(struct GuiGaugeString** gauge_string);
 
-void SetGuiGaugeString(
-    struct GuiGaugeString* gaugeString,
+void set_gui_gauge_string(
+    struct GuiGaugeString* gauge_string,
     const char* label,
     int value,
-    int maxValue);
+    int max_value);
 
 #endif

@@ -6,13 +6,13 @@
     to be updated to the new value.
     Returns non-zero on match or zero on mismatch.
 */
-int GuiStringMatches(const char* guiString, const char* value);
+int gui_string_compare(const char* guiString, const char* value);
 
 /*
-    Compares a GUI string with the specified string using GuiStringMatches
+    Compares a GUI string with the specified string using gui_string_compare
     and sets the GUI string to match, allocating and/or freeing the GUI string
     as needed.
 */
-void SetGuiString(char **string, const char* value);
+void set_gui_string(char **string, const char* value);
 
 #endif

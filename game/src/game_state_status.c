@@ -10,77 +10,77 @@
 #include <SDL2/SDL.h>
 #include <stdlib.h>
 
-struct GuiScreen* StatusGuiScreen = NULL;
-struct StatusWidget* StatusWidget = NULL;
+struct GuiScreen* status_gui_screen = NULL;
+struct StatusWidget* status_widget = NULL;
 
 //  ---------------------------------------------------------------------------
-static void ExitStatusGameState(
+static void exit_status_game_state(
     struct Game* game,
-    enum GameState gameState)
+    enum GameState game_state)
 {
-    game->state = gameState;
+    game->state = game_state;
     deactivate_gui();
-    StatusGuiScreen->Enabled = 0;
+    status_gui_screen->Enabled = 0;
 }
 
 //  ---------------------------------------------------------------------------
-static void ProcessStatusGameStateInput(struct Game* game)
+static void process_status_game_state_input(struct Game* game)
 {
     struct InputDevice* input_device = game->input_device;
 
     if (input_device->cancel || input_device->status)
     {
-        ExitStatusGameState(game, GAME_STATE_LEVEL);
+        exit_status_game_state(game, GAME_STATE_LEVEL);
     }
     else if (input_device->inventory)
     {
-        ExitStatusGameState(game, GAME_STATE_INVENTORY);
+        exit_status_game_state(game, GAME_STATE_INVENTORY);
     }
     else if (input_device->gear)
     {
-        ExitStatusGameState(game, GAME_STATE_GEAR);
+        exit_status_game_state(game, GAME_STATE_GEAR);
     }
 }
 
 //  ---------------------------------------------------------------------------
-static void InitStatusGuiScreen(SDL_Renderer* renderer)
+static void init_status_gui_screen(SDL_Renderer* renderer)
 {
-    StatusGuiScreen = CreateGuiScreen();
+    status_gui_screen = CreateGuiScreen();
 
-    StatusWidget = CreateStatusWidget(StatusGuiScreen);
+    status_widget = create_status_widget(status_gui_screen);
 
     //  Center status widget
     SDL_Rect viewport;
     SDL_RenderGetViewport(renderer, &viewport);
-    SetStatusWidgetPosition(
-        StatusWidget,
-        (viewport.w / 2) - (StatusWidget->Panel->Width / 2),
-        (viewport.h / 2) - (StatusWidget->Panel->Height / 2));
+    set_status_widget_position(
+        status_widget,
+        (viewport.w / 2) - (status_widget->Panel->Width / 2),
+        (viewport.h / 2) - (status_widget->Panel->Height / 2));
 
-    add_gui_screen(StatusGuiScreen);
+    add_gui_screen(status_gui_screen);
 }
 
 //  ---------------------------------------------------------------------------
-void StatusGameStateDraw(struct Game* game, int inTransition)
+void draw_status_game_state(struct Game* game, int in_transition)
 {
-    DrawMap(game->renderer, game->world->map, game->world->actors);
+    draw_map(game->renderer, game->world->map, game->world->actors);
     draw_gui(game);
 }
 
 //  ---------------------------------------------------------------------------
-void StatusGameStateUpdate(struct Game* game)
+void update_status_game_state(struct Game* game)
 {
-    if (StatusGuiScreen == NULL)
+    if (status_gui_screen == NULL)
     {
-        InitStatusGuiScreen(game->renderer);
+        init_status_gui_screen(game->renderer);
     }
 
-    StatusGuiScreen->Enabled = 1;
+    status_gui_screen->Enabled = 1;
 
     activate_gui();
     enable_gui_cursor(0);
 
-    ProcessStatusGameStateInput(game);
+    process_status_game_state_input(game);
 
-    UpdateStatusWidget(StatusWidget, game->world->player.actor);
+    update_status_widget(status_widget, game->world->player.actor);
 }

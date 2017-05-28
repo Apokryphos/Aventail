@@ -11,21 +11,23 @@
 #include <string.h>
 
 //  SDL_RenderSetScale scale amount
-static const int RenderScale = 2;
+static const int RENDER_SCALE = 2;
 
-static struct Tileset FontTileset;
-static struct Tileset GuiTileset;
-static struct Tileset MapTileset;
-
-void DrawText(
-    SDL_Renderer* renderer,
-    const char* text,
-    const int x,
-    const int y);
-void MeasureText(const char* text, int* width, int* height);
+static struct Tileset font_tileset;
+static struct Tileset gui_tileset;
+static struct Tileset map_tileset;
 
 //  ---------------------------------------------------------------------------
-void DrawScreenFade(SDL_Renderer* renderer, float progress)
+void measure_text(const char* text, int* width, int* height)
+{
+    assert(text != NULL);
+
+    *width = strlen(text) * font_tileset.tile_width;
+    *height = font_tileset.tile_height;
+}
+
+//  ---------------------------------------------------------------------------
+void draw_screen_fade(SDL_Renderer* renderer, float progress)
 {
     if (progress < 0)
     {
@@ -38,8 +40,8 @@ void DrawScreenFade(SDL_Renderer* renderer, float progress)
 
     Uint8 alpha = (int)(255 * progress);
 
-    SDL_Rect destRect;
-    SDL_RenderGetViewport(renderer, &destRect);
+    SDL_Rect dest_rect;
+    SDL_RenderGetViewport(renderer, &dest_rect);
 
     if (alpha != 255)
     {
@@ -47,7 +49,7 @@ void DrawScreenFade(SDL_Renderer* renderer, float progress)
     }
 
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, alpha);
-    SDL_RenderFillRect(renderer, &destRect);
+    SDL_RenderFillRect(renderer, &dest_rect);
 
     if (alpha != 255)
     {
@@ -56,76 +58,110 @@ void DrawScreenFade(SDL_Renderer* renderer, float progress)
 }
 
 //  ---------------------------------------------------------------------------
-void DrawMap(
+void draw_text(
+    SDL_Renderer* renderer,
+    const char* text,
+    const int x,
+    const int y)
+{
+    assert(renderer != NULL);
+    assert(text != NULL);
+    assert(font_tileset.texture != NULL);
+
+    SDL_Rect dest_rect =
+    {
+        .x = x,
+        .y = y,
+        .w = font_tileset.tile_width,
+        .h = font_tileset.tile_height
+    };
+    SDL_Rect src_rect;
+
+    int text_len = strlen(text);
+    for (int t = 0; t < text_len; ++t)
+    {
+        int c = (int)text[t];
+        if (c > 32 && c < 127)
+        {
+            get_tileset_rect(&font_tileset, c - 32, &src_rect);
+            SDL_RenderCopy(renderer, font_tileset.texture, &src_rect, &dest_rect);
+        }
+
+        dest_rect.x += dest_rect.w;
+    }
+}
+
+//  ---------------------------------------------------------------------------
+void draw_map(
     SDL_Renderer* renderer,
     const struct Map* map,
     const struct ActorList* actors)
 {
     assert(renderer != NULL);
     assert(map != NULL);
-    assert(MapTileset.Texture != NULL);
+    assert(map_tileset.texture != NULL);
 
-    SDL_Rect sourceRect;
+    SDL_Rect src_rect;
 
-    SDL_Rect destRect;
-    destRect.w = map->tile_width;
-    destRect.h = map->tile_height;
+    SDL_Rect dest_rect;
+    dest_rect.w = map->tile_width;
+    dest_rect.h = map->tile_height;
 
     for (int y = 0; y < map->height; ++y)
     {
         for (int x = 0; x < map->width; ++x)
         {
-            int tilesetId = map->tiles[y * map->width + x].tileset_id;
+            int tileset_id = map->tiles[y * map->width + x].tileset_id;
 
-            if (tilesetId == 0)
+            if (tileset_id == 0)
             {
                 continue;
             }
 
-            GetTilesetRect(&MapTileset, tilesetId, &sourceRect);
+            get_tileset_rect(&map_tileset, tileset_id, &src_rect);
 
-            destRect.x = x * destRect.w;
-            destRect.y = y * destRect.h;
-            SDL_RenderCopy(renderer, MapTileset.Texture, &sourceRect, &destRect);
+            dest_rect.x = x * dest_rect.w;
+            dest_rect.y = y * dest_rect.h;
+            SDL_RenderCopy(renderer, map_tileset.texture, &src_rect, &dest_rect);
         }
     }
 
-    struct ActorListNode* actorNode = actors->back;
-    while (actorNode != NULL)
+    struct ActorListNode* actor_node = actors->back;
+    while (actor_node != NULL)
     {
-        struct Actor* actor = actorNode->actor;
+        struct Actor* actor = actor_node->actor;
 
         if (actor->tile != NULL)
         {
-            GetTilesetRect(&MapTileset, actor->tileset_id, &sourceRect);
+            get_tileset_rect(&map_tileset, actor->tileset_id, &src_rect);
 
-            destRect.x = actor->tile->x * destRect.w;
-            destRect.y = actor->tile->y * destRect.h;
-            SDL_RenderCopy(renderer, MapTileset.Texture, &sourceRect, &destRect);
+            dest_rect.x = actor->tile->x * dest_rect.w;
+            dest_rect.y = actor->tile->y * dest_rect.h;
+            SDL_RenderCopy(renderer, map_tileset.texture, &src_rect, &dest_rect);
         }
 
-        actorNode = actorNode->previous;
+        actor_node = actor_node->previous;
     }
 }
 
 //  ---------------------------------------------------------------------------
-void DrawTilesetTile(
+void draw_tileset_tile(
     SDL_Renderer* renderer,
-    int tilesetId,
+    int tileset_id,
     const int x,
     const int y,
     enum FlipFlag flip)
 {
-    SDL_Rect sourceRect;
+    SDL_Rect src_rect;
 
-    SDL_Rect destRect;
-    destRect.w = MapTileset.TileWidth;
-    destRect.h = MapTileset.TileHeight;
+    SDL_Rect dest_rect;
+    dest_rect.w = map_tileset.tile_width;
+    dest_rect.h = map_tileset.tile_height;
 
-    GetTilesetRect(&MapTileset, tilesetId, &sourceRect);
+    get_tileset_rect(&map_tileset, tileset_id, &src_rect);
 
-    destRect.x = x;
-    destRect.y = y;
+    dest_rect.x = x;
+    dest_rect.y = y;
 
     SDL_RendererFlip flipFlags =
         (flip & FLIP_FLAG_HORZ ? SDL_FLIP_HORIZONTAL : 0) |
@@ -133,32 +169,32 @@ void DrawTilesetTile(
 
     SDL_RenderCopyEx(
         renderer,
-        MapTileset.Texture,
-        &sourceRect,
-        &destRect,
+        map_tileset.texture,
+        &src_rect,
+        &dest_rect,
         0,
         NULL,
         flipFlags);
 }
 
 //  ---------------------------------------------------------------------------
-void DrawGuiTilesetTile(
+void draw_gui_tileset_tile(
     SDL_Renderer* renderer,
-    const int tilesetId,
+    const int tileset_id,
     const int x,
     const int y,
     enum FlipFlag flip)
 {
-    SDL_Rect sourceRect;
+    SDL_Rect src_rect;
 
-    SDL_Rect destRect;
-    destRect.w = GuiTileset.TileWidth;
-    destRect.h = GuiTileset.TileHeight;
+    SDL_Rect dest_rect;
+    dest_rect.w = gui_tileset.tile_width;
+    dest_rect.h = gui_tileset.tile_height;
 
-    GetTilesetRect(&GuiTileset, tilesetId, &sourceRect);
+    get_tileset_rect(&gui_tileset, tileset_id, &src_rect);
 
-    destRect.x = x;
-    destRect.y = y;
+    dest_rect.x = x;
+    dest_rect.y = y;
 
     SDL_RendererFlip flipFlags =
         (flip & FLIP_FLAG_HORZ ? SDL_FLIP_HORIZONTAL : 0) |
@@ -166,38 +202,38 @@ void DrawGuiTilesetTile(
 
     SDL_RenderCopyEx(
         renderer,
-        GuiTileset.Texture,
-        &sourceRect,
-        &destRect,
+        gui_tileset.texture,
+        &src_rect,
+        &dest_rect,
         0,
         NULL,
         flipFlags);
 }
 
 //  ---------------------------------------------------------------------------
-static void DrawPanelText(SDL_Renderer* renderer, const struct Panel* panel)
+static void draw_panel_text(SDL_Renderer* renderer, const struct Panel* panel)
 {
     assert(renderer != NULL);
     assert(panel != NULL);
     assert(panel->Text != NULL);
 
-    int textWidth, textHeight, textX, textY;
-    MeasureText(panel->Text, &textWidth, &textHeight);
+    int text_width, text_height, text_x, text_y;
+    measure_text(panel->Text, &text_width, &text_height);
     if (panel->TextAlign == PANEL_TEXT_ALIGN_LEFT)
     {
-        textX = panel->X;
-        textY = panel->Y;
+        text_x = panel->X;
+        text_y = panel->Y;
     }
     else
     {
-        textX = panel->X + (panel->Width / 2) - (textWidth / 2);
-        textY = panel->Y + (panel->Height / 2) - (textHeight / 2);
+        text_x = panel->X + (panel->Width / 2) - (text_width / 2);
+        text_y = panel->Y + (panel->Height / 2) - (text_height / 2);
     }
-    DrawText(renderer, panel->Text, textX, textY);
+    draw_text(renderer, panel->Text, text_x, text_y);
 }
 
 //  ---------------------------------------------------------------------------
-static void DrawPanelTitle(
+static void draw_panel_title(
     SDL_Renderer* renderer,
     const struct Panel* panel,
     const char* text)
@@ -206,130 +242,133 @@ static void DrawPanelTitle(
     assert(panel != NULL);
     assert(text != NULL);
 
-    int textWidth, textHeight;
-    MeasureText(text, &textWidth, &textHeight);
-    int textX = panel->X + (panel->Width / 2) - (textWidth / 2);
-    int textY = panel->Y - textHeight;
-    DrawText(renderer, text, textX, textY);
+    int text_width, text_height;
+    measure_text(text, &text_width, &text_height);
+    int text_x = panel->X + (panel->Width / 2) - (text_width / 2);
+    int text_y = panel->Y - text_height;
+    draw_text(renderer, text, text_x, text_y);
 }
 
 //  ---------------------------------------------------------------------------
-void DrawPanelBorder(SDL_Renderer* renderer, const struct Panel* panel)
+void draw_panel_border(SDL_Renderer* renderer, const struct Panel* panel)
 {
     if (panel->BorderStyle == PANEL_BORDER_STYLE_NONE)
     {
         return;
     }
 
-    SDL_Rect sourceRect;
+    SDL_Rect src_rect;
 
-    SDL_Rect destRect;
-    destRect.x = panel->X;
-    destRect.y = panel->Y;
-    destRect.w = GuiTileset.TileWidth;
-    destRect.h = GuiTileset.TileHeight;
+    SDL_Rect dest_rect;
+    dest_rect.x = panel->X;
+    dest_rect.y = panel->Y;
+    dest_rect.w = gui_tileset.tile_width;
+    dest_rect.h = gui_tileset.tile_height;
 
-    int cornerTilesetId, sideTilesetId;
-    GetPanelBorderTilesetIds(panel->BorderStyle, &cornerTilesetId, &sideTilesetId);
+    int corner_tileset_id, side_tileset_id;
+    GetPanelBorderTilesetIds(
+        panel->BorderStyle,
+        &corner_tileset_id,
+        &side_tileset_id);
 
-    GetTilesetRect(&GuiTileset, sideTilesetId, &sourceRect);
-    int startX = panel->X + destRect.w;
-    int endX = panel->X + panel->Width - destRect.w;
-    for (int x = startX; x < endX; x += destRect.w)
+    get_tileset_rect(&gui_tileset, side_tileset_id, &src_rect);
+    int start_x = panel->X + dest_rect.w;
+    int end_x = panel->X + panel->Width - dest_rect.w;
+    for (int x = start_x; x < end_x; x += dest_rect.w)
     {
-        destRect.x = x;
+        dest_rect.x = x;
 
-        destRect.y = panel->Y;
+        dest_rect.y = panel->Y;
         SDL_RenderCopyEx(
             renderer,
-            GuiTileset.Texture,
-            &sourceRect,
-            &destRect,
+            gui_tileset.texture,
+            &src_rect,
+            &dest_rect,
             90,
             NULL,
             SDL_FLIP_NONE);
 
-        destRect.y = panel->Y + panel->Height - GuiTileset.TileHeight;
+        dest_rect.y = panel->Y + panel->Height - gui_tileset.tile_height;
         SDL_RenderCopyEx(
             renderer,
-            GuiTileset.Texture,
-            &sourceRect,
-            &destRect,
+            gui_tileset.texture,
+            &src_rect,
+            &dest_rect,
             270,
             NULL,
             SDL_FLIP_NONE);
     }
 
-    int startY = panel->Y + destRect.h;
-    int endY = panel->Y + panel->Height - destRect.h;
-    for (int y = startY; y < endY; y += destRect.h)
+    int start_y = panel->Y + dest_rect.h;
+    int end_y = panel->Y + panel->Height - dest_rect.h;
+    for (int y = start_y; y < end_y; y += dest_rect.h)
     {
-        destRect.y = y;
+        dest_rect.y = y;
 
-        destRect.x = panel->X;
-        SDL_RenderCopy(renderer, GuiTileset.Texture, &sourceRect, &destRect);
+        dest_rect.x = panel->X;
+        SDL_RenderCopy(renderer, gui_tileset.texture, &src_rect, &dest_rect);
 
-        destRect.x = panel->X + panel->Width - GuiTileset.TileWidth;
+        dest_rect.x = panel->X + panel->Width - gui_tileset.tile_width;
         SDL_RenderCopyEx(
             renderer,
-            GuiTileset.Texture,
-            &sourceRect,
-            &destRect,
+            gui_tileset.texture,
+            &src_rect,
+            &dest_rect,
             0,
             NULL,
             SDL_FLIP_HORIZONTAL);
     }
 
-    GetTilesetRect(&GuiTileset, cornerTilesetId, &sourceRect);
+    get_tileset_rect(&gui_tileset, corner_tileset_id, &src_rect);
 
     //  Upper-left corner
-    destRect.x = panel->X;
-    destRect.y = panel->Y;
-    SDL_RenderCopy(renderer, GuiTileset.Texture, &sourceRect, &destRect);
+    dest_rect.x = panel->X;
+    dest_rect.y = panel->Y;
+    SDL_RenderCopy(renderer, gui_tileset.texture, &src_rect, &dest_rect);
 
     //  Lower-left corner
-    destRect.x = panel->X;
-    destRect.y = panel->Y + panel->Height - GuiTileset.TileHeight;
+    dest_rect.x = panel->X;
+    dest_rect.y = panel->Y + panel->Height - gui_tileset.tile_height;
     SDL_RenderCopyEx(
             renderer,
-            GuiTileset.Texture,
-            &sourceRect,
-            &destRect,
+            gui_tileset.texture,
+            &src_rect,
+            &dest_rect,
             0,
             NULL,
             SDL_FLIP_VERTICAL);
 
     //  Lower-right corner
-    destRect.x = panel->X + panel->Width - GuiTileset.TileWidth;
-    destRect.y = panel->Y + panel->Height - GuiTileset.TileHeight;
+    dest_rect.x = panel->X + panel->Width - gui_tileset.tile_width;
+    dest_rect.y = panel->Y + panel->Height - gui_tileset.tile_height;
     SDL_RenderCopyEx(
             renderer,
-            GuiTileset.Texture,
-            &sourceRect,
-            &destRect,
+            gui_tileset.texture,
+            &src_rect,
+            &dest_rect,
             0,
             NULL,
             SDL_FLIP_HORIZONTAL | SDL_FLIP_VERTICAL);
 
     //  Upper-right corner
-    destRect.x = panel->X + panel->Width - GuiTileset.TileWidth;
-    destRect.y = panel->Y;
+    dest_rect.x = panel->X + panel->Width - gui_tileset.tile_width;
+    dest_rect.y = panel->Y;
     SDL_RenderCopyEx(
             renderer,
-            GuiTileset.Texture,
-            &sourceRect,
-            &destRect,
+            gui_tileset.texture,
+            &src_rect,
+            &dest_rect,
             0,
             NULL,
             SDL_FLIP_HORIZONTAL);
 }
 
 //  ---------------------------------------------------------------------------
-void DrawPanel(SDL_Renderer* renderer, const struct Panel* panel)
+void draw_panel(SDL_Renderer* renderer, const struct Panel* panel)
 {
     assert(renderer != NULL);
     assert(panel != NULL);
-    assert(MapTileset.Texture != NULL);
+    assert(map_tileset.texture != NULL);
 
     if (panel->Visible == 0)
     {
@@ -338,7 +377,7 @@ void DrawPanel(SDL_Renderer* renderer, const struct Panel* panel)
 
     if (panel->ShowTitle && panel->Title != NULL)
     {
-        DrawPanelTitle(renderer, panel, panel->Title);
+        draw_panel_title(renderer, panel, panel->Title);
     }
 
     if (panel->Background)
@@ -355,95 +394,61 @@ void DrawPanel(SDL_Renderer* renderer, const struct Panel* panel)
 
     if (panel->Alpha < 255)
     {
-        SDL_SetTextureBlendMode(GuiTileset.Texture, SDL_BLENDMODE_BLEND);
-        SDL_SetTextureAlphaMod(GuiTileset.Texture, panel->Alpha);
+        SDL_SetTextureBlendMode(gui_tileset.texture, SDL_BLENDMODE_BLEND);
+        SDL_SetTextureAlphaMod(gui_tileset.texture, panel->Alpha);
     }
 
-    DrawPanelBorder(renderer, panel);
+    draw_panel_border(renderer, panel);
 
     if (panel->Icon.TilesetId > -1)
     {
         if (panel->Icon.Style == PANEL_ICON_STYLE_NORMAL)
         {
-            DrawTilesetTile(
+            draw_tileset_tile(
                 renderer,
                 panel->Icon.TilesetId,
-                panel->X + (panel->Width / 2) - (MapTileset.TileWidth / 2),
-                panel->Y + (panel->Height / 2) - (MapTileset.TileHeight / 2),
+                panel->X + (panel->Width / 2) - (map_tileset.tile_width / 2),
+                panel->Y + (panel->Height / 2) - (map_tileset.tile_height / 2),
                 panel->Icon.Flip);
         }
         else if (panel->Icon.Style == PANEL_ICON_STYLE_SMALL)
         {
-            DrawGuiTilesetTile(
+            draw_gui_tileset_tile(
                 renderer,
                 panel->Icon.TilesetId,
-                panel->X + (panel->Width / 2) - (GuiTileset.TileWidth / 2),
-                panel->Y + (panel->Height / 2) - (GuiTileset.TileHeight / 2),
+                panel->X + (panel->Width / 2) - (gui_tileset.tile_width / 2),
+                panel->Y + (panel->Height / 2) - (gui_tileset.tile_height / 2),
                 panel->Icon.Flip);
         }
     }
 
     if (panel->Text != NULL)
     {
-        DrawPanelText(renderer, panel);
+        draw_panel_text(renderer, panel);
     }
 
     if (panel->Alpha < 255)
     {
-        SDL_SetTextureBlendMode(GuiTileset.Texture, SDL_BLENDMODE_NONE);
-        SDL_SetTextureAlphaMod(GuiTileset.Texture, 255);
+        SDL_SetTextureBlendMode(gui_tileset.texture, SDL_BLENDMODE_NONE);
+        SDL_SetTextureAlphaMod(gui_tileset.texture, 255);
     }
 }
 
 //  ---------------------------------------------------------------------------
-void DrawText(
-    SDL_Renderer* renderer,
-    const char* text,
-    const int x,
-    const int y)
-{
-    assert(renderer != NULL);
-    assert(text != NULL);
-    assert(FontTileset.Texture != NULL);
-
-    SDL_Rect destRect =
-    {
-        .x = x,
-        .y = y,
-        .w = FontTileset.TileWidth,
-        .h = FontTileset.TileHeight
-    };
-    SDL_Rect sourceRect;
-
-    int textLength = strlen(text);
-    for (int t = 0; t < textLength; ++t)
-    {
-        int c = (int)text[t];
-        if (c > 32 && c < 127)
-        {
-            GetTilesetRect(&FontTileset, c - 32, &sourceRect);
-            SDL_RenderCopy(renderer, FontTileset.Texture, &sourceRect, &destRect);
-        }
-
-        destRect.x += destRect.w;
-    }
-}
-
-//  ---------------------------------------------------------------------------
-void DrawTextAlpha(
+void draw_alpha_text(
     SDL_Renderer* renderer,
     const char* text,
     const int x,
     const int y,
     const int alpha)
 {
-    SDL_SetTextureAlphaMod(FontTileset.Texture, alpha);
-    DrawText(renderer, text, x, y);
-    SDL_SetTextureAlphaMod(FontTileset.Texture, 255);
+    SDL_SetTextureAlphaMod(font_tileset.texture, alpha);
+    draw_text(renderer, text, x, y);
+    SDL_SetTextureAlphaMod(font_tileset.texture, 255);
 }
 
 //  ---------------------------------------------------------------------------
-void GetTileRect(
+void get_tile_rect(
     const struct Map* map,
     const struct Tile* tile,
     SDL_Rect* rect,
@@ -453,7 +458,7 @@ void GetTileRect(
     assert(tile != NULL);
     assert(rect != NULL);
 
-    int scale = scaled ? RenderScale : 1;
+    int scale = scaled ? RENDER_SCALE : 1;
 
     (*rect).x = tile->x * map->tile_width * scale;
     (*rect).y = tile->y * map->tile_height * scale;
@@ -462,36 +467,36 @@ void GetTileRect(
 }
 
 //  ---------------------------------------------------------------------------
-int GfxInit(struct Game* game)
+int init_gfx(struct Game* game)
 {
-    assert(FontTileset.Texture == NULL);
-    assert(GuiTileset.Texture == NULL);
-    assert(MapTileset.Texture == NULL);
+    assert(font_tileset.texture == NULL);
+    assert(gui_tileset.texture == NULL);
+    assert(map_tileset.texture == NULL);
 
-    SDL_RenderSetScale(game->renderer, RenderScale, RenderScale);
+    SDL_RenderSetScale(game->renderer, RENDER_SCALE, RENDER_SCALE);
 
-    LoadTileset(game, &FontTileset, "font");
-    if (FontTileset.Texture == NULL)
+    load_tileset(game, &font_tileset, "font");
+    if (font_tileset.texture == NULL)
     {
         printf("Failed to load font tileset texture.\n");
         return -1;
     }
 
-    FontTileset.TileWidth = 5;
-    FontTileset.TileHeight = 12;
+    font_tileset.tile_width = 5;
+    font_tileset.tile_height = 12;
 
-    LoadTileset(game, &GuiTileset, "tileset");
-    if (GuiTileset.Texture == NULL)
+    load_tileset(game, &gui_tileset, "tileset");
+    if (gui_tileset.texture == NULL)
     {
         printf("Failed to load GUI tileset texture.\n");
         return -1;
     }
 
-    GuiTileset.TileWidth = 8;
-    GuiTileset.TileHeight = 8;
+    gui_tileset.tile_width = 8;
+    gui_tileset.tile_height = 8;
 
-    LoadTileset(game, &MapTileset, "tileset");
-    if (MapTileset.Texture == NULL)
+    load_tileset(game, &map_tileset, "tileset");
+    if (map_tileset.texture == NULL)
     {
         printf("Failed to load map tileset texture.\n");
         return -1;
@@ -501,18 +506,9 @@ int GfxInit(struct Game* game)
 }
 
 //  ---------------------------------------------------------------------------
-void GfxShutdown()
+void shutdown_gfx()
 {
-    SDL_DestroyTexture(FontTileset.Texture);
-    SDL_DestroyTexture(GuiTileset.Texture);
-    SDL_DestroyTexture(MapTileset.Texture);
-}
-
-//  ---------------------------------------------------------------------------
-void MeasureText(const char* text, int* width, int* height)
-{
-    assert(text != NULL);
-
-    *width = strlen(text) * FontTileset.TileWidth;
-    *height = FontTileset.TileHeight;
+    SDL_DestroyTexture(font_tileset.texture);
+    SDL_DestroyTexture(gui_tileset.texture);
+    SDL_DestroyTexture(map_tileset.texture);
 }

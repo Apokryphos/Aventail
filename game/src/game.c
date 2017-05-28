@@ -87,7 +87,7 @@ void game_main()
 
     init_game(&game, 800, 800);
 
-    if (GfxInit(&game) != 0)
+    if (init_gfx(&game) != 0)
     {
         printf("Failed to initialize graphics.\n");
         shutdown_game(&game);
@@ -130,7 +130,7 @@ void game_main()
 //  ---------------------------------------------------------------------------
 void shutdown_game(struct Game* game)
 {
-    GfxShutdown();
+    shutdown_gfx();
 
     if (game->base_path != NULL)
     {

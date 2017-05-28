@@ -3,13 +3,13 @@
 
 struct BlinkStateData
 {
-    int Visible;
-    int Enabled;
-    float Ticks;
-    float OnDuration;
-    float OffDuration;
+    int visible;
+    int enabled;
+    float ticks;
+    float on_duration;
+    float off_duration;
 };
 
-void AddTimeBlinkStateData(struct BlinkStateData* blink, float elapsedSeconds);
+void add_blink_state_data_time(struct BlinkStateData* blink, float elapsed_seconds);
 
 #endif

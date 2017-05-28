@@ -23,8 +23,8 @@ struct StatusWidget
     struct GuiIntString* VitalityIntString;
 };
 
-struct StatusWidget* CreateStatusWidget(struct GuiScreen* guiScreen);
-void SetStatusWidgetPosition(struct StatusWidget* widget, int x, int y);
-void UpdateStatusWidget(struct StatusWidget* widget, struct Actor* actor);
+struct StatusWidget* create_status_widget(struct GuiScreen* gui_screen);
+void set_status_widget_position(struct StatusWidget* widget, int x, int y);
+void update_status_widget(struct StatusWidget* widget, struct Actor* actor);
 
 #endif

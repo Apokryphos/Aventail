@@ -12,76 +12,76 @@
 #include <strings.h>
 
 //  ---------------------------------------------------------------------------
-struct GuiGaugeString* CreateGuiGaugeString()
+struct GuiGaugeString* create_gui_gauge_string()
 {
-    struct GuiGaugeString* gaugeString = malloc(sizeof(struct GuiGaugeString));
+    struct GuiGaugeString* gauge_string = malloc(sizeof(struct GuiGaugeString));
 
-    gaugeString->Value = 0;
-    gaugeString->MaxValue = 0;
-    gaugeString->Label = NULL;
-    gaugeString->String = NULL;
+    gauge_string->value = 0;
+    gauge_string->max_value = 0;
+    gauge_string->label = NULL;
+    gauge_string->string = NULL;
 
-    return gaugeString;
+    return gauge_string;
 }
 
 //  ---------------------------------------------------------------------------
-void DestroyGuiGaugeString(struct GuiGaugeString** gaugeString)
+void destroy_gui_gauge_string(struct GuiGaugeString** gauge_string)
 {
-    assert(gaugeString != NULL);
+    assert(gauge_string != NULL);
 
-    if (*gaugeString != NULL)
+    if (*gauge_string != NULL)
     {
-        if ((*gaugeString)->Label != NULL)
+        if ((*gauge_string)->label != NULL)
         {
-            free((*gaugeString)->Label);
+            free((*gauge_string)->label);
         }
 
-        if ((*gaugeString)->String != NULL)
+        if ((*gauge_string)->string != NULL)
         {
-            free((*gaugeString)->String);
+            free((*gauge_string)->string);
         }
 
-        free(*gaugeString);
-        *gaugeString = NULL;
+        free(*gauge_string);
+        *gauge_string = NULL;
     }
 }
 
 //  ---------------------------------------------------------------------------
-void SetGuiGaugeString(
-    struct GuiGaugeString* gaugeString,
+void set_gui_gauge_string(
+    struct GuiGaugeString* gauge_string,
     const char* label,
     int value,
-    int maxValue)
+    int max_value)
 {
-    assert(gaugeString != NULL);
+    assert(gauge_string != NULL);
 
-    if (gaugeString->Value != value ||
-        gaugeString->MaxValue != maxValue ||
-        GuiStringMatches(gaugeString->Label, label) == 0)
+    if (gauge_string->value != value ||
+        gauge_string->max_value != max_value ||
+        gui_string_compare(gauge_string->label, label) == 0)
     {
-        gaugeString->Value = value;
-        gaugeString->MaxValue = maxValue;
+        gauge_string->value = value;
+        gauge_string->max_value = max_value;
 
-        if (gaugeString->Label != NULL)
+        if (gauge_string->label != NULL)
         {
-            free(gaugeString->Label);
-            gaugeString->Label = NULL;
+            free(gauge_string->label);
+            gauge_string->label = NULL;
         }
 
-        if (gaugeString->String != NULL)
+        if (gauge_string->string != NULL)
         {
-            free(gaugeString->String);
-            gaugeString->String = NULL;
+            free(gauge_string->string);
+            gauge_string->string = NULL;
         }
 
         if (label != NULL)
         {
-            gaugeString->Label = strdup(label);
-            asprintf(&gaugeString->String, "%s: %d / %d", label, value, maxValue);
+            gauge_string->label = strdup(label);
+            asprintf(&gauge_string->string, "%s: %d / %d", label, value, max_value);
         }
         else
         {
-            asprintf(&gaugeString->String, "%d / %d", value, maxValue);
+            asprintf(&gauge_string->string, "%d / %d", value, max_value);
         }
     }
 }

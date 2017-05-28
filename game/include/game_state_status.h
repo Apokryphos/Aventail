@@ -3,7 +3,7 @@
 
 struct Game;
 
-void StatusGameStateDraw(struct Game* game, int inTransition);
-void StatusGameStateUpdate(struct Game* game);
+void draw_status_game_state(struct Game* game, int in_transition);
+void update_status_game_state(struct Game* game);
 
 #endif

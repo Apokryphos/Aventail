@@ -1,22 +1,24 @@
 #include "blink_state_data.h"
 
 //  ---------------------------------------------------------------------------
-void AddTimeBlinkStateData(struct BlinkStateData* blink, float elapsedSeconds)
+void add_blink_state_data_time(
+    struct BlinkStateData* blink,
+    float elapsed_seconds)
 {
-    blink->Ticks += elapsedSeconds;
+    blink->ticks += elapsed_seconds;
 
     float duration =
-        blink->Visible ?
-        blink->OnDuration :
-        blink->OffDuration;
+        blink->visible ?
+        blink->on_duration :
+        blink->off_duration;
 
-    if (blink->Ticks >= duration)
+    if (blink->ticks >= duration)
     {
-        blink->Ticks -= duration;
+        blink->ticks -= duration;
 
-        if (blink->Enabled)
+        if (blink->enabled)
         {
-            blink->Visible = !blink->Visible;
+            blink->visible = !blink->visible;
         }
     }
 }

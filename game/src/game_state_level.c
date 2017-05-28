@@ -68,7 +68,7 @@ int is_mouse_cursor_over_actor(struct Actor* actor)
         actor->health > 0)
     {
         SDL_Rect rect;
-        GetTileRect(actor->map, actor->tile, &rect, 1);
+        get_tile_rect(actor->map, actor->tile, &rect, 1);
 
         return
             mouse_cursor_x >= rect.x &&
@@ -85,7 +85,7 @@ void draw_level_game_state(struct Game* game, int in_transition)
 {
     if (game->world->map != NULL)
     {
-        DrawMap(game->renderer, game->world->map, game->world->actors);
+        draw_map(game->renderer, game->world->map, game->world->actors);
     }
 
     draw_gui(game);
@@ -158,7 +158,7 @@ void draw_level_game_state(struct Game* game, int in_transition)
             hover_actor_name_string = strdup(hoverActor->name);
         }
 
-        GetTileRect(hoverActor->map, hoverActor->tile, &hover_actor_rect, 0);
+        get_tile_rect(hoverActor->map, hoverActor->tile, &hover_actor_rect, 0);
     }
     else
     {
@@ -176,7 +176,7 @@ void draw_level_game_state(struct Game* game, int in_transition)
         int alpha = (int)(255 * progress);
 
         int text_width, text_height;
-        MeasureText(hover_actor_health_string, &text_width, &text_height);
+        measure_text(hover_actor_health_string, &text_width, &text_height);
 
         const int line_height = text_height + 2;
         const int padding = 8;
@@ -202,14 +202,14 @@ void draw_level_game_state(struct Game* game, int in_transition)
         SDL_SetRenderDrawColor(game->renderer, 255, 255, 255, alpha);
         SDL_RenderDrawRect(game->renderer, &dest_rect);
 
-        DrawTextAlpha(
+        draw_alpha_text(
             game->renderer,
             hover_actor_name_string,
             dest_rect.x + padding / 2,
             dest_rect.y + padding / 2,
             alpha);
 
-        DrawTextAlpha(
+        draw_alpha_text(
             game->renderer,
             hover_actor_health_string,
             dest_rect.x + padding / 2,
@@ -218,7 +218,7 @@ void draw_level_game_state(struct Game* game, int in_transition)
 
         if (hover_actor_type == ACTOR_TYPE_PLAYER)
         {
-            DrawTextAlpha(
+            draw_alpha_text(
                 game->renderer,
                 hover_actor_cash_string,
                 dest_rect.x + padding / 2,

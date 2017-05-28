@@ -12,74 +12,74 @@
 #include <strings.h>
 
 //  ---------------------------------------------------------------------------
-struct GuiIntString* CreateGuiIntString()
+struct GuiIntString* create_gui_int_string()
 {
-    struct GuiIntString* intString = malloc(sizeof(struct GuiIntString));
+    struct GuiIntString* int_string = malloc(sizeof(struct GuiIntString));
 
-    intString->Value = 0;
-    intString->Label = NULL;
-    intString->String = NULL;
+    int_string->value = 0;
+    int_string->label = NULL;
+    int_string->string = NULL;
 
-    return intString;
+    return int_string;
 }
 
 //  ---------------------------------------------------------------------------
-void DestroyGuiIntString(struct GuiIntString** intString)
+void destroy_gui_int_string(struct GuiIntString** int_string)
 {
-    assert(intString != NULL);
+    assert(int_string != NULL);
 
-    if (*intString != NULL)
+    if (*int_string != NULL)
     {
-        if ((*intString)->Label != NULL)
+        if ((*int_string)->label != NULL)
         {
-            free((*intString)->Label);
+            free((*int_string)->label);
         }
 
-        if ((*intString)->String != NULL)
+        if ((*int_string)->string != NULL)
         {
-            free((*intString)->String);
+            free((*int_string)->string);
         }
 
-        free(*intString);
-        *intString = NULL;
+        free(*int_string);
+        *int_string = NULL;
     }
 }
 
 
 
 //  ---------------------------------------------------------------------------
-void SetGuiIntString(
-    struct GuiIntString* intString,
+void set_gui_int_string(
+    struct GuiIntString* int_string,
     const char* label,
     int value)
 {
-    assert(intString != NULL);
+    assert(int_string != NULL);
 
-    if (intString->Value != value ||
-        GuiStringMatches(intString->Label, label) == 0)
+    if (int_string->value != value ||
+        gui_string_compare(int_string->label, label) == 0)
     {
-        intString->Value = value;
+        int_string->value = value;
 
-        if (intString->Label != NULL)
+        if (int_string->label != NULL)
         {
-            free(intString->Label);
-            intString->Label = NULL;
+            free(int_string->label);
+            int_string->label = NULL;
         }
 
-        if (intString->String != NULL)
+        if (int_string->string != NULL)
         {
-            free(intString->String);
-            intString->String = NULL;
+            free(int_string->string);
+            int_string->string = NULL;
         }
 
         if (label != NULL)
         {
-            intString->Label = strdup(label);
-            asprintf(&intString->String, "%s: %d", label, value);
+            int_string->label = strdup(label);
+            asprintf(&int_string->string, "%s: %d", label, value);
         }
         else
         {
-            asprintf(&intString->String, "%d", value);
+            asprintf(&int_string->string, "%d", value);
         }
     }
 }

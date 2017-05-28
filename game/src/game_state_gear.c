@@ -214,7 +214,7 @@ static struct GearSlotWidget CreateGearSlotWidget(
 //  ---------------------------------------------------------------------------
 void GearGameStateDraw(struct Game* game, int inTransition)
 {
-    DrawMap(game->renderer, game->world->map, game->world->actors);
+    draw_map(game->renderer, game->world->map, game->world->actors);
     draw_gui(game);
 }
 

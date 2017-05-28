@@ -11,31 +11,31 @@ struct Tileset;
 typedef struct SDL_Rect SDL_Rect;
 typedef struct SDL_Renderer SDL_Renderer;
 
-void DrawMap(
-    SDL_Renderer* renderer, 
+void draw_map(
+    SDL_Renderer* renderer,
     const struct Map* map,
     const struct ActorList* actors);
-void DrawTilesetTile(
+void draw_tileset_tile(
     SDL_Renderer* renderer,
     const int tilesetId,
     const int x,
     const int y,
     enum FlipFlag flip);
-void DrawGuiTilesetTile(
+void draw_gui_tileset_tile(
     SDL_Renderer* renderer,
     const int tilesetId,
     const int x,
     const int y,
     enum FlipFlag flip);
-void DrawPanel(SDL_Renderer* renderer, const struct Panel* panel);
-void DrawScreenFade(SDL_Renderer* renderer, float progress);
-void DrawText(
-    SDL_Renderer* renderer, 
+void draw_panel(SDL_Renderer* renderer, const struct Panel* panel);
+void draw_screen_fade(SDL_Renderer* renderer, float progress);
+void draw_text(
+    SDL_Renderer* renderer,
     const char* text,
     const int x,
     const int y);
-void DrawTextAlpha(
-    SDL_Renderer* renderer, 
+void draw_alpha_text(
+    SDL_Renderer* renderer,
     const char* text,
     const int x,
     const int y,
@@ -43,13 +43,13 @@ void DrawTextAlpha(
 /*
     Gets the SDL_Rect of the specified Tile in pixels.
 */
-void GetTileRect(
-    const struct Map* map, 
-    const struct Tile* tile, 
-    SDL_Rect* rect, 
+void get_tile_rect(
+    const struct Map* map,
+    const struct Tile* tile,
+    SDL_Rect* rect,
     const int scaled);
-int GfxInit(struct Game* game);
-void GfxShutdown();
-void MeasureText(const char* text, int* width, int* height);
+int init_gfx(struct Game* game);
+void shutdown_gfx();
+void measure_text(const char* text, int* width, int* height);
 
 #endif
