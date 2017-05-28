@@ -22,27 +22,27 @@ enum GuiState
 
 struct GearSlotWidget
 {
-    int Index;
-    struct ItemSlotWidget* ItemSlotWidget;
-    struct Panel* SlotPanel;
+    int index;
+    struct ItemSlotWidget* item_slot_widget;
+    struct Panel* slot_panel;
 };
 
-static const int GearSlotCount = 4;
+static const int GEAR_SLOT_COUNT = 4;
 
-static int SelectedGearSlot = 0;
-static enum GuiState GearGuiState = GUI_STATE_SELECT_GEAR_SLOT;
+static int selected_gear_slot = 0;
+static enum GuiState gear_gui_state = GUI_STATE_SELECT_GEAR_SLOT;
 
-static struct GuiScreen* GearGuiScreen = NULL;
-static struct GearSlotWidget WeaponSlotWidget;
-static struct GearSlotWidget ArmorSlotWidget;
-static struct GearSlotWidget ShieldSlotWidget;
-static struct GearSlotWidget AccessorySlotWidget;
-static struct InventoryWidget* InventoryWidget = NULL;
+static struct GuiScreen* gear_gui_screen = NULL;
+static struct GearSlotWidget weapon_slot_widget;
+static struct GearSlotWidget armor_slot_widget;
+static struct GearSlotWidget shield_slot_widget;
+static struct GearSlotWidget accessory_slot_widget;
+static struct InventoryWidget* inventory_widget = NULL;
 
 //  ---------------------------------------------------------------------------
-static enum ItemType GetSelectedGearSlotItemType()
+static enum ItemType get_selected_gear_slot_item_type()
 {
-    switch (SelectedGearSlot)
+    switch (selected_gear_slot)
     {
         default:
         case 0:
@@ -57,273 +57,273 @@ static enum ItemType GetSelectedGearSlotItemType()
 }
 
 //  ---------------------------------------------------------------------------
-static void ExitGearGameState(
+static void exit_gear_game_state(
     struct Game* game,
-    enum GameState gameState)
+    enum GameState game_state)
 {
-    SelectedGearSlot = 0;
-    InventoryWidget->selected_item_index = 0;
-    game->state = gameState;
+    selected_gear_slot = 0;
+    inventory_widget->selected_item_index = 0;
+    game->state = game_state;
     deactivate_gui();
-    GearGuiScreen->enabled = 0;
+    gear_gui_screen->enabled = 0;
 }
 
 //  ---------------------------------------------------------------------------
-static void ProcessSelectGearSlotStateInput(struct Game* game)
+static void process_select_gear_slot_state_input(struct Game* game)
 {
-    assert(GearGuiState == GUI_STATE_SELECT_GEAR_SLOT);
+    assert(gear_gui_state == GUI_STATE_SELECT_GEAR_SLOT);
 
     struct InputDevice* input_device = game->input_device;
 
     if (input_device->remove)
     {
         struct Actor* actor = game->world->player.actor;
-        enum ItemType itemType = GetSelectedGearSlotItemType();
+        enum ItemType itemType = get_selected_gear_slot_item_type();
         remove_item_from_gear(actor, itemType);
-        update_inventory_widget(InventoryWidget, actor->inventory);
+        update_inventory_widget(inventory_widget, actor->inventory);
     }
     else if (input_device->accept)
     {
-        if (InventoryWidget->item_count > 0)
+        if (inventory_widget->item_count > 0)
         {
-            GearGuiState = GUI_STATE_SELECT_INVENTORY_ITEM_SLOT;
-            InventoryWidget->selected_item_index = 0;
+            gear_gui_state = GUI_STATE_SELECT_INVENTORY_ITEM_SLOT;
+            inventory_widget->selected_item_index = 0;
         }
     }
     else if (input_device->cancel)
     {
-        ExitGearGameState(game, GAME_STATE_LEVEL);
+        exit_gear_game_state(game, GAME_STATE_LEVEL);
     }
     else if (input_device->move_direction == DIRECTION_DOWN)
     {
-        ++SelectedGearSlot;
-        if (SelectedGearSlot > GearSlotCount - 1)
+        ++selected_gear_slot;
+        if (selected_gear_slot > GEAR_SLOT_COUNT - 1)
         {
-            SelectedGearSlot = 0;
+            selected_gear_slot = 0;
         }
     }
     else if (input_device->move_direction == DIRECTION_UP)
     {
-        --SelectedGearSlot;
-        if (SelectedGearSlot < 0)
+        --selected_gear_slot;
+        if (selected_gear_slot < 0)
         {
-            SelectedGearSlot = GearSlotCount - 1;
+            selected_gear_slot = GEAR_SLOT_COUNT - 1;
         }
     }
 }
 
 //  ---------------------------------------------------------------------------
-static void ProcessSelectInventoryItemSlotStateInput(struct Game* game)
+static void process_select_inventory_item_slot_state_input(struct Game* game)
 {
-    assert(GearGuiState == GUI_STATE_SELECT_INVENTORY_ITEM_SLOT);
+    assert(gear_gui_state == GUI_STATE_SELECT_INVENTORY_ITEM_SLOT);
 
     struct InputDevice* input_device = game->input_device;
 
     if (input_device->cancel)
     {
-        InventoryWidget->selected_item_index = 0;
-        GearGuiState = GUI_STATE_SELECT_GEAR_SLOT;
+        inventory_widget->selected_item_index = 0;
+        gear_gui_state = GUI_STATE_SELECT_GEAR_SLOT;
     }
 
     if (input_device->accept)
     {
-        if (InventoryWidget->item_count > 0)
+        if (inventory_widget->item_count > 0)
         {
             struct Actor* actor = game->world->player.actor;
-            struct Item* item = InventoryWidget->items[InventoryWidget->selected_item_index];
+            struct Item* item = inventory_widget->items[inventory_widget->selected_item_index];
             equip_item(actor, item);
             remove_item_from_inventory(actor->inventory, item);
-            update_inventory_widget(InventoryWidget, actor->inventory);
+            update_inventory_widget(inventory_widget, actor->inventory);
 
-            InventoryWidget->selected_item_index = 0;
-            GearGuiState = GUI_STATE_SELECT_GEAR_SLOT;
+            inventory_widget->selected_item_index = 0;
+            gear_gui_state = GUI_STATE_SELECT_GEAR_SLOT;
         }
     }
 
     if (input_device->move_direction == DIRECTION_DOWN)
     {
-        select_next_inventory_widget_item_slot(InventoryWidget);
+        select_next_inventory_widget_item_slot(inventory_widget);
     }
 
     if (input_device->move_direction == DIRECTION_UP)
     {
-        select_previous_inventory_widget_item_slot(InventoryWidget);
+        select_previous_inventory_widget_item_slot(inventory_widget);
     }
 }
 
 //  ---------------------------------------------------------------------------
-static void ProcessInventoryGameStateInput(struct Game* game)
+static void process_inventory_game_state_input(struct Game* game)
 {
     struct InputDevice* input_device = game->input_device;
 
     if (input_device->gear)
     {
-        ExitGearGameState(game, GAME_STATE_LEVEL);
+        exit_gear_game_state(game, GAME_STATE_LEVEL);
     }
     else if (input_device->inventory)
     {
-        ExitGearGameState(game, GAME_STATE_INVENTORY);
+        exit_gear_game_state(game, GAME_STATE_INVENTORY);
     }
     else if (input_device->status)
     {
-        ExitGearGameState(game, GAME_STATE_STATUS);
+        exit_gear_game_state(game, GAME_STATE_STATUS);
     }
     else
     {
-        switch (GearGuiState)
+        switch (gear_gui_state)
         {
             case GUI_STATE_SELECT_GEAR_SLOT:
-                ProcessSelectGearSlotStateInput(game);
+                process_select_gear_slot_state_input(game);
                 break;
             case GUI_STATE_SELECT_INVENTORY_ITEM_SLOT:
-                ProcessSelectInventoryItemSlotStateInput(game);
+                process_select_inventory_item_slot_state_input(game);
                 break;
         }
     }
 }
 
 //  ---------------------------------------------------------------------------
-static struct GearSlotWidget CreateGearSlotWidget(
-    struct GuiScreen* screen,
-    const char* slotName,
-    int slotIndex)
+static struct GearSlotWidget create_gear_slot_widget(
+    struct GuiScreen* gui_screen,
+    const char* slot_name,
+    int slot_index)
 {
-    struct Panel* slotPanel = create_panel(slotName, PANEL_BORDER_STYLE_2);
-    slotPanel->width = 164;
-    slotPanel->height = 56;
-    slotPanel->X = 16;
-    slotPanel->Y = slotIndex * (slotPanel->height + 32) + 32;
-    slotPanel->background = 1;
-    add_panel_to_gui_screen(screen, slotPanel);
+    struct Panel* slot_panel = create_panel(slot_name, PANEL_BORDER_STYLE_2);
+    slot_panel->width = 164;
+    slot_panel->height = 56;
+    slot_panel->X = 16;
+    slot_panel->Y = slot_index * (slot_panel->height + 32) + 32;
+    slot_panel->background = 1;
+    add_panel_to_gui_screen(gui_screen, slot_panel);
 
-    struct GearSlotWidget gearSlotWidget =
+    struct GearSlotWidget gear_slot_widget =
     {
-        .Index = slotIndex,
-        .SlotPanel = slotPanel,
-        .ItemSlotWidget = CreateItemSlotWidget(screen),
+        .index = slot_index,
+        .slot_panel = slot_panel,
+        .item_slot_widget = CreateItemSlotWidget(gui_screen),
     };
 
     SetItemSlotWidgetPosition(
-        gearSlotWidget.ItemSlotWidget,
-        slotPanel->X,
-        slotPanel->Y);
+        gear_slot_widget.item_slot_widget,
+        slot_panel->X,
+        slot_panel->Y);
 
-    return gearSlotWidget;
+    return gear_slot_widget;
 }
 
 //  ---------------------------------------------------------------------------
-void GearGameStateDraw(struct Game* game, int inTransition)
+void draw_gear_game_state(struct Game* game, int in_transition)
 {
     draw_map(game->renderer, game->world->map, game->world->actors);
     draw_gui(game);
 }
 
 //  ---------------------------------------------------------------------------
-static void InitGearGuiScreen(SDL_Renderer* renderer)
+static void init_gear_gui_screen(SDL_Renderer* renderer)
 {
-    GearGuiScreen = create_gui_screen();
+    gear_gui_screen = create_gui_screen();
 
-    WeaponSlotWidget = CreateGearSlotWidget(GearGuiScreen, "Weapon", 0);
-    ArmorSlotWidget = CreateGearSlotWidget(GearGuiScreen, "Armor", 1);
-    ShieldSlotWidget = CreateGearSlotWidget(GearGuiScreen, "Shield", 2);
-    AccessorySlotWidget = CreateGearSlotWidget(GearGuiScreen, "Accessory", 3);
+    weapon_slot_widget = create_gear_slot_widget(gear_gui_screen, "Weapon", 0);
+    armor_slot_widget = create_gear_slot_widget(gear_gui_screen, "Armor", 1);
+    shield_slot_widget = create_gear_slot_widget(gear_gui_screen, "Shield", 2);
+    accessory_slot_widget = create_gear_slot_widget(gear_gui_screen, "Accessory", 3);
 
-    InventoryWidget = create_inventory_widget(GearGuiScreen);
+    inventory_widget = create_inventory_widget(gear_gui_screen);
 
     SDL_Rect viewport;
     SDL_RenderGetViewport(renderer, &viewport);
     set_inventory_widget_position(
-        InventoryWidget,
-        viewport.w - InventoryWidget->panel->width - 16,
+        inventory_widget,
+        viewport.w - inventory_widget->panel->width - 16,
         32);
 
-    add_gui_screen(GearGuiScreen);
+    add_gui_screen(gear_gui_screen);
 }
 
 //  ---------------------------------------------------------------------------
-static struct GearSlotWidget* GetSelectedGearSlotGui()
+static struct GearSlotWidget* get_selected_gear_slot_gui()
 {
-    assert(SelectedGearSlot < 4);
+    assert(selected_gear_slot < 4);
 
-    switch (SelectedGearSlot)
+    switch (selected_gear_slot)
     {
         default:
         case 0:
-            return &WeaponSlotWidget;
+            return &weapon_slot_widget;
         case 1:
-            return &ArmorSlotWidget;
+            return &armor_slot_widget;
         case 2:
-            return &ShieldSlotWidget;
+            return &shield_slot_widget;
         case 3:
-            return &AccessorySlotWidget;
+            return &accessory_slot_widget;
     }
 }
 
 //  ---------------------------------------------------------------------------
-static void UpdateCursor()
+static void update_cursor()
 {
-    if (GearGuiState == GUI_STATE_SELECT_GEAR_SLOT)
+    if (gear_gui_state == GUI_STATE_SELECT_GEAR_SLOT)
     {
-        assert(SelectedGearSlot < 4);
+        assert(selected_gear_slot < 4);
 
-        struct GearSlotWidget* selectedGearSlot = GetSelectedGearSlotGui();
+        struct GearSlotWidget* selected_gear_slot = get_selected_gear_slot_gui();
 
         set_gui_cursor_position(
-            selectedGearSlot->ItemSlotWidget->ItemIconPanel->X + 4,
-            selectedGearSlot->ItemSlotWidget->ItemIconPanel->Y + 4);
+            selected_gear_slot->item_slot_widget->ItemIconPanel->X + 4,
+            selected_gear_slot->item_slot_widget->ItemIconPanel->Y + 4);
     }
-    else if (GearGuiState == GUI_STATE_SELECT_INVENTORY_ITEM_SLOT)
+    else if (gear_gui_state == GUI_STATE_SELECT_INVENTORY_ITEM_SLOT)
     {
-        assert(InventoryWidget->selected_item_index < MAX_INVENTORY_ITEMS);
+        assert(inventory_widget->selected_item_index < MAX_INVENTORY_ITEMS);
 
-        assert(InventoryWidget->selected_item_slot_widget != NULL);
-        assert(InventoryWidget->selected_item_slot_widget->ItemIconPanel != NULL);
+        assert(inventory_widget->selected_item_slot_widget != NULL);
+        assert(inventory_widget->selected_item_slot_widget->ItemIconPanel != NULL);
         set_gui_cursor_position(
-            InventoryWidget->selected_item_slot_widget->ItemIconPanel->X + 4,
-            InventoryWidget->selected_item_slot_widget->ItemIconPanel->Y + 4);
+            inventory_widget->selected_item_slot_widget->ItemIconPanel->X + 4,
+            inventory_widget->selected_item_slot_widget->ItemIconPanel->Y + 4);
     }
 }
 
 //  ---------------------------------------------------------------------------
-static void UpdateGearSlotWidget(
-    struct GearSlotWidget* gearSlotWidget,
-     struct Item* item)
+static void update_gear_slot_widget(
+    struct GearSlotWidget* gear_slot_widget,
+    struct Item* item)
 {
-    UpdateItemSlotWidget(gearSlotWidget->ItemSlotWidget, item);
+    UpdateItemSlotWidget(gear_slot_widget->item_slot_widget, item);
 }
 
 //  ---------------------------------------------------------------------------
-void GearGameStateUpdate(struct Game* game)
+void update_gear_game_state(struct Game* game)
 {
-    if (GearGuiScreen == NULL)
+    if (gear_gui_screen == NULL)
     {
-        InitGearGuiScreen(game->renderer);
+        init_gear_gui_screen(game->renderer);
     }
 
-    GearGuiScreen->enabled = 1;
+    gear_gui_screen->enabled = 1;
 
-    assert(SelectedGearSlot >= 0 && SelectedGearSlot < 4);
-    if (InventoryWidget->selected_item_index > InventoryWidget->item_count -1)
+    assert(selected_gear_slot >= 0 && selected_gear_slot < 4);
+    if (inventory_widget->selected_item_index > inventory_widget->item_count -1)
     {
-        InventoryWidget->selected_item_index = InventoryWidget->item_count -1;
+        inventory_widget->selected_item_index = inventory_widget->item_count -1;
     }
-    if (InventoryWidget->selected_item_index < 0)
+    if (inventory_widget->selected_item_index < 0)
     {
-        InventoryWidget->selected_item_index = 0;
+        inventory_widget->selected_item_index = 0;
     }
 
     activate_gui();
     enable_gui_cursor(1);
-    ProcessInventoryGameStateInput(game);
+    process_inventory_game_state_input(game);
 
     struct Actor* actor = game->world->player.actor;
-    UpdateGearSlotWidget(&ArmorSlotWidget, actor->gear.armor);
-    UpdateGearSlotWidget(&ShieldSlotWidget, actor->gear.shield);
-    UpdateGearSlotWidget(&WeaponSlotWidget, actor->gear.weapon);
-    UpdateGearSlotWidget(&AccessorySlotWidget, actor->gear.accessory);
+    update_gear_slot_widget(&armor_slot_widget, actor->gear.armor);
+    update_gear_slot_widget(&shield_slot_widget, actor->gear.shield);
+    update_gear_slot_widget(&weapon_slot_widget, actor->gear.weapon);
+    update_gear_slot_widget(&accessory_slot_widget, actor->gear.accessory);
 
-    InventoryWidget->item_type = GetSelectedGearSlotItemType();
-    update_inventory_widget(InventoryWidget, actor->inventory);
+    inventory_widget->item_type = get_selected_gear_slot_item_type();
+    update_inventory_widget(inventory_widget, actor->inventory);
 
-    UpdateCursor();
+    update_cursor();
 }

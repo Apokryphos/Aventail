@@ -23,7 +23,7 @@ void draw_active_game_state(
             draw_level_game_state(game, in_transition);
             break;
         case GAME_STATE_GEAR:
-            GearGameStateDraw(game, in_transition);
+            draw_gear_game_state(game, in_transition);
             break;
         case GAME_STATE_INVENTORY:
             InventoryGameStateDraw(game, in_transition);
@@ -55,7 +55,7 @@ void update_active_game_state(struct Game* game)
             update_level_game_state(game);
             break;
         case GAME_STATE_GEAR:
-            GearGameStateUpdate(game);
+            update_gear_game_state(game);
             break;
         case GAME_STATE_INVENTORY:
             InventoryGameStateUpdate(game);

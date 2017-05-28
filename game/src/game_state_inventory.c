@@ -106,7 +106,7 @@ static void ProcessSelectItemTypeStateInput(struct Game* game)
 }
 
 //  ---------------------------------------------------------------------------
-static void ProcessSelectInventoryItemSlotStateInput(struct Game* game)
+static void process_select_inventory_item_slot_state_input(struct Game* game)
 {
     assert(inventory_gui_state == GUI_STATE_SELECT_INVENTORY_ITEM_SLOT);
 
@@ -142,7 +142,7 @@ static void ProcessSelectInventoryItemSlotStateInput(struct Game* game)
 }
 
 //  ---------------------------------------------------------------------------
-static void ProcessInventoryGameStateInput(struct Game* game)
+static void process_inventory_game_state_input(struct Game* game)
 {
     struct InputDevice* input_device = game->input_device;
 
@@ -166,7 +166,7 @@ static void ProcessInventoryGameStateInput(struct Game* game)
                 ProcessSelectItemTypeStateInput(game);
                 break;
             case GUI_STATE_SELECT_INVENTORY_ITEM_SLOT:
-                ProcessSelectInventoryItemSlotStateInput(game);
+                process_select_inventory_item_slot_state_input(game);
                 break;
         }
     }
@@ -292,7 +292,7 @@ void InventoryGameStateUpdate(struct Game* game)
     }
 
     activate_gui();
-    ProcessInventoryGameStateInput(game);
+    process_inventory_game_state_input(game);
 
     struct Actor* actor = game->world->player.actor;
 
