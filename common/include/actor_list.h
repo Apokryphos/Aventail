@@ -7,30 +7,30 @@ typedef int FindActorFunction(struct Actor* source);
 
 struct ActorListNode
 {
-    struct Actor* Actor;
-    struct ActorListNode* Previous;
-    struct ActorListNode* Next;
+    struct Actor* actor;
+    struct ActorListNode* previous;
+    struct ActorListNode* next;
 };
 
 struct ActorList
 {
-    int Count;
-    struct ActorListNode* First;
-    struct ActorListNode* Last;
+    int count;
+    struct ActorListNode* front;
+    struct ActorListNode* back;
 };
 
-void AddActorToBack(struct ActorList* list, struct Actor* actor);
-void AddActorToFront(struct ActorList* list, struct Actor* actor);
+void add_actor_to_actor_list_back(struct ActorList* list, struct Actor* actor);
+void add_actor_to_actor_list_front(struct ActorList* list, struct Actor* actor);
 /*
-    Allocates an ActorList. Free with DestroyActorList.
+    Allocates an ActorList. Free with destroy_actor_list.
 */
-struct ActorList* CreateActorList();
+struct ActorList* create_actor_list();
 /**
     Frees the specified ActorList, all of its ActorListNodes, and all actors
     referenced by its nodes. Afterwards the specified pointer will be set to NULL.
 */
-void DestroyActorList(struct ActorList** list);
-struct Actor* FindActor(const struct ActorList* list, FindActorFunction* find);
-void RemoveActor(struct ActorList* list, const struct Actor* actor);
+void destroy_actor_list(struct ActorList** list);
+struct Actor* find_actor_in_actor_list(const struct ActorList* list, FindActorFunction* find);
+void remove_actor_from_actor_list(struct ActorList* list, const struct Actor* actor);
 
 #endif

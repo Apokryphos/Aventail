@@ -98,7 +98,7 @@ void LevelGameStateDraw(struct Game* game, int inTransition)
     CursorX = game->InputDevice->CursorX;
     CursorY = game->InputDevice->CursorY;
 
-    struct Actor* hoverActor = FindActor(game->World->Actors, &CursorOverActor);
+    struct Actor* hoverActor = find_actor_in_actor_list(game->World->Actors, &CursorOverActor);
 
     if (hoverActor != NULL)
     {

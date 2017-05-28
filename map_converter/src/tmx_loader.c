@@ -148,7 +148,7 @@ void LoadTmx(const xmlDoc* doc, struct Map** map, struct ActorList** actors)
     printf("Tile Size: %d x %d\n", tileWidth, tileHeight);
 
     *map = CreateMap(mapWidth, mapHeight, tileWidth, tileHeight);
-    *actors = CreateActorList();
+    *actors = create_actor_list();
 
     xmlNode* node = root->xmlChildrenNode;
     while (node != NULL)
@@ -231,7 +231,7 @@ void LoadTmx(const xmlDoc* doc, struct Map** map, struct ActorList** actors)
                     if (strcmp(type, "Actor") == 0)
                     {
                         struct Actor* actor = create_actor(*map, name, tileX, tileY, gid);
-                        AddActorToBack(*actors, actor);
+                        add_actor_to_actor_list_back(*actors, actor);
                     }
                     else if (strcmp(type, "Villain") == 0)
                     {
@@ -239,7 +239,7 @@ void LoadTmx(const xmlDoc* doc, struct Map** map, struct ActorList** actors)
                         actor->type = ACTOR_TYPE_VILLAIN;
                         actor->cash = cash;
                         LoadActorItems(actor, propertiesNode);
-                        AddActorToBack(*actors, actor);
+                        add_actor_to_actor_list_back(*actors, actor);
                     }
                     else if (strcmp(type, "Container") == 0)
                     {
@@ -247,13 +247,13 @@ void LoadTmx(const xmlDoc* doc, struct Map** map, struct ActorList** actors)
                         actor->type = ACTOR_TYPE_CONTAINER;
                         actor->cash = cash;
                         LoadActorItems(actor, propertiesNode);
-                        AddActorToBack(*actors, actor);
+                        add_actor_to_actor_list_back(*actors, actor);
                     }
                     else if (strcmp(type, "Door") == 0)
                     {
                         struct Actor* actor = create_actor(*map, name, tileX, tileY, gid);
                         actor->type = ACTOR_TYPE_DOOR;
-                        AddActorToBack(*actors, actor);
+                        add_actor_to_actor_list_back(*actors, actor);
                     }
                     else if (strcmp(type, "MapLink") == 0)
                     {

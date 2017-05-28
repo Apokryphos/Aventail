@@ -98,7 +98,7 @@ void LoadActorsFromFile(FILE* file, struct Map* map, struct ActorList* actors)
             actor->cash,
             GetInventoryItemCount(actor->inventory));
 
-        AddActorToBack(actors, actor);
+        add_actor_to_actor_list_back(actors, actor);
 
         free(name);
     }

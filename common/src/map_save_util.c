@@ -16,16 +16,16 @@ void SaveActorsToFile(FILE* file, const struct ActorList* actors)
 {
     assert(actors != NULL);
 
-    if (actors->Count > 0)
+    if (actors->count > 0)
     {
-        printf("Saving %d actors...\n", actors->Count);
+        printf("Saving %d actors...\n", actors->count);
 
-        fwrite(&actors->Count, sizeof(int), 1, file);
+        fwrite(&actors->count, sizeof(int), 1, file);
 
-        struct ActorListNode* node = actors->First;
+        struct ActorListNode* node = actors->front;
         while (node != NULL)
         {
-            const struct Actor* actor = node->Actor;
+            const struct Actor* actor = node->actor;
 
             int type = (int)actor->type;
 
@@ -63,7 +63,7 @@ void SaveActorsToFile(FILE* file, const struct ActorList* actors)
                 }
             }
 
-            node = node->Next;
+            node = node->next;
 
             printf(
                 "[Actor] NAME: %s GID: %d POS: %d, %d COL: %d TYPE: %d CASH: %d ITEMS: %zu\n",

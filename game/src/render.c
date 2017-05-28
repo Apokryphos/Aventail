@@ -90,10 +90,10 @@ void DrawMap(
         }
     }
 
-    struct ActorListNode* actorNode = actors->Last;
+    struct ActorListNode* actorNode = actors->back;
     while (actorNode != NULL)
     {
-        struct Actor* actor = actorNode->Actor;
+        struct Actor* actor = actorNode->actor;
 
         if (actor->tile != NULL)
         {
@@ -104,7 +104,7 @@ void DrawMap(
             SDL_RenderCopy(renderer, MapTileset.Texture, &sourceRect, &destRect);
         }
 
-        actorNode = actorNode->Previous;
+        actorNode = actorNode->previous;
     }
 }
 

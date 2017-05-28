@@ -48,15 +48,15 @@ void LoadMap(
 void UnloadMap(struct World* world)
 {
     //  Remove player from actors so it doesn't get freed
-    RemoveActor(world->Actors, world->Player.Actor);
+    remove_actor_from_actor_list(world->Actors, world->Player.Actor);
 
-    DestroyActorList(&world->Actors);
+    destroy_actor_list(&world->Actors);
     DestroyMap(&world->Map);
 
-    world->Actors = CreateActorList();
+    world->Actors = create_actor_list();
 
     //  Add player actor back
-    AddActorToBack(world->Actors, world->Player.Actor);
+    add_actor_to_actor_list_back(world->Actors, world->Player.Actor);
 }
 
 //  ---------------------------------------------------------------------------

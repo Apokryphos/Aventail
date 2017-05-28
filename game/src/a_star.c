@@ -43,17 +43,17 @@ static void UpdateAStar(
     ResetAStar(aStar);
 
     //  Mark tiles occupied by actors as unwalkable
-    struct ActorListNode* actorNode = actorList->First;
+    struct ActorListNode* actorNode = actorList->front;
     while (actorNode != NULL)
     {
-        struct Tile* tile = actorNode->Actor->tile;
+        struct Tile* tile = actorNode->actor->tile;
         if (tile != NULL)
         {
             size_t index = tile->Y * aStar->Map->Width + tile->X;
             aStar->Nodes[index].Walkable = 0;
         }
 
-        actorNode = actorNode->Next;
+        actorNode = actorNode->next;
     }
 }
 

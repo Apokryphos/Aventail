@@ -5,58 +5,58 @@
 #include <stdio.h>
 
 //  ---------------------------------------------------------------------------
-void AddActorToBack(struct ActorList* list, struct Actor* actor)
+void add_actor_to_actor_list_back(struct ActorList* list, struct Actor* actor)
 {
     assert(list != NULL);
     assert(actor != NULL);
 
     struct ActorListNode* node = malloc(sizeof(struct ActorListNode));
-    node->Actor = actor;
-    node->Previous = NULL;
-    node->Next = NULL;
+    node->actor = actor;
+    node->previous = NULL;
+    node->next = NULL;
 
-    if (list->First == NULL)
+    if (list->front == NULL)
     {
-        assert(list->Count == 0);
+        assert(list->count == 0);
 
-        list->First = node;
-        list->Count = 1;
+        list->front = node;
+        list->count = 1;
     }
     else
     {
-        struct ActorListNode* n = list->First;
-        while (n->Next != NULL)
+        struct ActorListNode* n = list->front;
+        while (n->next != NULL)
         {
-            assert(n->Actor != actor);
-            n = n->Next;
+            assert(n->actor != actor);
+            n = n->next;
         }
-        n->Next = node;
-        node->Previous = n;
-        ++list->Count;
+        n->next = node;
+        node->previous = n;
+        ++list->count;
     }
 
-    list->Last = node;
+    list->back = node;
 }
 
 //  ---------------------------------------------------------------------------
-void AddActorToFront(struct ActorList* list, struct Actor* actor)
+void add_actor_to_actor_list_front(struct ActorList* list, struct Actor* actor)
 {
     assert(list != NULL);
     assert(actor != NULL);
 
-    if (list->First == NULL)
+    if (list->front == NULL)
     {
-        AddActorToBack(list, actor);
+        add_actor_to_actor_list_back(list, actor);
     }
     else
     {
         struct ActorListNode* node = malloc(sizeof(struct ActorListNode));
-        node->Actor = actor;
-        node->Previous = NULL;
-        node->Next = list->First;
-        list->First->Previous = node;
-        list->First = node;
-        ++list->Count;
+        node->actor = actor;
+        node->previous = NULL;
+        node->next = list->front;
+        list->front->previous = node;
+        list->front = node;
+        ++list->count;
     }
 }
 
@@ -65,42 +65,42 @@ void ClearActorList(struct ActorList* list)
 {
     assert(list != NULL);
 
-    struct ActorListNode* node = list->First;
+    struct ActorListNode* node = list->front;
     while (node != NULL)
     {
-        struct ActorListNode* next = node->Next;
+        struct ActorListNode* next = node->next;
         free(node);
         node = next;
     }
 
-    list->Count = 0;
-    list->First = NULL;
-    list->Last = NULL;
+    list->count = 0;
+    list->front = NULL;
+    list->back = NULL;
 }
 
 //  ---------------------------------------------------------------------------
-struct ActorList* CreateActorList()
+struct ActorList* create_actor_list()
 {
-    struct ActorList* actors =  malloc(sizeof(struct ActorList));
-    actors->Count = 0;
-    actors->First = NULL;
-    actors->Last = NULL;
-    return actors;
+    struct ActorList* list = malloc(sizeof(struct ActorList));
+    list->count = 0;
+    list->front = NULL;
+    list->back = NULL;
+    return list;
 }
 
 //  ---------------------------------------------------------------------------
-void DestroyActorList(struct ActorList** list)
+void destroy_actor_list(struct ActorList** list)
 {
     if (*list == NULL)
     {
         return;
     }
 
-    struct ActorListNode* node = (*list)->First;
+    struct ActorListNode* node = (*list)->front;
     while (node != NULL)
     {
-        struct ActorListNode* next = node->Next;
-        destroy_actor(&node->Actor);
+        struct ActorListNode* next = node->next;
+        destroy_actor(&node->actor);
         free(node);
         node = next;
     }
@@ -110,63 +110,67 @@ void DestroyActorList(struct ActorList** list)
 }
 
 //  ---------------------------------------------------------------------------
-struct Actor* FindActor(const struct ActorList* list, FindActorFunction* find)
+struct Actor* find_actor_in_actor_list(
+    const struct ActorList* list,
+    FindActorFunction* find)
 {
     assert(list != NULL);
-    assert(list->Count > 0);
+    assert(list->count > 0);
     assert(find != NULL);
 
-    struct ActorListNode* node = list->First;
+    struct ActorListNode* node = list->front;
     while (node != NULL)
     {
-        if ((*find)(node->Actor))
+        if ((*find)(node->actor))
         {
-            return node->Actor;
+            return node->actor;
         }
 
-        node = node->Next;
+        node = node->next;
     }
 
     return NULL;
 }
 
 //  ---------------------------------------------------------------------------
-void RemoveActor(struct ActorList* list, const struct Actor* actor)
+void remove_actor_from_actor_list(
+    struct ActorList* list,
+    const struct Actor* actor)
 {
     assert(list != NULL);
-    assert(list->Count > 0);
+    assert(list->count > 0);
     assert(actor != NULL);
 
-    struct ActorListNode* node = list->First;
+    struct ActorListNode* node = list->front;
     while (node != NULL)
     {
-        if (node->Actor == actor)
+        if (node->actor == actor)
         {
-            if (node == list->First)
+            if (node == list->front)
             {
-                list->First = list->First->Next;
+                list->front = list->front->next;
             }
 
-            if (node == list->Last)
+            if (node == list->back)
             {
-                list->Last = list->Last->Previous;
+                list->back = list->back->previous;
             }
 
-            if (node->Previous != NULL)
+            if (node->previous != NULL)
             {
-                node->Previous->Next = node->Next;
+                node->previous->next = node->next;
             }
 
-            if (node->Next != NULL)
+            if (node->next != NULL)
             {
-                node->Next->Previous = node->Previous;
+                node->next->previous = node->previous;
             }
 
-            --list->Count;
+            --list->count;
             free(node);
             return;
         }
 
-        node = node->Next;
+        node = node->next;
     }
 }

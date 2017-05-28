@@ -75,7 +75,7 @@ static struct Actor* CreateLootContainer(
 
     struct Actor* actor = create_actor(world->Map, "Loot", x, y, 91);
     actor->type = ACTOR_TYPE_CONTAINER;
-    AddActorToFront(world->Actors, actor);
+    add_actor_to_actor_list_front(world->Actors, actor);
 
     GiveInventoryItems(inventory, actor->inventory);
 
@@ -90,7 +90,7 @@ struct Actor* CreatePlayerActor(struct World* world)
     struct Actor* actor = create_actor(NULL, "Player", -1, -1, 190);
     actor->type = ACTOR_TYPE_PLAYER;
     LoadPlayerDefinition(actor);
-    AddActorToFront(world->Actors, actor);
+    add_actor_to_actor_list_front(world->Actors, actor);
     world->Player.Actor = actor;
 
     //  Some starting inventory to test with
@@ -140,7 +140,7 @@ struct Actor* CreatePlayerActor(struct World* world)
 struct World* CreateWorld()
 {
     struct World* world = malloc(sizeof(struct World));
-    world->Actors = CreateActorList();
+    world->Actors = create_actor_list();
     world->Player.Actor = NULL;
     world->Map = NULL;
     return world;
@@ -154,7 +154,7 @@ void DestroyWorld(struct World** world)
         return;
     }
 
-    DestroyActorList(&(*world)->Actors);
+    destroy_actor_list(&(*world)->Actors);
 
     if ((*world)->Map != NULL)
     {
@@ -210,10 +210,10 @@ static void MoveActor(struct Actor* actor, struct Game* game, struct World* worl
     {
         int canMove = 1;
 
-        struct ActorListNode* otherActorNode = world->Actors->First;
+        struct ActorListNode* otherActorNode = world->Actors->front;
         while (otherActorNode != NULL)
         {
-            struct Actor* otherActor = otherActorNode->Actor;
+            struct Actor* otherActor = otherActorNode->actor;
 
             //  Check if another actor occupies destination tile
             //  and is collidable
@@ -237,7 +237,7 @@ static void MoveActor(struct Actor* actor, struct Game* game, struct World* worl
                     (*otherActor->on_touch)(actor, otherActor);
                 }
             }
-            otherActorNode = otherActorNode->Next;
+            otherActorNode = otherActorNode->next;
         }
 
         //  Attack target if any
@@ -273,10 +273,10 @@ static void NextActiveActor(struct World* world)
 {
     ActiveActor = NULL;
 
-    struct ActorListNode* actorNode = world->Actors->First;
+    struct ActorListNode* actorNode = world->Actors->front;
     while (actorNode != NULL)
     {
-        struct Actor* actor = actorNode->Actor;
+        struct Actor* actor = actorNode->actor;
 
         if (CanAct(actor))
         {
@@ -284,21 +284,21 @@ static void NextActiveActor(struct World* world)
             return;
         }
 
-        actorNode = actorNode->Next;
+        actorNode = actorNode->next;
     }
 }
 
 //  ---------------------------------------------------------------------------
 static void ResetActionPoints(struct World* world)
 {
-    struct ActorListNode* actorNode = world->Actors->First;
+    struct ActorListNode* actorNode = world->Actors->front;
     while (actorNode != NULL)
     {
-        struct Actor* actor = actorNode->Actor;
+        struct Actor* actor = actorNode->actor;
 
         actor->action_points = actor->max_action_points;
 
-        actorNode = actorNode->Next;
+        actorNode = actorNode->next;
     }
 }
 
