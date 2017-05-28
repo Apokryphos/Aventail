@@ -36,30 +36,30 @@ void save_actors_to_file(FILE* file, const struct ActorList* actors)
             fwrite(&type, sizeof(int), 1, file);
             fwrite(&actor->cash, sizeof(int), 1, file);
 
-            size_t nameLen = strlen(actor->name);
-            assert(nameLen <= MAX_ACTOR_NAME_STRING_LENGTH);
+            size_t name_len = strlen(actor->name);
+            assert(name_len <= MAX_ACTOR_NAME_STRING_LENGTH);
 
-            fwrite(&nameLen, sizeof(int), 1, file);
-            fwrite(actor->name, sizeof(char), nameLen, file);
+            fwrite(&name_len, sizeof(int), 1, file);
+            fwrite(actor->name, sizeof(char), name_len, file);
 
-            size_t itemsWritten = 0;
-            size_t itemCount = get_inventory_item_count(actor->inventory);
-            fwrite(&itemCount, sizeof(int), 1, file);
+            size_t item_write_count = 0;
+            size_t item_count = get_inventory_item_count(actor->inventory);
+            fwrite(&item_count, sizeof(int), 1, file);
             for (size_t n = 0; n < MAX_INVENTORY_ITEMS; ++n)
             {
                 struct Item* item = actor->inventory->items[n];
 
                 if (item != NULL)
                 {
-                    assert(itemsWritten < itemCount);
+                    assert(item_write_count < item_count);
 
-                    nameLen = strlen(item->name);
-                    assert(nameLen <= MAX_ACTOR_NAME_STRING_LENGTH);
+                    name_len = strlen(item->name);
+                    assert(name_len <= MAX_ACTOR_NAME_STRING_LENGTH);
 
-                    fwrite(&nameLen, sizeof(int), 1, file);
-                    fwrite(item->name, sizeof(char), nameLen, file);
+                    fwrite(&name_len, sizeof(int), 1, file);
+                    fwrite(item->name, sizeof(char), name_len, file);
 
-                    itemsWritten++;
+                    item_write_count++;
                 }
             }
 
@@ -88,10 +88,10 @@ void save_map_to_file(FILE* file, const struct Map* map)
     fwrite(&map->tile_height, sizeof(int), 1, file);
     fwrite(&map->tile_height, sizeof(int), 1, file);
 
-    int mapLinkCount = 0;
-    int tileCount = get_map_tile_count(map);
-    printf("Saving %d tiles...\n", tileCount);
-    for (int t = 0; t < tileCount; ++t)
+    int map_link_count = 0;
+    int tile_count = get_map_tile_count(map);
+    printf("Saving %d tiles...\n", tile_count);
+    for (int t = 0; t < tile_count; ++t)
     {
         struct Tile* tile = &map->tiles[t];
         fwrite(&tile->tileset_id, sizeof(int), 1, file);
@@ -99,26 +99,26 @@ void save_map_to_file(FILE* file, const struct Map* map)
 
         if (tile->link != NULL)
         {
-            ++mapLinkCount;
+            ++map_link_count;
         }
     }
 
-    printf("Saving %d map links...\n", mapLinkCount);
-    fwrite(&mapLinkCount, sizeof(int), 1, file);
-    for (int t = 0; t < tileCount; ++t)
+    printf("Saving %d map links...\n", map_link_count);
+    fwrite(&map_link_count, sizeof(int), 1, file);
+    for (int t = 0; t < tile_count; ++t)
     {
         struct Tile* tile = &map->tiles[t];
         struct MapLink* link = tile->link;
 
         if (link != NULL)
         {
-            size_t destMapLen = strlen(link->dest_map);
-            assert(destMapLen <= MAX_DEST_MAP_STRING_LENGTH);
+            size_t dest_map_len = strlen(link->dest_map);
+            assert(dest_map_len <= MAX_DEST_MAP_STRING_LENGTH);
 
             fwrite(&tile->x, sizeof(int), 1, file);
             fwrite(&tile->y, sizeof(int), 1, file);
-            fwrite(&destMapLen, sizeof(int), 1, file);
-            fwrite(link->dest_map, sizeof(char), destMapLen, file);
+            fwrite(&dest_map_len, sizeof(int), 1, file);
+            fwrite(link->dest_map, sizeof(char), dest_map_len, file);
             fwrite(&link->dest_x, sizeof(int), 1, file);
             fwrite(&link->dest_y, sizeof(int), 1, file);
 
