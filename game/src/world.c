@@ -180,7 +180,7 @@ static void LootActor(struct Actor* source, struct Actor* target, struct World* 
 
         if (get_inventory_item_count(target->inventory) > 0)
         {
-            CreateLootContainer(world, target->tile->X, target->tile->Y, target->inventory);
+            CreateLootContainer(world, target->tile->x, target->tile->y, target->inventory);
         }
     }
 }
@@ -197,7 +197,7 @@ static void MoveActor(struct Actor* actor, struct Game* game, struct World* worl
 
     struct Actor* target = NULL;
 
-    struct Tile* destTile = get_tile_neighbor(
+    struct Tile* dest_tile = get_tile_neighbor(
         actor->map,
         actor->tile,
         actor->move_direction);
@@ -206,7 +206,7 @@ static void MoveActor(struct Actor* actor, struct Game* game, struct World* worl
     actor->move_direction = DIRECTION_NONE;
 
     //  Check if destination tile is valid
-    if (destTile != NULL && destTile->Collision == 0)
+    if (dest_tile != NULL && dest_tile->collision == 0)
     {
         int canMove = 1;
 
@@ -217,7 +217,7 @@ static void MoveActor(struct Actor* actor, struct Game* game, struct World* worl
 
             //  Check if another actor occupies destination tile
             //  and is collidable
-            if (otherActor->tile == destTile &&
+            if (otherActor->tile == dest_tile &&
                 otherActor != actor)
             {
                 if (otherActor->collision)
@@ -250,9 +250,9 @@ static void MoveActor(struct Actor* actor, struct Game* game, struct World* worl
         {
             --actor->action_points;
 
-            if (destTile->Link == NULL)
+            if (dest_tile->link == NULL)
             {
-                actor->tile = destTile;
+                actor->tile = dest_tile;
             }
             else
             {
@@ -260,7 +260,7 @@ static void MoveActor(struct Actor* actor, struct Game* game, struct World* worl
                 if (actor == world->Player.actor)
                 {
                     ActiveActor = NULL;
-                    BeginMapLinkTransition(game, destTile->Link, DIRECTION_NONE);
+                    BeginMapLinkTransition(game, dest_tile->link, DIRECTION_NONE);
                     return;
                 }
             }
@@ -350,8 +350,8 @@ void SimulateWorld(struct Game* game, struct World* world)
                 if (nextPoint != NULL)
                 {
                     ActiveActor->move_direction = get_direction_by_delta(
-                        ActiveActor->tile->X,
-                        ActiveActor->tile->Y,
+                        ActiveActor->tile->x,
+                        ActiveActor->tile->y,
                         nextPoint->X,
                         nextPoint->Y);
                 }

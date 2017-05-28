@@ -5,11 +5,11 @@ struct MapLink;
 
 struct Tile
 {
-    int Collision;
-    int TilesetId;
-    int X;
-    int Y;
-    struct MapLink* Link;
+    int collision;
+    int tileset_id;
+    int x;
+    int y;
+    struct MapLink* link;
 };
 
 #endif

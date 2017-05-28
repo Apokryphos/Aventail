@@ -30,8 +30,8 @@ void save_actors_to_file(FILE* file, const struct ActorList* actors)
             int type = (int)actor->type;
 
             fwrite(&actor->tileset_id, sizeof(int), 1, file);
-            fwrite(&actor->tile->X, sizeof(int), 1, file);
-            fwrite(&actor->tile->Y, sizeof(int), 1, file);
+            fwrite(&actor->tile->x, sizeof(int), 1, file);
+            fwrite(&actor->tile->y, sizeof(int), 1, file);
             fwrite(&actor->collision, sizeof(int), 1, file);
             fwrite(&type, sizeof(int), 1, file);
             fwrite(&actor->cash, sizeof(int), 1, file);
@@ -69,8 +69,8 @@ void save_actors_to_file(FILE* file, const struct ActorList* actors)
                 "[Actor] NAME: %s GID: %d POS: %d, %d COL: %d TYPE: %d CASH: %d ITEMS: %zu\n",
                 actor->name,
                 actor->tileset_id,
-                actor->tile->X,
-                actor->tile->Y,
+                actor->tile->x,
+                actor->tile->y,
                 actor->collision,
                 actor->type,
                 actor->cash,
@@ -94,10 +94,10 @@ void save_map_to_file(FILE* file, const struct Map* map)
     for (int t = 0; t < tileCount; ++t)
     {
         struct Tile* tile = &map->tiles[t];
-        fwrite(&tile->TilesetId, sizeof(int), 1, file);
-        fwrite(&tile->Collision, sizeof(int), 1, file);
+        fwrite(&tile->tileset_id, sizeof(int), 1, file);
+        fwrite(&tile->collision, sizeof(int), 1, file);
 
-        if (tile->Link != NULL)
+        if (tile->link != NULL)
         {
             ++mapLinkCount;
         }
@@ -108,15 +108,15 @@ void save_map_to_file(FILE* file, const struct Map* map)
     for (int t = 0; t < tileCount; ++t)
     {
         struct Tile* tile = &map->tiles[t];
-        struct MapLink* link = tile->Link;
+        struct MapLink* link = tile->link;
 
         if (link != NULL)
         {
             size_t destMapLen = strlen(link->dest_map);
             assert(destMapLen <= MAX_DEST_MAP_STRING_LENGTH);
 
-            fwrite(&tile->X, sizeof(int), 1, file);
-            fwrite(&tile->Y, sizeof(int), 1, file);
+            fwrite(&tile->x, sizeof(int), 1, file);
+            fwrite(&tile->y, sizeof(int), 1, file);
             fwrite(&destMapLen, sizeof(int), 1, file);
             fwrite(link->dest_map, sizeof(char), destMapLen, file);
             fwrite(&link->dest_x, sizeof(int), 1, file);
@@ -125,8 +125,8 @@ void save_map_to_file(FILE* file, const struct Map* map)
             printf(
                 "[MapLink] MAP: %s POS: %d, %d DEST: %d, %d\n",
                 link->dest_map,
-                tile->X,
-                tile->Y,
+                tile->x,
+                tile->y,
                 link->dest_x,
                 link->dest_y);
         }

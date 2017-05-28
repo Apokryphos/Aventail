@@ -91,8 +91,8 @@ void LoadActorsFromFile(FILE* file, struct Map* map, struct ActorList* actors)
             "[Actor] NAME: %s GID: %d POS: %d, %d COL: %d TYPE: %d CASH: %d ITEMS: %zu\n",
             actor->name,
             actor->tileset_id,
-            actor->tile->X,
-            actor->tile->Y,
+            actor->tile->x,
+            actor->tile->y,
             actor->collision,
             actor->type,
             actor->cash,
@@ -122,8 +122,8 @@ struct Map* LoadMapFromFile(FILE* file)
     for (int t = 0; t < tileCount; ++t)
     {
         struct Tile* tile = &map->tiles[t];
-        fread(&tile->TilesetId, sizeof(int), 1, file);
-        fread(&tile->Collision, sizeof(int), 1, file);
+        fread(&tile->tileset_id, sizeof(int), 1, file);
+        fread(&tile->collision, sizeof(int), 1, file);
     }
 
     int mapLinkCount = 0;
@@ -153,7 +153,7 @@ struct Map* LoadMapFromFile(FILE* file)
         free(destMap);
 
         struct Tile* tile = &map->tiles[tileY * map->width + tileX];
-        tile->Link = link;
+        tile->link = link;
 
         printf(
             "[MapLink] MAP: %s POS: %d, %d DEST: %d, %d\n",

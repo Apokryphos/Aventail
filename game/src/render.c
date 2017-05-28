@@ -75,7 +75,7 @@ void DrawMap(
     {
         for (int x = 0; x < map->width; ++x)
         {
-            int tilesetId = map->tiles[y * map->width + x].TilesetId;
+            int tilesetId = map->tiles[y * map->width + x].tileset_id;
 
             if (tilesetId == 0)
             {
@@ -99,8 +99,8 @@ void DrawMap(
         {
             GetTilesetRect(&MapTileset, actor->tileset_id, &sourceRect);
 
-            destRect.x = actor->tile->X * destRect.w;
-            destRect.y = actor->tile->Y * destRect.h;
+            destRect.x = actor->tile->x * destRect.w;
+            destRect.y = actor->tile->y * destRect.h;
             SDL_RenderCopy(renderer, MapTileset.Texture, &sourceRect, &destRect);
         }
 
@@ -455,8 +455,8 @@ void GetTileRect(
 
     int scale = scaled ? RenderScale : 1;
 
-    (*rect).x = tile->X * map->tile_width * scale;
-    (*rect).y = tile->Y * map->tile_height * scale;
+    (*rect).x = tile->x * map->tile_width * scale;
+    (*rect).y = tile->y * map->tile_height * scale;
     (*rect).w = map->tile_width * scale;
     (*rect).h = map->tile_height * scale;
 }

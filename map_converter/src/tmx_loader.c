@@ -173,9 +173,9 @@ void LoadTmx(const xmlDoc* doc, struct Map** map, struct ActorList** actors)
                             ReadIntAttribute(tileNode, "gid", &gid);
 
                             struct Tile* tile = get_map_tile(*map, tileX, tileY);
-                            tile->TilesetId = gid - 1;
+                            tile->tileset_id = gid - 1;
 
-                            tile->Collision = IsCollision(tile->TilesetId);
+                            tile->collision = IsCollision(tile->tileset_id);
 
                             ++tileX;
                             if (tileX > mapWidth - 1)
@@ -267,7 +267,7 @@ void LoadTmx(const xmlDoc* doc, struct Map** map, struct ActorList** actors)
                         struct MapLink* link = create_map_link(destMap, destX, destY);
 
                         struct Tile* tile = get_map_tile(*map, tileX, tileY);
-                        tile->Link = link;
+                        tile->link = link;
 
                         free(destMap);
                     }

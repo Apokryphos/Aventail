@@ -30,11 +30,11 @@ struct Map* create_map(
         for (int x = 0; x < width; ++x)
         {
             struct Tile* tile = &map->tiles[y * width + x];
-            tile->Collision = 0;
-            tile->TilesetId = 0;
-            tile->X = x;
-            tile->Y = y;
-            tile->Link = NULL;
+            tile->collision = 0;
+            tile->tileset_id = 0;
+            tile->x = x;
+            tile->y = y;
+            tile->link = NULL;
         }
     }
 
@@ -54,10 +54,10 @@ void destroy_map(struct Map** map)
     for (int t = 0; t < tileCount; ++t)
     {
         struct Tile* tile = &(*map)->tiles[t];
-        if (tile->Link != NULL)
+        if (tile->link != NULL)
         {
             //  Free tile links
-            destroy_map_link(&tile->Link);
+            destroy_map_link(&tile->link);
         }
     }
     free((*map)->tiles);
@@ -77,7 +77,7 @@ struct Tile* get_tile_neighbor(
 
     int dx, dy;
     get_direction_delta(direction, &dx, &dy);
-    return get_map_tile(map, tile->X + dx, tile->Y + dy);
+    return get_map_tile(map, tile->x + dx, tile->y + dy);
 }
 
 //  ---------------------------------------------------------------------------
@@ -99,7 +99,7 @@ size_t get_map_tile_index(const struct Map* map, struct Tile* tile)
 {
     assert(map != NULL);
     assert(tile != NULL);
-    return tile->Y * map->width + tile->X;
+    return tile->y * map->width + tile->x;
 }
 
 //  ---------------------------------------------------------------------------

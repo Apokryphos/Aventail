@@ -22,10 +22,10 @@ static void ResetAStar(struct AStar* a_star)
         a_star->Nodes[n].F = 0;
         a_star->Nodes[n].G = 0;
         a_star->Nodes[n].H = 0;
-        a_star->Nodes[n].Walkable = tile->Collision == 0;
+        a_star->Nodes[n].Walkable = tile->collision == 0;
         a_star->Nodes[n].Parent = NULL;
-        a_star->Nodes[n].X = tile->X;
-        a_star->Nodes[n].Y = tile->Y;
+        a_star->Nodes[n].X = tile->x;
+        a_star->Nodes[n].Y = tile->y;
 
         a_star->Closed[n] = 0;
         a_star->Open[n] = 0;
@@ -49,7 +49,7 @@ static void UpdateAStar(
         struct Tile* tile = actor_node->actor->tile;
         if (tile != NULL)
         {
-            size_t index = tile->Y * a_star->Map->width + tile->X;
+            size_t index = tile->y * a_star->Map->width + tile->x;
             a_star->Nodes[index].Walkable = 0;
         }
 
@@ -234,7 +234,7 @@ struct AStarPath* BuildAStarPath(
 
         struct AStarNode* currentNode = &a_star->Nodes[currentIndex];
 
-        struct Tile* currentTile = &a_star->Map->tiles[currentIndex];
+        struct Tile* current_tile = &a_star->Map->tiles[currentIndex];
 
         for (int d = 1; d < 5; ++d)
         {
@@ -245,10 +245,10 @@ struct AStarPath* BuildAStarPath(
 
             struct Tile* neighborTile = get_map_tile(
                 a_star->Map,
-                currentTile->X + dx,
-                currentTile->Y + dy);
+                current_tile->x + dx,
+                current_tile->y + dy);
 
-            assert(neighborTile != currentTile);
+            assert(neighborTile != current_tile);
 
             if (neighborTile != NULL)
             {
@@ -346,8 +346,8 @@ struct Point* GetNextPathPoint(struct AStarPath* path, struct Tile* tile)
 {
     for (int p = 0; p < path->Count - 1; ++p)
     {
-        if (path->Points[p].X == tile->X &&
-            path->Points[p].Y == tile->Y)
+        if (path->Points[p].X == tile->x &&
+            path->Points[p].Y == tile->y)
         {
             return &path->Points[p+1];
         }
