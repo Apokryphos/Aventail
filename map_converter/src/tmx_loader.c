@@ -264,7 +264,7 @@ void LoadTmx(const xmlDoc* doc, struct Map** map, struct ActorList** actors)
                         ReadIntProperty(propertiesNode, "DestX", &destX);
                         ReadIntProperty(propertiesNode, "DestY", &destY);
 
-                        struct MapLink* link = CreateMapLink(destMap, destX, destY);
+                        struct MapLink* link = create_map_link(destMap, destX, destY);
 
                         struct Tile* tile = GetTile(*map, tileX, tileY);
                         tile->Link = link;

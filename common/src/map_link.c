@@ -4,35 +4,35 @@
 #include <string.h>
 
 //  ---------------------------------------------------------------------------
-struct MapLink* CreateMapLink(
-    const char* destMap,
-    const int destX,
-    const int destY)
+struct MapLink* create_map_link(
+    const char* dest_map,
+    const int dest_x,
+    const int dest_y)
 {
-    assert(destMap != NULL);
-    assert(destX >= 0);
-    assert(destY >= 0);
+    assert(dest_map != NULL);
+    assert(dest_x >= 0);
+    assert(dest_y >= 0);
 
     struct MapLink* link = malloc(sizeof(struct MapLink));
-    link->DestMap = strdup(destMap);
-    link->DestX = destX;
-    link->DestY = destY;
-    
+    link->dest_map = strdup(dest_map);
+    link->dest_x = dest_x;
+    link->dest_y = dest_y;
+
     return link;
 }
 
 //  ---------------------------------------------------------------------------
-void DestroyMapLink(struct MapLink** link)
+void destroy_map_link(struct MapLink** link)
 {
     if (*link == NULL)
     {
         return;
     }
 
-     if ((*link)->DestMap != NULL)
+     if ((*link)->dest_map != NULL)
     {
-        free((*link)->DestMap);
-    }   
+        free((*link)->dest_map);
+    }
 
     free(*link);
     *link = NULL;

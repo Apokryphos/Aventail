@@ -57,7 +57,7 @@ void DestroyMap(struct Map** map)
         if (tile->Link != NULL)
         {
             //  Free tile links
-            DestroyMapLink(&tile->Link);
+            destroy_map_link(&tile->Link);
         }
     }
     free((*map)->Tiles);

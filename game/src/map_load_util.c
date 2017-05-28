@@ -148,7 +148,7 @@ struct Map* LoadMapFromFile(FILE* file)
         fread(&destX, sizeof(int), 1, file);
         fread(&destY, sizeof(int), 1, file);
 
-        struct MapLink* link = CreateMapLink(destMap, destX, destY);
+        struct MapLink* link = create_map_link(destMap, destX, destY);
 
         free(destMap);
 
@@ -157,11 +157,11 @@ struct Map* LoadMapFromFile(FILE* file)
 
         printf(
             "[MapLink] MAP: %s POS: %d, %d DEST: %d, %d\n",
-            link->DestMap,
+            link->dest_map,
             tileX,
             tileY,
-            link->DestX,
-            link->DestY);
+            link->dest_x,
+            link->dest_y);
     }
 
     return map;

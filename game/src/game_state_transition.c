@@ -63,12 +63,12 @@ void UnloadMap(struct World* world)
 void LoadMapLink(struct Game* game)
 {
     assert(TransitionLink != NULL);
-    assert(TransitionLink->DestMap != NULL);
+    assert(TransitionLink->dest_map != NULL);
 
     //  Copy destination link data before DestroyMap frees it
-    char* destMap = strdup(TransitionLink->DestMap);
-    int destX = TransitionLink->DestX;
-    int destY = TransitionLink->DestY;
+    char* destMap = strdup(TransitionLink->dest_map);
+    int destX = TransitionLink->dest_x;
+    int destY = TransitionLink->dest_y;
 
     TransitionLink = NULL;
 

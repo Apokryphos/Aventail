@@ -112,23 +112,23 @@ void SaveMapToFile(FILE* file, const struct Map* map)
 
         if (link != NULL)
         {
-            size_t destMapLen = strlen(link->DestMap);
+            size_t destMapLen = strlen(link->dest_map);
             assert(destMapLen <= MAX_DEST_MAP_STRING_LENGTH);
 
             fwrite(&tile->X, sizeof(int), 1, file);
             fwrite(&tile->Y, sizeof(int), 1, file);
             fwrite(&destMapLen, sizeof(int), 1, file);
-            fwrite(link->DestMap, sizeof(char), destMapLen, file);
-            fwrite(&link->DestX, sizeof(int), 1, file);
-            fwrite(&link->DestY, sizeof(int), 1, file);
+            fwrite(link->dest_map, sizeof(char), destMapLen, file);
+            fwrite(&link->dest_x, sizeof(int), 1, file);
+            fwrite(&link->dest_y, sizeof(int), 1, file);
 
             printf(
                 "[MapLink] MAP: %s POS: %d, %d DEST: %d, %d\n",
-                link->DestMap,
+                link->dest_map,
                 tile->X,
                 tile->Y,
-                link->DestX,
-                link->DestY);
+                link->dest_x,
+                link->dest_y);
         }
     }
 }

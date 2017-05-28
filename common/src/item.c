@@ -24,9 +24,9 @@ void destroy_item(struct Item** item)
 
     if (*item != NULL)
     {
-        if ((*item)->Name != NULL)
+        if ((*item)->name != NULL)
         {
-            free((*item)->Name);
+            free((*item)->name);
         }
 
         free(*item);

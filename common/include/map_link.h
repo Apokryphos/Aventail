@@ -3,24 +3,24 @@
 
 struct MapLink
 {
-    char* DestMap;
-    int DestX;
-    int DestY;
+    char* dest_map;
+    int dest_x;
+    int dest_y;
 };
 
 /*
-    Allocates a MapLink. Free with DestroyMapLink.
+    Allocates a MapLink. Free with destroy_map_link.
     A MapLink assigned to the Link member of a Tile struct will be freed
     when that tile's map is destroyed.
 */
-struct MapLink* CreateMapLink(
-    const char* destMap,
-    const int destX,
-    const int destY);
+struct MapLink* create_map_link(
+    const char* dest_map,
+    const int dest_x,
+    const int dest_y);
 /**
     Frees the specified MapLink. Afterwards the specified pointer will be
     set to NULL.
 */
-void DestroyMapLink(struct MapLink** link);
+void destroy_map_link(struct MapLink** link);
 
 #endif
