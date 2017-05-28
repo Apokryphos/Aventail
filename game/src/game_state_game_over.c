@@ -23,9 +23,9 @@ void GameOverGameStateUpdate(struct Game* game)
         GameOverTicks = 0;
 
         //  TODO: Player is destroyed and recreated here...hacky.
-        remove_actor_from_actor_list(game->World->Actors, game->World->Player.Actor);
-        destroy_actor(&game->World->Player.Actor);
-        game->World->Player.Actor = NULL;
+        remove_actor_from_actor_list(game->World->Actors, game->World->Player.actor);
+        destroy_actor(&game->World->Player.actor);
+        game->World->Player.actor = NULL;
         CreatePlayerActor(game->World);
 
         BeginMapLoadTransition(game, "map01");

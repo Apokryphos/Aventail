@@ -35,7 +35,7 @@ void ProcessLevelGameStateInput(struct Game* game)
 {
     struct InputDevice* inputDevice = game->InputDevice;
 
-    game->World->Player.Actor->move_direction = inputDevice->MoveDirection;
+    game->World->Player.actor->move_direction = inputDevice->MoveDirection;
     inputDevice->MoveDirection = DIRECTION_NONE;
 
     if (inputDevice->Gear)
@@ -53,7 +53,7 @@ void ProcessLevelGameStateInput(struct Game* game)
 
     if (inputDevice->DebugKillPlayerActor)
     {
-        game->World->Player.Actor->health = 0;
+        game->World->Player.actor->health = 0;
     }
 }
 

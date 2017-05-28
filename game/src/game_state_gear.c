@@ -77,7 +77,7 @@ static void ProcessSelectGearSlotStateInput(struct Game* game)
 
     if (inputDevice->Remove)
     {
-        struct Actor* actor = game->World->Player.Actor;
+        struct Actor* actor = game->World->Player.actor;
         enum ItemType itemType = GetSelectedGearSlotItemType();
         remove_item_from_gear(actor, itemType);
         UpdateInventoryWidget(InventoryWidget, actor->inventory);
@@ -129,7 +129,7 @@ static void ProcessSelectInventoryItemSlotStateInput(struct Game* game)
     {
         if (InventoryWidget->ItemCount > 0)
         {
-            struct Actor* actor = game->World->Player.Actor;
+            struct Actor* actor = game->World->Player.actor;
             struct Item* item = InventoryWidget->Items[InventoryWidget->SelectedItemIndex];
             equip_item(actor, item);
             remove_item_from_inventory(actor->inventory, item);
@@ -316,7 +316,7 @@ void GearGameStateUpdate(struct Game* game)
     EnableCursor(1);
     ProcessInventoryGameStateInput(game);
 
-    struct Actor* actor = game->World->Player.Actor;
+    struct Actor* actor = game->World->Player.actor;
     UpdateGearSlotWidget(&ArmorSlotWidget, actor->gear.armor);
     UpdateGearSlotWidget(&ShieldSlotWidget, actor->gear.shield);
     UpdateGearSlotWidget(&WeaponSlotWidget, actor->gear.weapon);

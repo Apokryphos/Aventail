@@ -82,5 +82,5 @@ void StatusGameStateUpdate(struct Game* game)
 
     ProcessStatusGameStateInput(game);
 
-    UpdateStatusWidget(StatusWidget, game->World->Player.Actor);
+    UpdateStatusWidget(StatusWidget, game->World->Player.actor);
 }

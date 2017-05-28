@@ -5,7 +5,7 @@ struct Actor;
 
 struct Player
 {
-    struct Actor* Actor;
+    struct Actor* actor;
 };
 
 #endif

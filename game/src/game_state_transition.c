@@ -48,7 +48,7 @@ void LoadMap(
 void UnloadMap(struct World* world)
 {
     //  Remove player from actors so it doesn't get freed
-    remove_actor_from_actor_list(world->Actors, world->Player.Actor);
+    remove_actor_from_actor_list(world->Actors, world->Player.actor);
 
     destroy_actor_list(&world->Actors);
     destroy_map(&world->Map);
@@ -56,7 +56,7 @@ void UnloadMap(struct World* world)
     world->Actors = create_actor_list();
 
     //  Add player actor back
-    add_actor_to_actor_list_back(world->Actors, world->Player.Actor);
+    add_actor_to_actor_list_back(world->Actors, world->Player.actor);
 }
 
 //  ---------------------------------------------------------------------------
@@ -84,8 +84,8 @@ void LoadMapLink(struct Game* game)
     assert(destTile != NULL);
     assert(in_map_bounds(world->Map, destX, destY));
 
-    world->Player.Actor->map = world->Map;
-    world->Player.Actor->tile = destTile;
+    world->Player.actor->map = world->Map;
+    world->Player.actor->tile = destTile;
 
     PlaySfx(SFX_STEPS_ENTER);
 }
@@ -236,8 +236,8 @@ void TransitionGameStateUpdate(struct Game* game)
                     free(TransitionMapName);
                     TransitionMapName = NULL;
 
-                    game->World->Player.Actor->map = game->World->Map;
-                    game->World->Player.Actor->tile = get_map_tile(game->World->Map, 12, 10);
+                    game->World->Player.actor->map = game->World->Map;
+                    game->World->Player.actor->tile = get_map_tile(game->World->Map, 12, 10);
 
                 }
 

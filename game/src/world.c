@@ -85,13 +85,13 @@ static struct Actor* CreateLootContainer(
 //  ---------------------------------------------------------------------------
 struct Actor* CreatePlayerActor(struct World* world)
 {
-    assert(world->Player.Actor == NULL);
+    assert(world->Player.actor == NULL);
 
     struct Actor* actor = create_actor(NULL, "Player", -1, -1, 190);
     actor->type = ACTOR_TYPE_PLAYER;
     LoadPlayerDefinition(actor);
     add_actor_to_actor_list_front(world->Actors, actor);
-    world->Player.Actor = actor;
+    world->Player.actor = actor;
 
     //  Some starting inventory to test with
     struct Item* armor = create_item("Leather Cuirass");
@@ -141,7 +141,7 @@ struct World* CreateWorld()
 {
     struct World* world = malloc(sizeof(struct World));
     world->Actors = create_actor_list();
-    world->Player.Actor = NULL;
+    world->Player.actor = NULL;
     world->Map = NULL;
     return world;
 }
@@ -257,7 +257,7 @@ static void MoveActor(struct Actor* actor, struct Game* game, struct World* worl
             else
             {
                 //  Map links are currently usable by player only
-                if (actor == world->Player.Actor)
+                if (actor == world->Player.actor)
                 {
                     ActiveActor = NULL;
                     BeginMapLinkTransition(game, destTile->Link, DIRECTION_NONE);
@@ -323,7 +323,7 @@ void SimulateWorld(struct Game* game, struct World* world)
 
     if (ActiveActor == NULL)
     {
-        ActiveActor = world->Player.Actor;
+        ActiveActor = world->Player.actor;
         ResetActionPoints(world);
     }
 
@@ -334,7 +334,7 @@ void SimulateWorld(struct Game* game, struct World* world)
             struct AStarPath* path = BuildAStarPath(
                 aStar,
                 ActiveActor->tile,
-                world->Player.Actor->tile,
+                world->Player.actor->tile,
                 world->Map,
                 world->Actors);
 
@@ -379,7 +379,7 @@ void SimulateWorld(struct Game* game, struct World* world)
         }
     }
 
-    if (is_actor_dead(world->Player.Actor))
+    if (is_actor_dead(world->Player.actor))
     {
         ActiveActor = NULL;
         BeginGameStateTransition(game, GAME_STATE_GAME_OVER);

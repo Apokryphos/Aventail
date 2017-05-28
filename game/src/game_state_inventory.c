@@ -121,7 +121,7 @@ static void ProcessSelectInventoryItemSlotStateInput(struct Game* game)
     {
         if (InventoryWidget->ItemCount > 0)
         {
-            // struct Actor* actor = game->World->Player.Actor;
+            // struct Actor* actor = game->World->Player.actor;
             //struct Item* item = InventoryWidget->Items[InventoryWidget->SelectedItemIndex];
             // equip_item(actor, item);
             // remove_item_from_inventory(actor->inventory, item);
@@ -294,7 +294,7 @@ void InventoryGameStateUpdate(struct Game* game)
     ActivateGui();
     ProcessInventoryGameStateInput(game);
 
-    struct Actor* actor = game->World->Player.Actor;
+    struct Actor* actor = game->World->Player.actor;
 
     InventoryWidget->ItemType = SelectedItemType;
     UpdateInventoryWidget(InventoryWidget, actor->inventory);
