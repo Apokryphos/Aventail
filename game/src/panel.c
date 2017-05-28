@@ -2,45 +2,45 @@
 #include <stdlib.h>
 #include <string.h>
 
-static const int Style1CornerTilesetId = 1065;
-static const int Style1SideTilesetId = 1072;
-static const int Style2CornerTilesetId = 1067;
-static const int Style2SideTilesetId = 1073;
-static const int Style3CornerTilesetId = 1070;
+static const int PANEL_BORDER_STYLE_1_CORNER_TILESET_ID = 1065;
+static const int PANEL_BORDER_STYLE_1_SIDE_TILESET_ID = 1072;
+static const int PANEL_BORDER_STYLE_2_CORNER_TILESET_ID = 1067;
+static const int PANEL_BORDER_STYLE_2_SIDE_TILESET_ID = 1073;
+static const int PANEL_BORDER_STYLE_3_CORNER_TILESET_ID = 1070;
 
 //  ---------------------------------------------------------------------------
-struct Panel* CreatePanel(const char* title, enum PanelBorderStyle style)
+struct Panel* create_panel(const char* title, enum PanelBorderStyle style)
 {
     struct Panel* panel = malloc(sizeof(struct Panel));
 
-    panel->BorderStyle = style;
+    panel->border_style = style;
 
-    panel->Visible = 1;
-    panel->Alpha = 255;
-    panel->Background = 0;
-    panel->Width = 0;
-    panel->Height = 0;
-    panel->ShowTitle = 1;
+    panel->visible = 1;
+    panel->alpha = 255;
+    panel->background = 0;
+    panel->width = 0;
+    panel->height = 0;
+    panel->show_title = 1;
     panel->X = 0;
     panel->Y = 0;
-    panel->Title = title != NULL ? strdup(title): NULL;
-    panel->Text = NULL;
-    panel->TextAlign = PANEL_TEXT_ALIGN_LEFT;
-    panel->Icon.TilesetId = -1;
-    panel->Icon.Flip = 0;
-    panel->Icon.Style = PANEL_ICON_STYLE_NONE;
+    panel->title = title != NULL ? strdup(title): NULL;
+    panel->text = NULL;
+    panel->text_align = PANEL_TEXT_ALIGN_LEFT;
+    panel->icon.tileset_id = -1;
+    panel->icon.flip = 0;
+    panel->icon.style = PANEL_ICON_STYLE_NONE;
 
     return panel;
 }
 
 //  ---------------------------------------------------------------------------
-void DestroyPanel(struct Panel** panel)
+void destroy_panel(struct Panel** panel)
 {
     if (*panel != NULL)
     {
-        if ((*panel)->Title != NULL)
+        if ((*panel)->title != NULL)
         {
-            free((*panel)->Title);
+            free((*panel)->title);
         }
 
         free(*panel);
@@ -49,28 +49,28 @@ void DestroyPanel(struct Panel** panel)
 }
 
 //  ---------------------------------------------------------------------------
-void GetPanelBorderTilesetIds(
+void get_panel_border_tileset_ids(
     enum PanelBorderStyle style,
-    int* cornerTilesetId,
-    int* sideTilesetId)
+    int* corner_tileset_id,
+    int* side_tileset_id)
 {
     switch (style)
     {
         default:
-            *cornerTilesetId = -1;
-            *sideTilesetId = -1;
+            *corner_tileset_id = -1;
+            *side_tileset_id = -1;
             break;
         case PANEL_BORDER_STYLE_1:
-            *cornerTilesetId = Style1CornerTilesetId;
-            *sideTilesetId = Style1SideTilesetId;
+            *corner_tileset_id = PANEL_BORDER_STYLE_1_CORNER_TILESET_ID;
+            *side_tileset_id = PANEL_BORDER_STYLE_1_SIDE_TILESET_ID;
             break;
         case PANEL_BORDER_STYLE_2:
-            *cornerTilesetId = Style2CornerTilesetId;
-            *sideTilesetId = Style2SideTilesetId;
+            *corner_tileset_id = PANEL_BORDER_STYLE_2_CORNER_TILESET_ID;
+            *side_tileset_id = PANEL_BORDER_STYLE_2_SIDE_TILESET_ID;
             break;
         case PANEL_BORDER_STYLE_3:
-            *cornerTilesetId = Style3CornerTilesetId;
-            *sideTilesetId = Style2SideTilesetId;
+            *corner_tileset_id = PANEL_BORDER_STYLE_3_CORNER_TILESET_ID;
+            *side_tileset_id = PANEL_BORDER_STYLE_2_SIDE_TILESET_ID;
             break;
     }
 }

@@ -204,15 +204,15 @@ static int GetItemTypeIconTilesetId(enum ItemType itemType)
 //  ---------------------------------------------------------------------------
 static struct Panel* CreateItemTypePanel(enum ItemType itemType)
 {
-    struct Panel* panel = CreatePanel(
+    struct Panel* panel = create_panel(
         get_item_type_category_string(itemType),
         PANEL_BORDER_STYLE_1);
 
-    panel->Width = 24;
-    panel->Height = 24;
-    panel->Background = 1;
-    panel->Icon.Style = PANEL_ICON_STYLE_NORMAL;
-    panel->Icon.TilesetId = GetItemTypeIconTilesetId(itemType);
+    panel->width = 24;
+    panel->height = 24;
+    panel->background = 1;
+    panel->icon.style = PANEL_ICON_STYLE_NORMAL;
+    panel->icon.tileset_id = GetItemTypeIconTilesetId(itemType);
 
     return panel;
 }
@@ -225,14 +225,14 @@ static void InitInventoryGuiScreen(SDL_Renderer* renderer)
     for (int t = 0; t < ITEM_TYPE_COUNT; ++t)
     {
         struct Panel* panel = CreateItemTypePanel((enum ItemType)t);
-        panel->X = 42 + (t * panel->Width);
+        panel->X = 42 + (t * panel->width);
         panel->Y = 32;
         item_type_panels[t] = panel;
         AddGuiScreenPanel(inventory_gui_screen, panel);
     }
 
     inventory_widget = create_inventory_widget(inventory_gui_screen);
-    inventory_widget->panel->ShowTitle = 0;
+    inventory_widget->panel->show_title = 0;
 
     //SDL_Rect viewport;
     //SDL_RenderGetViewport(renderer, &viewport);
@@ -303,7 +303,7 @@ void InventoryGameStateUpdate(struct Game* game)
     for (int p = 0; p < ITEM_TYPE_COUNT; ++p)
     {
         struct Panel* panel = item_type_panels[p];
-        panel->ShowTitle = panel == selectedPanel;
+        panel->show_title = panel == selectedPanel;
     }
 
     UpdateCursor();

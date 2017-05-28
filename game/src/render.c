@@ -215,21 +215,21 @@ static void draw_panel_text(SDL_Renderer* renderer, const struct Panel* panel)
 {
     assert(renderer != NULL);
     assert(panel != NULL);
-    assert(panel->Text != NULL);
+    assert(panel->text != NULL);
 
     int text_width, text_height, text_x, text_y;
-    measure_text(panel->Text, &text_width, &text_height);
-    if (panel->TextAlign == PANEL_TEXT_ALIGN_LEFT)
+    measure_text(panel->text, &text_width, &text_height);
+    if (panel->text_align == PANEL_TEXT_ALIGN_LEFT)
     {
         text_x = panel->X;
         text_y = panel->Y;
     }
     else
     {
-        text_x = panel->X + (panel->Width / 2) - (text_width / 2);
-        text_y = panel->Y + (panel->Height / 2) - (text_height / 2);
+        text_x = panel->X + (panel->width / 2) - (text_width / 2);
+        text_y = panel->Y + (panel->height / 2) - (text_height / 2);
     }
-    draw_text(renderer, panel->Text, text_x, text_y);
+    draw_text(renderer, panel->text, text_x, text_y);
 }
 
 //  ---------------------------------------------------------------------------
@@ -244,7 +244,7 @@ static void draw_panel_title(
 
     int text_width, text_height;
     measure_text(text, &text_width, &text_height);
-    int text_x = panel->X + (panel->Width / 2) - (text_width / 2);
+    int text_x = panel->X + (panel->width / 2) - (text_width / 2);
     int text_y = panel->Y - text_height;
     draw_text(renderer, text, text_x, text_y);
 }
@@ -252,7 +252,7 @@ static void draw_panel_title(
 //  ---------------------------------------------------------------------------
 void draw_panel_border(SDL_Renderer* renderer, const struct Panel* panel)
 {
-    if (panel->BorderStyle == PANEL_BORDER_STYLE_NONE)
+    if (panel->border_style == PANEL_BORDER_STYLE_NONE)
     {
         return;
     }
@@ -266,14 +266,14 @@ void draw_panel_border(SDL_Renderer* renderer, const struct Panel* panel)
     dest_rect.h = gui_tileset.tile_height;
 
     int corner_tileset_id, side_tileset_id;
-    GetPanelBorderTilesetIds(
-        panel->BorderStyle,
+    get_panel_border_tileset_ids(
+        panel->border_style,
         &corner_tileset_id,
         &side_tileset_id);
 
     get_tileset_rect(&gui_tileset, side_tileset_id, &src_rect);
     int start_x = panel->X + dest_rect.w;
-    int end_x = panel->X + panel->Width - dest_rect.w;
+    int end_x = panel->X + panel->width - dest_rect.w;
     for (int x = start_x; x < end_x; x += dest_rect.w)
     {
         dest_rect.x = x;
@@ -288,7 +288,7 @@ void draw_panel_border(SDL_Renderer* renderer, const struct Panel* panel)
             NULL,
             SDL_FLIP_NONE);
 
-        dest_rect.y = panel->Y + panel->Height - gui_tileset.tile_height;
+        dest_rect.y = panel->Y + panel->height - gui_tileset.tile_height;
         SDL_RenderCopyEx(
             renderer,
             gui_tileset.texture,
@@ -300,7 +300,7 @@ void draw_panel_border(SDL_Renderer* renderer, const struct Panel* panel)
     }
 
     int start_y = panel->Y + dest_rect.h;
-    int end_y = panel->Y + panel->Height - dest_rect.h;
+    int end_y = panel->Y + panel->height - dest_rect.h;
     for (int y = start_y; y < end_y; y += dest_rect.h)
     {
         dest_rect.y = y;
@@ -308,7 +308,7 @@ void draw_panel_border(SDL_Renderer* renderer, const struct Panel* panel)
         dest_rect.x = panel->X;
         SDL_RenderCopy(renderer, gui_tileset.texture, &src_rect, &dest_rect);
 
-        dest_rect.x = panel->X + panel->Width - gui_tileset.tile_width;
+        dest_rect.x = panel->X + panel->width - gui_tileset.tile_width;
         SDL_RenderCopyEx(
             renderer,
             gui_tileset.texture,
@@ -328,7 +328,7 @@ void draw_panel_border(SDL_Renderer* renderer, const struct Panel* panel)
 
     //  Lower-left corner
     dest_rect.x = panel->X;
-    dest_rect.y = panel->Y + panel->Height - gui_tileset.tile_height;
+    dest_rect.y = panel->Y + panel->height - gui_tileset.tile_height;
     SDL_RenderCopyEx(
             renderer,
             gui_tileset.texture,
@@ -339,8 +339,8 @@ void draw_panel_border(SDL_Renderer* renderer, const struct Panel* panel)
             SDL_FLIP_VERTICAL);
 
     //  Lower-right corner
-    dest_rect.x = panel->X + panel->Width - gui_tileset.tile_width;
-    dest_rect.y = panel->Y + panel->Height - gui_tileset.tile_height;
+    dest_rect.x = panel->X + panel->width - gui_tileset.tile_width;
+    dest_rect.y = panel->Y + panel->height - gui_tileset.tile_height;
     SDL_RenderCopyEx(
             renderer,
             gui_tileset.texture,
@@ -351,7 +351,7 @@ void draw_panel_border(SDL_Renderer* renderer, const struct Panel* panel)
             SDL_FLIP_HORIZONTAL | SDL_FLIP_VERTICAL);
 
     //  Upper-right corner
-    dest_rect.x = panel->X + panel->Width - gui_tileset.tile_width;
+    dest_rect.x = panel->X + panel->width - gui_tileset.tile_width;
     dest_rect.y = panel->Y;
     SDL_RenderCopyEx(
             renderer,
@@ -370,64 +370,64 @@ void draw_panel(SDL_Renderer* renderer, const struct Panel* panel)
     assert(panel != NULL);
     assert(map_tileset.texture != NULL);
 
-    if (panel->Visible == 0)
+    if (panel->visible == 0)
     {
         return;
     }
 
-    if (panel->ShowTitle && panel->Title != NULL)
+    if (panel->show_title && panel->title != NULL)
     {
-        draw_panel_title(renderer, panel, panel->Title);
+        draw_panel_title(renderer, panel, panel->title);
     }
 
-    if (panel->Background)
+    if (panel->background)
     {
         SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
 
-        SDL_Rect panelRect = { panel->X, panel->Y, panel->Width, panel->Height };
-        SDL_SetRenderDrawColor(renderer, 42, 5, 3, panel->Alpha);
+        SDL_Rect panelRect = { panel->X, panel->Y, panel->width, panel->height };
+        SDL_SetRenderDrawColor(renderer, 42, 5, 3, panel->alpha);
         SDL_RenderFillRect(renderer, &panelRect);
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 
         SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_NONE);
     }
 
-    if (panel->Alpha < 255)
+    if (panel->alpha < 255)
     {
         SDL_SetTextureBlendMode(gui_tileset.texture, SDL_BLENDMODE_BLEND);
-        SDL_SetTextureAlphaMod(gui_tileset.texture, panel->Alpha);
+        SDL_SetTextureAlphaMod(gui_tileset.texture, panel->alpha);
     }
 
     draw_panel_border(renderer, panel);
 
-    if (panel->Icon.TilesetId > -1)
+    if (panel->icon.tileset_id > -1)
     {
-        if (panel->Icon.Style == PANEL_ICON_STYLE_NORMAL)
+        if (panel->icon.style == PANEL_ICON_STYLE_NORMAL)
         {
             draw_tileset_tile(
                 renderer,
-                panel->Icon.TilesetId,
-                panel->X + (panel->Width / 2) - (map_tileset.tile_width / 2),
-                panel->Y + (panel->Height / 2) - (map_tileset.tile_height / 2),
-                panel->Icon.Flip);
+                panel->icon.tileset_id,
+                panel->X + (panel->width / 2) - (map_tileset.tile_width / 2),
+                panel->Y + (panel->height / 2) - (map_tileset.tile_height / 2),
+                panel->icon.flip);
         }
-        else if (panel->Icon.Style == PANEL_ICON_STYLE_SMALL)
+        else if (panel->icon.style == PANEL_ICON_STYLE_SMALL)
         {
             draw_gui_tileset_tile(
                 renderer,
-                panel->Icon.TilesetId,
-                panel->X + (panel->Width / 2) - (gui_tileset.tile_width / 2),
-                panel->Y + (panel->Height / 2) - (gui_tileset.tile_height / 2),
-                panel->Icon.Flip);
+                panel->icon.tileset_id,
+                panel->X + (panel->width / 2) - (gui_tileset.tile_width / 2),
+                panel->Y + (panel->height / 2) - (gui_tileset.tile_height / 2),
+                panel->icon.flip);
         }
     }
 
-    if (panel->Text != NULL)
+    if (panel->text != NULL)
     {
         draw_panel_text(renderer, panel);
     }
 
-    if (panel->Alpha < 255)
+    if (panel->alpha < 255)
     {
         SDL_SetTextureBlendMode(gui_tileset.texture, SDL_BLENDMODE_NONE);
         SDL_SetTextureAlphaMod(gui_tileset.texture, 255);

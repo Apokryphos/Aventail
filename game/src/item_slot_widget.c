@@ -41,16 +41,16 @@ static int GetStatIconTilesetId(enum StatType statType)
 struct ItemSlotWidget* CreateItemSlotWidget(struct GuiScreen* screen)
 {
     //  Small panel to house the item's icon
-    struct Panel* itemIconPanel = CreatePanel(NULL, PANEL_BORDER_STYLE_1);
-    itemIconPanel->Width = 24;
-    itemIconPanel->Height = 24;
-    itemIconPanel->Icon.Style = PANEL_ICON_STYLE_NORMAL;
+    struct Panel* itemIconPanel = create_panel(NULL, PANEL_BORDER_STYLE_1);
+    itemIconPanel->width = 24;
+    itemIconPanel->height = 24;
+    itemIconPanel->icon.style = PANEL_ICON_STYLE_NORMAL;
     AddGuiScreenPanel(screen, itemIconPanel);
 
     //  Panel for item name text
-    struct Panel* itemNamePanel = CreatePanel(NULL, PANEL_BORDER_STYLE_NONE);
-    itemNamePanel->Width = 24;
-    itemNamePanel->Height = 14;
+    struct Panel* itemNamePanel = create_panel(NULL, PANEL_BORDER_STYLE_NONE);
+    itemNamePanel->width = 24;
+    itemNamePanel->height = 14;
     AddGuiScreenPanel(screen, itemNamePanel);
 
     //  The ItemSlotWidget that will be returned to the caller
@@ -66,18 +66,18 @@ struct ItemSlotWidget* CreateItemSlotWidget(struct GuiScreen* screen)
         int iconTilesetId = GetStatIconTilesetId(statType);
 
         //  Panel for small stat icon
-        struct Panel* iconPanel = CreatePanel(NULL, PANEL_BORDER_STYLE_NONE);
-        iconPanel->Width = 8;
-        iconPanel->Height = 8;
-        iconPanel->Icon.Style = PANEL_ICON_STYLE_SMALL;
-        iconPanel->Icon.TilesetId = iconTilesetId;
-        iconPanel->Visible = 0;
+        struct Panel* iconPanel = create_panel(NULL, PANEL_BORDER_STYLE_NONE);
+        iconPanel->width = 8;
+        iconPanel->height = 8;
+        iconPanel->icon.style = PANEL_ICON_STYLE_SMALL;
+        iconPanel->icon.tileset_id = iconTilesetId;
+        iconPanel->visible = 0;
         AddGuiScreenPanel(screen, iconPanel);
 
         //  Panel for stat value text
-        struct Panel* valuePanel = CreatePanel(NULL, PANEL_BORDER_STYLE_NONE);
-        valuePanel->Width = StatValuePanelWidth;
-        valuePanel->Visible = 0;
+        struct Panel* valuePanel = create_panel(NULL, PANEL_BORDER_STYLE_NONE);
+        valuePanel->width = StatValuePanelWidth;
+        valuePanel->visible = 0;
         AddGuiScreenPanel(screen, valuePanel);
 
         itemSlotWidget->StatIconPanels[s] = iconPanel;
@@ -98,13 +98,13 @@ void DestroyItemSlotWidget(struct ItemSlotWidget** widget)
 
     if (*widget != NULL)
     {
-        DestroyPanel(&(*widget)->ItemIconPanel);
-        DestroyPanel(&(*widget)->ItemNamePanel);
+        destroy_panel(&(*widget)->ItemIconPanel);
+        destroy_panel(&(*widget)->ItemNamePanel);
 
         for (int p = 0; p < STAT_TYPE_COUNT; ++p)
         {
-            DestroyPanel(&(*widget)->StatIconPanels[p]);
-            DestroyPanel(&(*widget)->StatValuePanels[p]);
+            destroy_panel(&(*widget)->StatIconPanels[p]);
+            destroy_panel(&(*widget)->StatValuePanels[p]);
 
             if ((*widget)->StatValueStrings[p] != NULL)
             {
@@ -123,7 +123,7 @@ void SetItemSlotWidgetPosition(struct ItemSlotWidget* widget, int x, int y)
     widget->ItemIconPanel->X = x + 16;
     widget->ItemIconPanel->Y = y + 16;
 
-    widget->ItemNamePanel->X = widget->ItemIconPanel->X + widget->ItemIconPanel->Width + 4;
+    widget->ItemNamePanel->X = widget->ItemIconPanel->X + widget->ItemIconPanel->width + 4;
     widget->ItemNamePanel->Y = widget->ItemIconPanel->Y;
 
     int prevX = widget->ItemNamePanel->X;
@@ -131,26 +131,26 @@ void SetItemSlotWidgetPosition(struct ItemSlotWidget* widget, int x, int y)
     {
         struct Panel* iconPanel = widget->StatIconPanels[s];
         iconPanel->X = prevX;
-        iconPanel->Y = widget->ItemNamePanel->Y + widget->ItemNamePanel->Height;
+        iconPanel->Y = widget->ItemNamePanel->Y + widget->ItemNamePanel->height;
 
         struct Panel* valuePanel = widget->StatValuePanels[s];
-        valuePanel->X = iconPanel->X + iconPanel->Width + StatValuePadding;
+        valuePanel->X = iconPanel->X + iconPanel->width + StatValuePadding;
         valuePanel->Y = iconPanel->Y;
 
-        prevX = valuePanel->X + valuePanel->Width;
+        prevX = valuePanel->X + valuePanel->width;
     }
 }
 
 //  ---------------------------------------------------------------------------
 void SetItemSlotWidgetVisible(struct ItemSlotWidget* widget, int visible)
 {
-    widget->ItemIconPanel->Visible = visible;
-    widget->ItemNamePanel->Visible = visible;
+    widget->ItemIconPanel->visible = visible;
+    widget->ItemNamePanel->visible = visible;
 
     for (int s = 0; s < STAT_TYPE_COUNT; ++s)
     {
-        widget->StatIconPanels[s]->Visible = visible;
-        widget->StatValuePanels[s]->Visible = visible;
+        widget->StatIconPanels[s]->visible = visible;
+        widget->StatValuePanels[s]->visible = visible;
     }
 }
 
@@ -159,13 +159,13 @@ void UpdateItemSlotWidget(struct ItemSlotWidget* widget, struct Item* item)
 {
     if (item != NULL)
     {
-        widget->ItemIconPanel->Icon.TilesetId = item->tileset_id;
-        widget->ItemNamePanel->Text = item->name;
+        widget->ItemIconPanel->icon.tileset_id = item->tileset_id;
+        widget->ItemNamePanel->text = item->name;
     }
     else
     {
-        widget->ItemIconPanel->Icon.TilesetId = -1;
-        widget->ItemNamePanel->Text = EmptyString;
+        widget->ItemIconPanel->icon.tileset_id = -1;
+        widget->ItemNamePanel->text = EmptyString;
     }
 
     for (int s = 0; s < STAT_TYPE_COUNT; ++s)
@@ -197,10 +197,10 @@ void UpdateItemSlotWidget(struct ItemSlotWidget* widget, struct Item* item)
                 asprintf(stringValue, "%d", *currentValue);
             }
 
-            panel->Text = *stringValue;
+            panel->text = *stringValue;
         }
 
-        panel->Visible = *currentValue != 0;
-        iconPanel->Visible = *currentValue != 0;
+        panel->visible = *currentValue != 0;
+        iconPanel->visible = *currentValue != 0;
     }
 }

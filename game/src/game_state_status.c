@@ -54,8 +54,8 @@ static void init_status_gui_screen(SDL_Renderer* renderer)
     SDL_RenderGetViewport(renderer, &viewport);
     set_status_widget_position(
         status_widget,
-        (viewport.w / 2) - (status_widget->Panel->Width / 2),
-        (viewport.h / 2) - (status_widget->Panel->Height / 2));
+        (viewport.w / 2) - (status_widget->Panel->width / 2),
+        (viewport.h / 2) - (status_widget->Panel->height / 2));
 
     add_gui_screen(status_gui_screen);
 }

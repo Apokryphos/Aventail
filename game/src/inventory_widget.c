@@ -18,10 +18,10 @@ struct InventoryWidget* create_inventory_widget(struct GuiScreen* gui_screen)
     widget->selected_item_index = 0;
     widget->selected_item_slot_widget = NULL;
 
-    widget->panel = CreatePanel("Inventory", PANEL_BORDER_STYLE_2);
-    widget->panel->Width = 196;
-    widget->panel->Height = INVENTORY_WIDGET_MAX_VISIBLE_ITEMS * 40;
-    widget->panel->Background = 1;
+    widget->panel = create_panel("Inventory", PANEL_BORDER_STYLE_2);
+    widget->panel->width = 196;
+    widget->panel->height = INVENTORY_WIDGET_MAX_VISIBLE_ITEMS * 40;
+    widget->panel->background = 1;
     AddGuiScreenPanel(gui_screen, widget->panel);
 
     widget->items = malloc(sizeof(struct Item*) * MAX_INVENTORY_ITEMS);
@@ -35,19 +35,19 @@ struct InventoryWidget* create_inventory_widget(struct GuiScreen* gui_screen)
         widget->item_slot_widgets[p] = CreateItemSlotWidget(gui_screen);
     }
 
-    widget->bottom_scroll_arrow_panel = CreatePanel(NULL, PANEL_BORDER_STYLE_NONE);
-    widget->bottom_scroll_arrow_panel->Width = 8;
-    widget->bottom_scroll_arrow_panel->Height = 8;
-    widget->bottom_scroll_arrow_panel->Icon.Flip = FLIP_FLAG_VERT;
-    widget->bottom_scroll_arrow_panel->Icon.TilesetId = ARROW_ICON_TILESET_ID;
-    widget->bottom_scroll_arrow_panel->Icon.Style = PANEL_ICON_STYLE_SMALL;
+    widget->bottom_scroll_arrow_panel = create_panel(NULL, PANEL_BORDER_STYLE_NONE);
+    widget->bottom_scroll_arrow_panel->width = 8;
+    widget->bottom_scroll_arrow_panel->height = 8;
+    widget->bottom_scroll_arrow_panel->icon.flip = FLIP_FLAG_VERT;
+    widget->bottom_scroll_arrow_panel->icon.tileset_id = ARROW_ICON_TILESET_ID;
+    widget->bottom_scroll_arrow_panel->icon.style = PANEL_ICON_STYLE_SMALL;
     AddGuiScreenPanel(gui_screen, widget->bottom_scroll_arrow_panel);
 
-    widget->top_scroll_arrow_panel = CreatePanel(NULL, PANEL_BORDER_STYLE_NONE);
-    widget->top_scroll_arrow_panel->Width = 8;
-    widget->top_scroll_arrow_panel->Height = 8;
-    widget->top_scroll_arrow_panel->Icon.TilesetId = ARROW_ICON_TILESET_ID;
-    widget->top_scroll_arrow_panel->Icon.Style = PANEL_ICON_STYLE_SMALL;
+    widget->top_scroll_arrow_panel = create_panel(NULL, PANEL_BORDER_STYLE_NONE);
+    widget->top_scroll_arrow_panel->width = 8;
+    widget->top_scroll_arrow_panel->height = 8;
+    widget->top_scroll_arrow_panel->icon.tileset_id = ARROW_ICON_TILESET_ID;
+    widget->top_scroll_arrow_panel->icon.style = PANEL_ICON_STYLE_SMALL;
     AddGuiScreenPanel(gui_screen, widget->top_scroll_arrow_panel);
 
     set_inventory_widget_position(widget, 0, 0);
@@ -64,7 +64,7 @@ void destroy_inventory_widget(struct InventoryWidget** widget)
     {
         if ((*widget)->panel != NULL)
         {
-            DestroyPanel(&(*widget)->panel);
+            destroy_panel(&(*widget)->panel);
         }
         for (int p = 0; p < INVENTORY_WIDGET_MAX_VISIBLE_ITEMS; ++p)
         {
@@ -117,22 +117,22 @@ void set_inventory_widget_position(struct InventoryWidget* widget, int x, int y)
 
     widget->bottom_scroll_arrow_panel->X =
         widget->panel->X +
-        widget->panel->Width / 2 -
-        widget->bottom_scroll_arrow_panel->Width / 2;
+        widget->panel->width / 2 -
+        widget->bottom_scroll_arrow_panel->width / 2;
 
     widget->bottom_scroll_arrow_panel->Y =
         widget->panel->Y +
-        widget->panel->Height -
-        widget->bottom_scroll_arrow_panel->Height * 2 + 2;
+        widget->panel->height -
+        widget->bottom_scroll_arrow_panel->height * 2 + 2;
 
     widget->top_scroll_arrow_panel->X =
         widget->panel->X +
-        widget->panel->Width / 2 -
-        widget->top_scroll_arrow_panel->Width / 2;
+        widget->panel->width / 2 -
+        widget->top_scroll_arrow_panel->width / 2;
 
     widget->top_scroll_arrow_panel->Y =
         widget->panel->Y +
-        widget->top_scroll_arrow_panel->Height - 2;
+        widget->top_scroll_arrow_panel->height - 2;
 
     const int itemPanelHeight = 32;
     for (int p = 0; p < INVENTORY_WIDGET_MAX_VISIBLE_ITEMS; ++p)
@@ -182,8 +182,8 @@ void update_inventory_widget(
             start = 0;
             end = n < v ? n : v;
 
-            widget->top_scroll_arrow_panel->Visible = 0;
-            widget->bottom_scroll_arrow_panel->Visible = end < n;
+            widget->top_scroll_arrow_panel->visible = 0;
+            widget->bottom_scroll_arrow_panel->visible = end < n;
         }
         else if (p >= n - h)
         {
@@ -192,8 +192,8 @@ void update_inventory_widget(
             start = n - v;
             end = n;
 
-            widget->top_scroll_arrow_panel->Visible = start > 0;
-            widget->bottom_scroll_arrow_panel->Visible = 0;
+            widget->top_scroll_arrow_panel->visible = start > 0;
+            widget->bottom_scroll_arrow_panel->visible = 0;
         }
         else
         {
@@ -202,8 +202,8 @@ void update_inventory_widget(
             start = p - h;
             end = p + h + 1;
 
-            widget->top_scroll_arrow_panel->Visible = 1;
-            widget->bottom_scroll_arrow_panel->Visible = 1;
+            widget->top_scroll_arrow_panel->visible = 1;
+            widget->bottom_scroll_arrow_panel->visible = 1;
         }
 
         // Update the currently selected ItemSlotWidget
@@ -235,7 +235,7 @@ void update_inventory_widget(
     {
         widget->selected_item_slot_widget = NULL;
 
-        widget->top_scroll_arrow_panel->Visible = 0;
-        widget->bottom_scroll_arrow_panel->Visible = 0;
+        widget->top_scroll_arrow_panel->visible = 0;
+        widget->bottom_scroll_arrow_panel->visible = 0;
     }
 }

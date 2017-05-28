@@ -75,7 +75,7 @@ static void draw_gui_screen(SDL_Renderer* renderer, struct GuiScreen* screen)
     {
         for (int p = 0; p < screen->PanelCount; ++p)
         {
-            //screen->Panels[p]->Alpha = (int)(255 * fade_progress);
+            //screen->Panels[p]->alpha = (int)(255 * fade_progress);
             draw_panel(renderer, screen->Panels[p]);
         }
     }

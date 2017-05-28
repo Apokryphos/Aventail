@@ -26,33 +26,33 @@ enum PanelTextAlign
 
 struct PanelIcon
 {
-    int TilesetId;
-    enum PanelIconStyle Style;
-    enum FlipFlag Flip;
+    int tileset_id;
+    enum PanelIconStyle style;
+    enum FlipFlag flip;
 };
 
 struct Panel
 {
-    int Visible;
-    int Background;
-    int Alpha;
-    int Width;
-    int Height;
-    int ShowTitle;
+    int visible;
+    int background;
+    int alpha;
+    int width;
+    int height;
+    int show_title;
     int X;
     int Y;
-    struct PanelIcon Icon;
-    enum PanelBorderStyle BorderStyle;
-    enum PanelTextAlign TextAlign;
-    char* Title;
-    const char* Text;
+    struct PanelIcon icon;
+    enum PanelBorderStyle border_style;
+    enum PanelTextAlign text_align;
+    char* title;
+    const char* text;
 };
 
-struct Panel* CreatePanel(const char* title, enum PanelBorderStyle style);
-void DestroyPanel(struct Panel** panel);
-void GetPanelBorderTilesetIds(
+struct Panel* create_panel(const char* title, enum PanelBorderStyle style);
+void destroy_panel(struct Panel** panel);
+void get_panel_border_tileset_ids(
     enum PanelBorderStyle style,
-    int* cornerTilesetId,
-    int* sideTilesetId);
+    int* corner_tileset_id,
+    int* side_tileset_id);
 
 #endif

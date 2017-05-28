@@ -188,12 +188,12 @@ static struct GearSlotWidget CreateGearSlotWidget(
     const char* slotName,
     int slotIndex)
 {
-    struct Panel* slotPanel = CreatePanel(slotName, PANEL_BORDER_STYLE_2);
-    slotPanel->Width = 164;
-    slotPanel->Height = 56;
+    struct Panel* slotPanel = create_panel(slotName, PANEL_BORDER_STYLE_2);
+    slotPanel->width = 164;
+    slotPanel->height = 56;
     slotPanel->X = 16;
-    slotPanel->Y = slotIndex * (slotPanel->Height + 32) + 32;
-    slotPanel->Background = 1;
+    slotPanel->Y = slotIndex * (slotPanel->height + 32) + 32;
+    slotPanel->background = 1;
     AddGuiScreenPanel(screen, slotPanel);
 
     struct GearSlotWidget gearSlotWidget =
@@ -234,7 +234,7 @@ static void InitGearGuiScreen(SDL_Renderer* renderer)
     SDL_RenderGetViewport(renderer, &viewport);
     set_inventory_widget_position(
         InventoryWidget,
-        viewport.w - InventoryWidget->panel->Width - 16,
+        viewport.w - InventoryWidget->panel->width - 16,
         32);
 
     add_gui_screen(GearGuiScreen);

@@ -45,8 +45,6 @@ void destroy_gui_int_string(struct GuiIntString** int_string)
     }
 }
 
-
-
 //  ---------------------------------------------------------------------------
 void set_gui_int_string(
     struct GuiIntString* int_string,
