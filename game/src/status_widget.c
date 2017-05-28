@@ -116,12 +116,12 @@ void UpdateStatusWidget(struct StatusWidget* widget, struct Actor* actor)
     SetGuiIntString(widget->CashIntString, "Cash", actor->cash);
     widget->CashPanel->Text = widget->CashIntString->String;
 
-    SetGuiIntString(widget->AttackIntString, "Attack", actor->stats.Attack);
+    SetGuiIntString(widget->AttackIntString, "Attack", actor->stats.attack);
     widget->AttackPanel->Text = widget->AttackIntString->String;
 
-    SetGuiIntString(widget->DefendIntString, "Defend", actor->stats.Defend);
+    SetGuiIntString(widget->DefendIntString, "Defend", actor->stats.defend);
     widget->DefendPanel->Text = widget->DefendIntString->String;
 
-    SetGuiIntString(widget->VitalityIntString, "Vitality", actor->stats.Vitality);
+    SetGuiIntString(widget->VitalityIntString, "Vitality", actor->stats.vitality);
     widget->VitalityPanel->Text = widget->VitalityIntString->String;
 }

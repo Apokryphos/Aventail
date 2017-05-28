@@ -174,7 +174,7 @@ void UpdateItemSlotWidget(struct ItemSlotWidget* widget, struct Item* item)
 
         int statValue =
             item != NULL ?
-            GetStatByType(&item->stats, statType) :
+            get_stats_value_by_stat_type(&item->stats, statType) :
             0;
 
         int* currentValue = &widget->StatValues[s];

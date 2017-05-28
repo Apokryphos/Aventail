@@ -30,13 +30,13 @@ static void Attack(struct Actor* source, struct Actor* target, struct World* wor
 
         --source->action_points;
 
-        struct Stats sourceStats = AddStats(source->stats, source->gear.stats);
-        struct Stats targetStats = AddStats(target->stats, target->gear.stats);
+        struct Stats sourceStats = add_stats(source->stats, source->gear.stats);
+        struct Stats targetStats = add_stats(target->stats, target->gear.stats);
 
         int damage = 1;
-        if (sourceStats.Attack > targetStats.Defend)
+        if (sourceStats.attack > targetStats.defend)
         {
-            damage = (sourceStats.Attack - targetStats.Defend) + 1;
+            damage = (sourceStats.attack - targetStats.defend) + 1;
         }
 
         target->health -= damage;

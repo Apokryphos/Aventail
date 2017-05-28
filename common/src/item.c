@@ -10,9 +10,9 @@ struct Item* create_item(const char* name)
     item->name = strdup(name);
     item->tileset_id = 91;
     item->heal_amount = 0;
-    item->stats.Attack = 0;
-    item->stats.Defend = 0;
-    item->stats.Vitality = 0;
+    item->stats.attack = 0;
+    item->stats.defend = 0;
+    item->stats.vitality = 0;
     item->type = ITEM_TYPE_NONE;
     return item;
 }

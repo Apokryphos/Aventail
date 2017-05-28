@@ -3,48 +3,48 @@
 #include <stdlib.h>
 
 //  ---------------------------------------------------------------------------
-struct Stats AddStats(struct Stats stats1, struct Stats stats2)
+struct Stats add_stats(struct Stats stats1, struct Stats stats2)
 {
-    struct Stats stats = 
+    struct Stats stats =
     {
-        .Attack = stats1.Attack + stats2.Attack,
-        .Defend = stats1.Defend + stats2.Defend,
-        .Vitality = stats1.Vitality + stats2.Vitality,
+        .attack = stats1.attack + stats2.attack,
+        .defend = stats1.defend + stats2.defend,
+        .vitality = stats1.vitality + stats2.vitality,
     };
     return stats;
 }
 
 //  ---------------------------------------------------------------------------
-void ClampStats(struct Stats* stats)
+void clamp_stats(struct Stats* stats)
 {
-    if (stats->Attack < 0)
+    if (stats->attack < 0)
     {
-        stats->Attack = 0;
+        stats->attack = 0;
     }
 
-    if (stats->Defend < 0)
+    if (stats->defend < 0)
     {
-        stats->Defend = 0;
+        stats->defend = 0;
     }
 
-    if (stats->Vitality < 0)
+    if (stats->vitality < 0)
     {
-        stats->Vitality = 0;
+        stats->vitality = 0;
     }
 }
 
 //  ---------------------------------------------------------------------------
-int GetStatByType(struct Stats* stats, enum StatType statType)
+int get_stats_value_by_stat_type(struct Stats* stats, enum StatType stat_type)
 {
     assert(stats != NULL);
-    switch (statType)
+    switch (stat_type)
     {
         case STAT_TYPE_ATTACK:
-            return stats->Attack;
+            return stats->attack;
         case STAT_TYPE_DEFEND:
-            return stats->Defend;
+            return stats->defend;
         case STAT_TYPE_VITALITY:
-            return stats->Vitality;
+            return stats->vitality;
         default:
             return 0;
     }

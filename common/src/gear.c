@@ -45,10 +45,10 @@ static void CalculateGearStats(struct Gear* gear)
     struct Stats accessory_stats = GetItemSlotStats(gear->accessory);
 
     gear->stats = (struct Stats) { 0 };
-    gear->stats = AddStats(gear->stats, weapon_stats);
-    gear->stats = AddStats(gear->stats, armor_stats);
-    gear->stats = AddStats(gear->stats, shield_stats);
-    gear->stats = AddStats(gear->stats, accessory_stats);
+    gear->stats = add_stats(gear->stats, weapon_stats);
+    gear->stats = add_stats(gear->stats, armor_stats);
+    gear->stats = add_stats(gear->stats, shield_stats);
+    gear->stats = add_stats(gear->stats, accessory_stats);
 }
 
 //  ---------------------------------------------------------------------------

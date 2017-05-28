@@ -39,9 +39,9 @@ struct Actor* create_actor(
     actor->max_health = 100;
     actor->health = actor->max_health;
     actor->cash = 0;
-    actor->stats.Attack = 0;
-    actor->stats.Defend = 0;
-    actor->stats.Vitality = 0;
+    actor->stats.attack = 0;
+    actor->stats.defend = 0;
+    actor->stats.vitality = 0;
 
     actor->gear = (struct Gear) { 0 };
 
