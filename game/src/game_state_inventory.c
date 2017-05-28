@@ -205,7 +205,7 @@ static int GetItemTypeIconTilesetId(enum ItemType itemType)
 static struct Panel* CreateItemTypePanel(enum ItemType itemType)
 {
     struct Panel* panel = CreatePanel(
-        GetItemTypeCategoryString(itemType),
+        get_item_type_category_string(itemType),
         PANEL_BORDER_STYLE_1);
 
     panel->Width = 24;

@@ -1,9 +1,9 @@
 #include "item_type.h"
 
 //  ---------------------------------------------------------------------------
-const char* GetItemTypeCategoryString(const enum ItemType itemType)
+const char* get_item_type_category_string(const enum ItemType item_type)
 {
-    switch (itemType)
+    switch (item_type)
     {
         default:
             return "Unknown ItemType";
