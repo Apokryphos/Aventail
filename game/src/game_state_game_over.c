@@ -5,22 +5,22 @@
 #include "world.h"
 #include <stdlib.h>
 
-static const float GameOverDuration = 1;
+static const float GAME_OVER_DURATION = 1;
 
 //  ---------------------------------------------------------------------------
-void GameOverGameStateDraw(struct Game* game, int inTransition)
+void draw_game_over_state(struct Game* game, int in_transition)
 {
 }
 
 //  ---------------------------------------------------------------------------
-void GameOverGameStateUpdate(struct Game* game)
+void update_game_over_state(struct Game* game)
 {
-    static float GameOverTicks = 0;
+    static float ticks = 0;
 
-    GameOverTicks += game->elapsed_seconds;
-    if (GameOverTicks >= GameOverDuration)
+    ticks += game->elapsed_seconds;
+    if (ticks >= GAME_OVER_DURATION)
     {
-        GameOverTicks = 0;
+        ticks = 0;
 
         //  TODO: Player is destroyed and recreated here...hacky.
         remove_actor_from_actor_list(game->world->actors, game->world->player.actor);
