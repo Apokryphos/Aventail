@@ -43,11 +43,11 @@ void SaveActorsToFile(FILE* file, const struct ActorList* actors)
             fwrite(actor->name, sizeof(char), nameLen, file);
 
             size_t itemsWritten = 0;
-            size_t itemCount = GetInventoryItemCount(actor->inventory);
+            size_t itemCount = get_inventory_item_count(actor->inventory);
             fwrite(&itemCount, sizeof(int), 1, file);
-            for (size_t n = 0; n < MaxInventoryItems; ++n)
+            for (size_t n = 0; n < MAX_INVENTORY_ITEMS; ++n)
             {
-                struct Item* item = actor->inventory->Items[n];
+                struct Item* item = actor->inventory->items[n];
 
                 if (item != NULL)
                 {
@@ -74,7 +74,7 @@ void SaveActorsToFile(FILE* file, const struct ActorList* actors)
                 actor->collision,
                 actor->type,
                 actor->cash,
-                GetInventoryItemCount(actor->inventory));
+                get_inventory_item_count(actor->inventory));
         }
     }
 }

@@ -1,21 +1,21 @@
 #include "inventory.h"
 #include <stdlib.h>
 
-const size_t MaxInventoryItems = 30;
+const size_t MAX_INVENTORY_ITEMS = 30;
 
 //  ---------------------------------------------------------------------------
-int AddInventoryItem(struct Inventory* inventory, struct Item* item)
+int add_item_to_inventory(struct Inventory* inventory, struct Item* item)
 {
     if (item == NULL)
     {
         return 0;
     }
 
-    for (size_t n = 0; n < MaxInventoryItems; ++n)
+    for (size_t n = 0; n < MAX_INVENTORY_ITEMS; ++n)
     {
-        if (inventory->Items[n] == NULL)
+        if (inventory->items[n] == NULL)
         {
-            inventory->Items[n] = item;
+            inventory->items[n] = item;
             return 1;
         }
     }
@@ -24,45 +24,45 @@ int AddInventoryItem(struct Inventory* inventory, struct Item* item)
 }
 
 //  ---------------------------------------------------------------------------
-struct Inventory* CreateInventory()
+struct Inventory* create_inventory()
 {
     struct Inventory* inventory = malloc(sizeof(struct Inventory));
 
-    inventory->Items = malloc(sizeof(struct Item) * MaxInventoryItems);
-    for (size_t n = 0; n < MaxInventoryItems; ++n)
+    inventory->items = malloc(sizeof(struct Item) * MAX_INVENTORY_ITEMS);
+    for (size_t n = 0; n < MAX_INVENTORY_ITEMS; ++n)
     {
-        inventory->Items[n] = NULL;
+        inventory->items[n] = NULL;
     }
 
     return inventory;
 }
 
 //  ---------------------------------------------------------------------------
-void DestroyInventory(struct Inventory** inventory)
+void destroy_inventory(struct Inventory** inventory)
 {
     if (*inventory != NULL)
     {
-        for (size_t n = 0; n < MaxInventoryItems; ++n)
+        for (size_t n = 0; n < MAX_INVENTORY_ITEMS; ++n)
         {
-            if ((*inventory)->Items[n] != NULL)
+            if ((*inventory)->items[n] != NULL)
             {
-                DestroyItem(&(*inventory)->Items[n]);
+                DestroyItem(&(*inventory)->items[n]);
             }
         }
 
-        free((*inventory)->Items);
+        free((*inventory)->items);
         free(*inventory);
         *inventory = NULL;
     }
 }
 
 //  ---------------------------------------------------------------------------
-size_t GetInventoryItemCount(const struct Inventory* inventory)
+size_t get_inventory_item_count(const struct Inventory* inventory)
 {
     size_t count = 0;
-    for (size_t n = 0; n < MaxInventoryItems; ++n)
+    for (size_t n = 0; n < MAX_INVENTORY_ITEMS; ++n)
     {
-        if (inventory->Items[n] != NULL)
+        if (inventory->items[n] != NULL)
         {
             ++count;
         }
@@ -71,41 +71,41 @@ size_t GetInventoryItemCount(const struct Inventory* inventory)
 }
 
 //  ---------------------------------------------------------------------------
-void GetInventoryItemsByType(
+void get_inventory_items_by_item_type(
     const struct Inventory* inventory,
-    const enum ItemType itemType,
+    const enum ItemType item_type,
     struct Item** items,
     size_t* count)
 {
     *count = 0;
-    for (size_t n = 0; n < MaxInventoryItems; ++n)
+    for (size_t n = 0; n < MAX_INVENTORY_ITEMS; ++n)
     {
         items[n] = NULL;
     }
 
     int s = 0;
-    for (size_t n = 0; n < MaxInventoryItems; ++n)
+    for (size_t n = 0; n < MAX_INVENTORY_ITEMS; ++n)
     {
-        if (inventory->Items[n] != NULL &&
-            (itemType == ITEM_TYPE_NONE || inventory->Items[n]->Type == itemType))
+        if (inventory->items[n] != NULL &&
+            (item_type == ITEM_TYPE_NONE || inventory->items[n]->Type == item_type))
         {
-            items[s++] = inventory->Items[n];
+            items[s++] = inventory->items[n];
             ++(*count);
         }
     }
 }
 
 //  ---------------------------------------------------------------------------
-int GiveInventoryItems(struct Inventory* source, struct Inventory* dest)
+int move_inventory_items(struct Inventory* source, struct Inventory* dest)
 {
     int gave = 0;
-    for (size_t n = 0; n < MaxInventoryItems; ++n)
+    for (size_t n = 0; n < MAX_INVENTORY_ITEMS; ++n)
     {
-        if (source->Items[n] != NULL)
+        if (source->items[n] != NULL)
         {
-            if (AddInventoryItem(dest, source->Items[n]))
+            if (add_item_to_inventory(dest, source->items[n]))
             {
-                source->Items[n] = NULL;
+                source->items[n] = NULL;
                 gave = 1;
             }
         }
@@ -115,24 +115,24 @@ int GiveInventoryItems(struct Inventory* source, struct Inventory* dest)
 }
 
 //  ---------------------------------------------------------------------------
-int InventoryIsFull(struct Inventory* inventory)
+int is_inventory_full(struct Inventory* inventory)
 {
-    return GetInventoryItemCount(inventory) >= MaxInventoryItems;
+    return get_inventory_item_count(inventory) >= MAX_INVENTORY_ITEMS;
 }
 
 //  ---------------------------------------------------------------------------
-int RemoveInventoryItem(struct Inventory* inventory, struct Item* item)
+int remove_item_from_inventory(struct Inventory* inventory, struct Item* item)
 {
     if (item == NULL)
     {
         return 0;
     }
 
-    for (size_t n = 0; n < MaxInventoryItems; ++n)
+    for (size_t n = 0; n < MAX_INVENTORY_ITEMS; ++n)
     {
-        if (inventory->Items[n] == item)
+        if (inventory->items[n] == item)
         {
-            inventory->Items[n] = NULL;
+            inventory->items[n] = NULL;
             return 1;
         }
     }

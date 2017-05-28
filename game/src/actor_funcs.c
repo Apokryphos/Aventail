@@ -15,9 +15,9 @@ void ActivateContainer(struct Actor* source, struct Actor* target)
         target->cash = 0;
     }
 
-    if (GetInventoryItemCount(target->inventory) > 0)
+    if (get_inventory_item_count(target->inventory) > 0)
     {
-        if (GiveInventoryItems(target->inventory, source->inventory))
+        if (move_inventory_items(target->inventory, source->inventory))
         {
             playSfx = 1;
         }
@@ -31,7 +31,7 @@ void ActivateContainer(struct Actor* source, struct Actor* target)
 
     //  Check if container is empty and change sprite if it is
     if (target->cash == 0 &&
-        GetInventoryItemCount(target->inventory) == 0)
+        get_inventory_item_count(target->inventory) == 0)
     {
         target->tileset_id = 85;
     }

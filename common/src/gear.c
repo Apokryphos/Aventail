@@ -58,7 +58,7 @@ static int RemoveItemFromSlot(
 {
     if (*item_slot != NULL)
     {
-        AddInventoryItem(inventory, *item_slot);
+        add_item_to_inventory(inventory, *item_slot);
         *item_slot = NULL;
         return 1;
     }

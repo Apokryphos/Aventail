@@ -24,8 +24,8 @@ struct InventoryWidget* CreateInventoryWidget(struct GuiScreen* guiScreen)
     widget->Panel->Background = 1;
     AddGuiScreenPanel(guiScreen, widget->Panel);
 
-    widget->Items = malloc(sizeof(struct Item*) * MaxInventoryItems);
-    for (int n = 0; n < MaxInventoryItems; ++n)
+    widget->Items = malloc(sizeof(struct Item*) * MAX_INVENTORY_ITEMS);
+    for (int n = 0; n < MAX_INVENTORY_ITEMS; ++n)
     {
         widget->Items[n] = NULL;
     }
@@ -149,7 +149,7 @@ void UpdateInventoryWidget(
     struct InventoryWidget* widget,
     struct Inventory* inventory)
 {
-    GetInventoryItemsByType(
+    get_inventory_items_by_item_type(
         inventory,
         widget->ItemType,
         widget->Items,
@@ -211,7 +211,7 @@ void UpdateInventoryWidget(
 
         assert(start >= 0);
         assert(start <= end);
-        assert(end <= MaxInventoryItems);
+        assert(end <= MAX_INVENTORY_ITEMS);
 
         //  Iterate through the widget's visible Items and update ItemSlotWidgets
         int s = 0;

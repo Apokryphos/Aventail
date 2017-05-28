@@ -77,7 +77,7 @@ static struct Actor* CreateLootContainer(
     actor->type = ACTOR_TYPE_CONTAINER;
     add_actor_to_actor_list_front(world->Actors, actor);
 
-    GiveInventoryItems(inventory, actor->inventory);
+    move_inventory_items(inventory, actor->inventory);
 
     return actor;
 }
@@ -104,34 +104,34 @@ struct Actor* CreatePlayerActor(struct World* world)
 
     struct Item* armor2 = CreateItem("Chainmail");
     LoadItemDefinition(armor2);
-    AddInventoryItem(actor->inventory, armor2);
+    add_item_to_inventory(actor->inventory, armor2);
 
     // struct Item* shield1 = CreateItem("Buckler");
     // LoadItemDefinition(shield1);
-    // AddInventoryItem(actor->inventory, shield1);
+    // add_item_to_inventory(actor->inventory, shield1);
 
-    // AddInventoryItem(actor->inventory, CreateWeapon("Dagger"));
-    // AddInventoryItem(actor->inventory, CreateWeapon("Dirk"));
-    // AddInventoryItem(actor->inventory, CreateWeapon("Knife"));
-    // AddInventoryItem(actor->inventory, CreateWeapon("Shiv"));
-    // AddInventoryItem(actor->inventory, CreateWeapon("Katana"));
-    // AddInventoryItem(actor->inventory, CreateWeapon("Nodachi"));
-    // AddInventoryItem(actor->inventory, CreateWeapon("Short Sword"));
-    // AddInventoryItem(actor->inventory, CreateWeapon("Great Sword"));
-    // AddInventoryItem(actor->inventory, CreateWeapon("Claymore"));
-    // AddInventoryItem(actor->inventory, CreateWeapon("Longsword"));
-    // AddInventoryItem(actor->inventory, CreateWeapon("Broadsword"));
-    // AddInventoryItem(actor->inventory, CreateWeapon("Sabre"));
-    // AddInventoryItem(actor->inventory, CreateWeapon("Rapier"));
-    // AddInventoryItem(actor->inventory, CreateWeapon("Cutlass"));
+    // add_item_to_inventory(actor->inventory, CreateWeapon("Dagger"));
+    // add_item_to_inventory(actor->inventory, CreateWeapon("Dirk"));
+    // add_item_to_inventory(actor->inventory, CreateWeapon("Knife"));
+    // add_item_to_inventory(actor->inventory, CreateWeapon("Shiv"));
+    // add_item_to_inventory(actor->inventory, CreateWeapon("Katana"));
+    // add_item_to_inventory(actor->inventory, CreateWeapon("Nodachi"));
+    // add_item_to_inventory(actor->inventory, CreateWeapon("Short Sword"));
+    // add_item_to_inventory(actor->inventory, CreateWeapon("Great Sword"));
+    // add_item_to_inventory(actor->inventory, CreateWeapon("Claymore"));
+    // add_item_to_inventory(actor->inventory, CreateWeapon("Longsword"));
+    // add_item_to_inventory(actor->inventory, CreateWeapon("Broadsword"));
+    // add_item_to_inventory(actor->inventory, CreateWeapon("Sabre"));
+    // add_item_to_inventory(actor->inventory, CreateWeapon("Rapier"));
+    // add_item_to_inventory(actor->inventory, CreateWeapon("Cutlass"));
 
     // struct Item* weapon2 = CreateItem("Iron Short Sword");
     // LoadItemDefinition(weapon2);
-    // AddInventoryItem(actor->inventory, weapon2);
+    // add_item_to_inventory(actor->inventory, weapon2);
 
     struct Item* accessory1 = CreateItem("Healing Ring");
     LoadItemDefinition(accessory1);
-    AddInventoryItem(actor->inventory, accessory1);
+    add_item_to_inventory(actor->inventory, accessory1);
 
     return actor;
 }
@@ -174,11 +174,11 @@ static void LootActor(struct Actor* source, struct Actor* target, struct World* 
         target->cash = 0;
     }
 
-    if (GetInventoryItemCount(target->inventory) > 0)
+    if (get_inventory_item_count(target->inventory) > 0)
     {
-        GiveInventoryItems(target->inventory, source->inventory);
+        move_inventory_items(target->inventory, source->inventory);
 
-        if (GetInventoryItemCount(target->inventory) > 0)
+        if (get_inventory_item_count(target->inventory) > 0)
         {
             CreateLootContainer(world, target->tile->X, target->tile->Y, target->inventory);
         }

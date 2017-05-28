@@ -18,7 +18,7 @@ struct Actor* create_actor(
     struct Actor* actor = malloc(sizeof(struct Actor));
 
     actor->name = strdup(name);
-    actor->inventory = CreateInventory();
+    actor->inventory = create_inventory();
 
     actor->map = map;
 
@@ -56,7 +56,7 @@ void destroy_actor(struct Actor** actor)
     if (*actor != NULL)
     {
         remove_all_items_from_gear(*actor);
-        DestroyInventory(&(*actor)->inventory);
+        destroy_inventory(&(*actor)->inventory);
         free((*actor)->name);
         free(*actor);
         *actor = NULL;

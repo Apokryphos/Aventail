@@ -132,7 +132,7 @@ static void ProcessSelectInventoryItemSlotStateInput(struct Game* game)
             struct Actor* actor = game->World->Player.Actor;
             struct Item* item = InventoryWidget->Items[InventoryWidget->SelectedItemIndex];
             equip_item(actor, item);
-            RemoveInventoryItem(actor->inventory, item);
+            remove_item_from_inventory(actor->inventory, item);
             UpdateInventoryWidget(InventoryWidget, actor->inventory);
 
             InventoryWidget->SelectedItemIndex = 0;
@@ -274,7 +274,7 @@ static void UpdateCursor()
     }
     else if (GearGuiState == GUI_STATE_SELECT_INVENTORY_ITEM_SLOT)
     {
-        assert(InventoryWidget->SelectedItemIndex < MaxInventoryItems);
+        assert(InventoryWidget->SelectedItemIndex < MAX_INVENTORY_ITEMS);
 
         assert(InventoryWidget->SelectedItemSlotWidget != NULL);
         assert(InventoryWidget->SelectedItemSlotWidget->ItemIconPanel != NULL);

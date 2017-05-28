@@ -65,7 +65,7 @@ void LoadActorsFromFile(FILE* file, struct Map* map, struct ActorList* actors)
 
             LoadItemDefinition(item);
 
-            AddInventoryItem(actor->inventory, item);
+            add_item_to_inventory(actor->inventory, item);
 
             free(itemName);
         }
@@ -96,7 +96,7 @@ void LoadActorsFromFile(FILE* file, struct Map* map, struct ActorList* actors)
             actor->collision,
             actor->type,
             actor->cash,
-            GetInventoryItemCount(actor->inventory));
+            get_inventory_item_count(actor->inventory));
 
         add_actor_to_actor_list_back(actors, actor);
 

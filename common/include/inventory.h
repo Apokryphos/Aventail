@@ -4,24 +4,24 @@
 #include "item.h"
 #include <stddef.h>
 
-extern const size_t MaxInventoryItems;
+extern const size_t MAX_INVENTORY_ITEMS;
 
 struct Inventory
 {
-    struct Item** Items;
+    struct Item** items;
 };
 
-int AddInventoryItem(struct Inventory* inventory, struct Item* item);
-struct Inventory* CreateInventory();
-void DestroyInventory(struct Inventory** inventory);
-size_t GetInventoryItemCount(const struct Inventory* inventory);
-void  GetInventoryItemsByType(
+int add_item_to_inventory(struct Inventory* inventory, struct Item* item);
+struct Inventory* create_inventory();
+void destroy_inventory(struct Inventory** inventory);
+size_t get_inventory_item_count(const struct Inventory* inventory);
+void  get_inventory_items_by_item_type(
     const struct Inventory* inventory,
-    const enum ItemType itemType,
+    const enum ItemType item_type,
     struct Item** items,
     size_t* count);
-int GiveInventoryItems(struct Inventory* source, struct Inventory* dest);
-int InventoryIsFull();
-int RemoveInventoryItem(struct Inventory* inventory, struct Item* item);
+int is_inventory_full();
+int move_inventory_items(struct Inventory* source, struct Inventory* dest);
+int remove_item_from_inventory(struct Inventory* inventory, struct Item* item);
 
 #endif

@@ -114,11 +114,11 @@ void LoadActorItems(struct Actor* actor, xmlNode* propertiesNode)
     char* itemNamesCsv = NULL;
     ReadProperty(propertiesNode, "Items", &itemNamesCsv);
     itemCount = Tokenize(itemNamesCsv, &itemNames);
-    assert(itemCount < MaxInventoryItems);
+    assert(itemCount < MAX_INVENTORY_ITEMS);
     for (int n = 0; n < itemCount; ++n)
     {
         struct Item* item = CreateItem(itemNames[n]);
-        AddInventoryItem(actor->inventory, item);
+        add_item_to_inventory(actor->inventory, item);
         free(itemNames[n]);
     }
     free(itemNames);
