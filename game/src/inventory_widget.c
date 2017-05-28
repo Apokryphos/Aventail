@@ -22,7 +22,7 @@ struct InventoryWidget* create_inventory_widget(struct GuiScreen* gui_screen)
     widget->panel->width = 196;
     widget->panel->height = INVENTORY_WIDGET_MAX_VISIBLE_ITEMS * 40;
     widget->panel->background = 1;
-    AddGuiScreenPanel(gui_screen, widget->panel);
+    add_panel_to_gui_screen(gui_screen, widget->panel);
 
     widget->items = malloc(sizeof(struct Item*) * MAX_INVENTORY_ITEMS);
     for (int n = 0; n < MAX_INVENTORY_ITEMS; ++n)
@@ -41,14 +41,14 @@ struct InventoryWidget* create_inventory_widget(struct GuiScreen* gui_screen)
     widget->bottom_scroll_arrow_panel->icon.flip = FLIP_FLAG_VERT;
     widget->bottom_scroll_arrow_panel->icon.tileset_id = ARROW_ICON_TILESET_ID;
     widget->bottom_scroll_arrow_panel->icon.style = PANEL_ICON_STYLE_SMALL;
-    AddGuiScreenPanel(gui_screen, widget->bottom_scroll_arrow_panel);
+    add_panel_to_gui_screen(gui_screen, widget->bottom_scroll_arrow_panel);
 
     widget->top_scroll_arrow_panel = create_panel(NULL, PANEL_BORDER_STYLE_NONE);
     widget->top_scroll_arrow_panel->width = 8;
     widget->top_scroll_arrow_panel->height = 8;
     widget->top_scroll_arrow_panel->icon.tileset_id = ARROW_ICON_TILESET_ID;
     widget->top_scroll_arrow_panel->icon.style = PANEL_ICON_STYLE_SMALL;
-    AddGuiScreenPanel(gui_screen, widget->top_scroll_arrow_panel);
+    add_panel_to_gui_screen(gui_screen, widget->top_scroll_arrow_panel);
 
     set_inventory_widget_position(widget, 0, 0);
 

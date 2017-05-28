@@ -71,12 +71,12 @@ static void draw_gui_cursor(SDL_Renderer* renderer)
 //  ---------------------------------------------------------------------------
 static void draw_gui_screen(SDL_Renderer* renderer, struct GuiScreen* screen)
 {
-    if (screen->Enabled)
+    if (screen->enabled)
     {
-        for (int p = 0; p < screen->PanelCount; ++p)
+        for (int p = 0; p < screen->panel_count; ++p)
         {
-            //screen->Panels[p]->alpha = (int)(255 * fade_progress);
-            draw_panel(renderer, screen->Panels[p]);
+            //screen->panels[p]->alpha = (int)(255 * fade_progress);
+            draw_panel(renderer, screen->panels[p]);
         }
     }
 }

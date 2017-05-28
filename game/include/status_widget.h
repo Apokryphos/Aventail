@@ -8,19 +8,19 @@ struct Panel;
 
 struct StatusWidget
 {
-    struct Panel* Panel;
-    char* ActorName;
-    struct Panel* NamePanel;
-    struct Panel* HealthGaugePanel;
-    struct GuiGaugeString* HealthGaugeString;
-    struct Panel* CashPanel;
-    struct GuiIntString* CashIntString;
-    struct Panel* AttackPanel;
-    struct GuiIntString* AttackIntString;
-    struct Panel* DefendPanel;
-    struct GuiIntString* DefendIntString;
-    struct Panel* VitalityPanel;
-    struct GuiIntString* VitalityIntString;
+    struct Panel* panel;
+    char* actor_name;
+    struct Panel* name_panel;
+    struct Panel* health_gauge_panel;
+    struct GuiGaugeString* health_gauge_string;
+    struct Panel* cash_panel;
+    struct GuiIntString* cash_int_string;
+    struct Panel* attack_panel;
+    struct GuiIntString* attack_int_string;
+    struct Panel* defend_panel;
+    struct GuiIntString* defend_int_string;
+    struct Panel* vitality_panel;
+    struct GuiIntString* vitality_int_string;
 };
 
 struct StatusWidget* create_status_widget(struct GuiScreen* gui_screen);

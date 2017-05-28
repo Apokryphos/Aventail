@@ -4,25 +4,25 @@
 #include <stdlib.h>
 
 //  ---------------------------------------------------------------------------
-void AddGuiScreenPanel(struct GuiScreen* screen, struct Panel* panel)
+void add_panel_to_gui_screen(struct GuiScreen* gui_screen, struct Panel* panel)
 {
-    assert(screen->PanelCount < GUI_SCREEN_MAX_PANELS);
+    assert(gui_screen->panel_count < GUI_SCREEN_MAX_PANELS);
 
-    if (screen->PanelCount < GUI_SCREEN_MAX_PANELS)
+    if (gui_screen->panel_count < GUI_SCREEN_MAX_PANELS)
     {
-        screen->Panels[screen->PanelCount++] = panel;
+        gui_screen->panels[gui_screen->panel_count++] = panel;
     }
 }
 
 //  ---------------------------------------------------------------------------
-struct GuiScreen* CreateGuiScreen()
+struct GuiScreen* create_gui_screen()
 {
-    struct GuiScreen* screen = malloc(sizeof(struct GuiScreen));
-    screen->Enabled = 0;
-    screen->PanelCount = 0;
+    struct GuiScreen* gui_screen = malloc(sizeof(struct GuiScreen));
+    gui_screen->enabled = 0;
+    gui_screen->panel_count = 0;
     for (int p = 0; p < GUI_SCREEN_MAX_PANELS; ++p)
     {
-        screen->Panels[p] = NULL;
+        gui_screen->panels[p] = NULL;
     }
-    return screen;
+    return gui_screen;
 }

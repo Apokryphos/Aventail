@@ -7,12 +7,12 @@ struct Panel;
 
 struct GuiScreen
 {
-    int Enabled;
-    int PanelCount;
-    struct Panel* Panels[GUI_SCREEN_MAX_PANELS];
+    int enabled;
+    int panel_count;
+    struct Panel* panels[GUI_SCREEN_MAX_PANELS];
 };
 
-void AddGuiScreenPanel(struct GuiScreen* screen, struct Panel* panel);
-struct GuiScreen* CreateGuiScreen();
+void add_panel_to_gui_screen(struct GuiScreen* gui_screen, struct Panel* panel);
+struct GuiScreen* create_gui_screen();
 
 #endif

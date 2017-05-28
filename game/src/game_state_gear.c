@@ -65,7 +65,7 @@ static void ExitGearGameState(
     InventoryWidget->selected_item_index = 0;
     game->state = gameState;
     deactivate_gui();
-    GearGuiScreen->Enabled = 0;
+    GearGuiScreen->enabled = 0;
 }
 
 //  ---------------------------------------------------------------------------
@@ -194,7 +194,7 @@ static struct GearSlotWidget CreateGearSlotWidget(
     slotPanel->X = 16;
     slotPanel->Y = slotIndex * (slotPanel->height + 32) + 32;
     slotPanel->background = 1;
-    AddGuiScreenPanel(screen, slotPanel);
+    add_panel_to_gui_screen(screen, slotPanel);
 
     struct GearSlotWidget gearSlotWidget =
     {
@@ -221,7 +221,7 @@ void GearGameStateDraw(struct Game* game, int inTransition)
 //  ---------------------------------------------------------------------------
 static void InitGearGuiScreen(SDL_Renderer* renderer)
 {
-    GearGuiScreen = CreateGuiScreen();
+    GearGuiScreen = create_gui_screen();
 
     WeaponSlotWidget = CreateGearSlotWidget(GearGuiScreen, "Weapon", 0);
     ArmorSlotWidget = CreateGearSlotWidget(GearGuiScreen, "Armor", 1);
@@ -300,7 +300,7 @@ void GearGameStateUpdate(struct Game* game)
         InitGearGuiScreen(game->renderer);
     }
 
-    GearGuiScreen->Enabled = 1;
+    GearGuiScreen->enabled = 1;
 
     assert(SelectedGearSlot >= 0 && SelectedGearSlot < 4);
     if (InventoryWidget->selected_item_index > InventoryWidget->item_count -1)

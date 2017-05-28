@@ -45,13 +45,13 @@ struct ItemSlotWidget* CreateItemSlotWidget(struct GuiScreen* screen)
     itemIconPanel->width = 24;
     itemIconPanel->height = 24;
     itemIconPanel->icon.style = PANEL_ICON_STYLE_NORMAL;
-    AddGuiScreenPanel(screen, itemIconPanel);
+    add_panel_to_gui_screen(screen, itemIconPanel);
 
     //  Panel for item name text
     struct Panel* itemNamePanel = create_panel(NULL, PANEL_BORDER_STYLE_NONE);
     itemNamePanel->width = 24;
     itemNamePanel->height = 14;
-    AddGuiScreenPanel(screen, itemNamePanel);
+    add_panel_to_gui_screen(screen, itemNamePanel);
 
     //  The ItemSlotWidget that will be returned to the caller
     struct ItemSlotWidget* itemSlotWidget = malloc(sizeof(struct ItemSlotWidget));
@@ -72,13 +72,13 @@ struct ItemSlotWidget* CreateItemSlotWidget(struct GuiScreen* screen)
         iconPanel->icon.style = PANEL_ICON_STYLE_SMALL;
         iconPanel->icon.tileset_id = iconTilesetId;
         iconPanel->visible = 0;
-        AddGuiScreenPanel(screen, iconPanel);
+        add_panel_to_gui_screen(screen, iconPanel);
 
         //  Panel for stat value text
         struct Panel* valuePanel = create_panel(NULL, PANEL_BORDER_STYLE_NONE);
         valuePanel->width = StatValuePanelWidth;
         valuePanel->visible = 0;
-        AddGuiScreenPanel(screen, valuePanel);
+        add_panel_to_gui_screen(screen, valuePanel);
 
         itemSlotWidget->StatIconPanels[s] = iconPanel;
         itemSlotWidget->StatValuePanels[s] = valuePanel;

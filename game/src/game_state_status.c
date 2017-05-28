@@ -20,7 +20,7 @@ static void exit_status_game_state(
 {
     game->state = game_state;
     deactivate_gui();
-    status_gui_screen->Enabled = 0;
+    status_gui_screen->enabled = 0;
 }
 
 //  ---------------------------------------------------------------------------
@@ -45,7 +45,7 @@ static void process_status_game_state_input(struct Game* game)
 //  ---------------------------------------------------------------------------
 static void init_status_gui_screen(SDL_Renderer* renderer)
 {
-    status_gui_screen = CreateGuiScreen();
+    status_gui_screen = create_gui_screen();
 
     status_widget = create_status_widget(status_gui_screen);
 
@@ -54,8 +54,8 @@ static void init_status_gui_screen(SDL_Renderer* renderer)
     SDL_RenderGetViewport(renderer, &viewport);
     set_status_widget_position(
         status_widget,
-        (viewport.w / 2) - (status_widget->Panel->width / 2),
-        (viewport.h / 2) - (status_widget->Panel->height / 2));
+        (viewport.w / 2) - (status_widget->panel->width / 2),
+        (viewport.h / 2) - (status_widget->panel->height / 2));
 
     add_gui_screen(status_gui_screen);
 }
@@ -75,7 +75,7 @@ void update_status_game_state(struct Game* game)
         init_status_gui_screen(game->renderer);
     }
 
-    status_gui_screen->Enabled = 1;
+    status_gui_screen->enabled = 1;
 
     activate_gui();
     enable_gui_cursor(0);

@@ -10,54 +10,54 @@
 #include <string.h>
 
 //  ---------------------------------------------------------------------------
-struct StatusWidget* create_status_widget(struct GuiScreen* guiScreen)
+struct StatusWidget* create_status_widget(struct GuiScreen* gui_screen)
 {
-    assert(guiScreen != NULL);
+    assert(gui_screen != NULL);
 
     struct StatusWidget* widget = malloc(sizeof(struct StatusWidget));
 
-    widget->Panel = create_panel("Status", PANEL_BORDER_STYLE_3);
-    widget->Panel->width = 200;
-    widget->Panel->height = 200;
-    widget->Panel->background = 1;
-    AddGuiScreenPanel(guiScreen, widget->Panel);
+    widget->panel = create_panel("Status", PANEL_BORDER_STYLE_3);
+    widget->panel->width = 200;
+    widget->panel->height = 200;
+    widget->panel->background = 1;
+    add_panel_to_gui_screen(gui_screen, widget->panel);
 
-    widget->NamePanel = create_panel(NULL, PANEL_BORDER_STYLE_NONE);
-    widget->NamePanel->width = 8;
-    widget->NamePanel->height = 16;
-    AddGuiScreenPanel(guiScreen, widget->NamePanel);
+    widget->name_panel = create_panel(NULL, PANEL_BORDER_STYLE_NONE);
+    widget->name_panel->width = 8;
+    widget->name_panel->height = 16;
+    add_panel_to_gui_screen(gui_screen, widget->name_panel);
 
-    widget->HealthGaugePanel = create_panel(NULL, PANEL_BORDER_STYLE_NONE);
-    widget->HealthGaugePanel->width = 8;
-    widget->HealthGaugePanel->height = 16;
-    AddGuiScreenPanel(guiScreen, widget->HealthGaugePanel);
+    widget->health_gauge_panel = create_panel(NULL, PANEL_BORDER_STYLE_NONE);
+    widget->health_gauge_panel->width = 8;
+    widget->health_gauge_panel->height = 16;
+    add_panel_to_gui_screen(gui_screen, widget->health_gauge_panel);
 
-    widget->AttackPanel = create_panel(NULL, PANEL_BORDER_STYLE_NONE);
-    widget->AttackPanel->width = 8;
-    widget->AttackPanel->height = 16;
-    AddGuiScreenPanel(guiScreen, widget->AttackPanel);
+    widget->attack_panel = create_panel(NULL, PANEL_BORDER_STYLE_NONE);
+    widget->attack_panel->width = 8;
+    widget->attack_panel->height = 16;
+    add_panel_to_gui_screen(gui_screen, widget->attack_panel);
 
-    widget->DefendPanel = create_panel(NULL, PANEL_BORDER_STYLE_NONE);
-    widget->DefendPanel->width = 8;
-    widget->DefendPanel->height = 16;
-    AddGuiScreenPanel(guiScreen, widget->DefendPanel);
+    widget->defend_panel = create_panel(NULL, PANEL_BORDER_STYLE_NONE);
+    widget->defend_panel->width = 8;
+    widget->defend_panel->height = 16;
+    add_panel_to_gui_screen(gui_screen, widget->defend_panel);
 
-    widget->VitalityPanel = create_panel(NULL, PANEL_BORDER_STYLE_NONE);
-    widget->VitalityPanel->width = 8;
-    widget->VitalityPanel->height = 16;
-    AddGuiScreenPanel(guiScreen, widget->VitalityPanel);
+    widget->vitality_panel = create_panel(NULL, PANEL_BORDER_STYLE_NONE);
+    widget->vitality_panel->width = 8;
+    widget->vitality_panel->height = 16;
+    add_panel_to_gui_screen(gui_screen, widget->vitality_panel);
 
-    widget->CashPanel = create_panel(NULL, PANEL_BORDER_STYLE_NONE);
-    widget->CashPanel->width = 8;
-    widget->CashPanel->height = 16;
-    AddGuiScreenPanel(guiScreen, widget->CashPanel);
+    widget->cash_panel = create_panel(NULL, PANEL_BORDER_STYLE_NONE);
+    widget->cash_panel->width = 8;
+    widget->cash_panel->height = 16;
+    add_panel_to_gui_screen(gui_screen, widget->cash_panel);
 
-    widget->ActorName = NULL;
-    widget->HealthGaugeString = create_gui_gauge_string();
-    widget->CashIntString = create_gui_int_string();
-    widget->AttackIntString = create_gui_int_string();
-    widget->DefendIntString = create_gui_int_string();
-    widget->VitalityIntString = create_gui_int_string();
+    widget->actor_name = NULL;
+    widget->health_gauge_string = create_gui_gauge_string();
+    widget->cash_int_string = create_gui_int_string();
+    widget->attack_int_string = create_gui_int_string();
+    widget->defend_int_string = create_gui_int_string();
+    widget->vitality_int_string = create_gui_int_string();
 
     return widget;
 }
@@ -67,28 +67,28 @@ void set_status_widget_position(struct StatusWidget* widget, int x, int y)
 {
     assert(widget != NULL);
 
-    widget->Panel->X = 100;
-    widget->Panel->Y = 100;
+    widget->panel->X = 100;
+    widget->panel->Y = 100;
 
-    int left = widget->Panel->X + 16;
+    int left = widget->panel->X + 16;
 
-    widget->NamePanel->X = left;
-    widget->NamePanel->Y = widget->Panel->Y + 16;
+    widget->name_panel->X = left;
+    widget->name_panel->Y = widget->panel->Y + 16;
 
-    widget->HealthGaugePanel->X = left;
-    widget->HealthGaugePanel->Y = widget->NamePanel->Y + widget->NamePanel->height * 2;
+    widget->health_gauge_panel->X = left;
+    widget->health_gauge_panel->Y = widget->name_panel->Y + widget->name_panel->height * 2;
 
-    widget->AttackPanel->X = left;
-    widget->AttackPanel->Y = widget->HealthGaugePanel->Y + widget->HealthGaugePanel->height * 2;
+    widget->attack_panel->X = left;
+    widget->attack_panel->Y = widget->health_gauge_panel->Y + widget->health_gauge_panel->height * 2;
 
-    widget->DefendPanel->X = left;
-    widget->DefendPanel->Y = widget->AttackPanel->Y + widget->AttackPanel->height;
+    widget->defend_panel->X = left;
+    widget->defend_panel->Y = widget->attack_panel->Y + widget->attack_panel->height;
 
-    widget->VitalityPanel->X = left;
-    widget->VitalityPanel->Y = widget->DefendPanel->Y + widget->DefendPanel->height;
+    widget->vitality_panel->X = left;
+    widget->vitality_panel->Y = widget->defend_panel->Y + widget->defend_panel->height;
 
-    widget->CashPanel->X = left;
-    widget->CashPanel->Y = widget->VitalityPanel->Y + widget->VitalityPanel->height * 2;
+    widget->cash_panel->X = left;
+    widget->cash_panel->Y = widget->vitality_panel->Y + widget->vitality_panel->height * 2;
 }
 
 //  ---------------------------------------------------------------------------
@@ -96,32 +96,32 @@ void update_status_widget(struct StatusWidget* widget, struct Actor* actor)
 {
     assert(widget != NULL);
 
-    const char* actorName = NULL;
+    const char* actor_name = NULL;
 
     if (actor != NULL)
     {
-        actorName = actor->name;
+        actor_name = actor->name;
     }
 
-    set_gui_string(&widget->ActorName, actorName);
-    widget->NamePanel->text = widget->ActorName;
+    set_gui_string(&widget->actor_name, actor_name);
+    widget->name_panel->text = widget->actor_name;
 
     set_gui_gauge_string(
-        widget->HealthGaugeString,
+        widget->health_gauge_string,
         "Health",
         actor->health,
         actor->max_health);
-    widget->HealthGaugePanel->text = widget->HealthGaugeString->string;
+    widget->health_gauge_panel->text = widget->health_gauge_string->string;
 
-    set_gui_int_string(widget->CashIntString, "Cash", actor->cash);
-    widget->CashPanel->text = widget->CashIntString->string;
+    set_gui_int_string(widget->cash_int_string, "Cash", actor->cash);
+    widget->cash_panel->text = widget->cash_int_string->string;
 
-    set_gui_int_string(widget->AttackIntString, "Attack", actor->stats.attack);
-    widget->AttackPanel->text = widget->AttackIntString->string;
+    set_gui_int_string(widget->attack_int_string, "Attack", actor->stats.attack);
+    widget->attack_panel->text = widget->attack_int_string->string;
 
-    set_gui_int_string(widget->DefendIntString, "Defend", actor->stats.defend);
-    widget->DefendPanel->text = widget->DefendIntString->string;
+    set_gui_int_string(widget->defend_int_string, "Defend", actor->stats.defend);
+    widget->defend_panel->text = widget->defend_int_string->string;
 
-    set_gui_int_string(widget->VitalityIntString, "Vitality", actor->stats.vitality);
-    widget->VitalityPanel->text = widget->VitalityIntString->string;
+    set_gui_int_string(widget->vitality_int_string, "Vitality", actor->stats.vitality);
+    widget->vitality_panel->text = widget->vitality_int_string->string;
 }

@@ -39,7 +39,7 @@ static void ExitInventoryGameState(
     inventory_widget->selected_item_index = 0;
     game->state = gameState;
     deactivate_gui();
-    inventory_gui_screen->Enabled = 0;
+    inventory_gui_screen->enabled = 0;
 }
 
 //  ---------------------------------------------------------------------------
@@ -220,7 +220,7 @@ static struct Panel* CreateItemTypePanel(enum ItemType itemType)
 //  ---------------------------------------------------------------------------
 static void InitInventoryGuiScreen(SDL_Renderer* renderer)
 {
-    inventory_gui_screen = CreateGuiScreen();
+    inventory_gui_screen = create_gui_screen();
 
     for (int t = 0; t < ITEM_TYPE_COUNT; ++t)
     {
@@ -228,7 +228,7 @@ static void InitInventoryGuiScreen(SDL_Renderer* renderer)
         panel->X = 42 + (t * panel->width);
         panel->Y = 32;
         item_type_panels[t] = panel;
-        AddGuiScreenPanel(inventory_gui_screen, panel);
+        add_panel_to_gui_screen(inventory_gui_screen, panel);
     }
 
     inventory_widget = create_inventory_widget(inventory_gui_screen);
@@ -280,7 +280,7 @@ void InventoryGameStateUpdate(struct Game* game)
         InitInventoryGuiScreen(game->renderer);
     }
 
-    inventory_gui_screen->Enabled = 1;
+    inventory_gui_screen->enabled = 1;
 
     if (inventory_widget->selected_item_index > inventory_widget->item_count -1)
     {
