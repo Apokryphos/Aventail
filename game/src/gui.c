@@ -6,16 +6,16 @@
 #include "render.h"
 #include <assert.h>
 
-static int GuiActive = 0;
+static int gui_active = 0;
 
-static float FadeProgress = 0;
-static const float FadeDuration = 0.66f;
+static float fade_progress = 0;
+static const float FADE_DURATION = 0.66f;
 
 //  GUI cursor (not the mouse cursor)
-static const int CursorTilesetId = 270;
+static const int CURSOR_TILESET_ID = 270;
 
-static int CursorEnabled = 0;
-static struct BlinkStateData CursorBlink =
+static int cursor_enabled = 0;
+static struct BlinkStateData cursor_blink =
 {
     .OnDuration = 1.0f,
     .OffDuration = 0.16f,
@@ -23,115 +23,119 @@ static struct BlinkStateData CursorBlink =
     .Ticks = 0,
     .Visible = 1,
 };
-
-static int CursorX = 0;
-static int CursorY = 0;
+static int cursor_x = 0;
+static int cursor_y = 0;
 
 #define GUI_MAX_GUI_SCREENS 16
 
-static int GuiScreenCount = 0;
-static struct GuiScreen* GuiScreens[GUI_MAX_GUI_SCREENS];
+static int gui_screen_count = 0;
+static struct GuiScreen* gui_screens[GUI_MAX_GUI_SCREENS];
 
 //  ---------------------------------------------------------------------------
-void ActivateGui()
+void activate_gui()
 {
-    GuiActive = 1;
+    gui_active = 1;
 }
 
 //  ---------------------------------------------------------------------------
-void AddGuiScreen(struct GuiScreen* screen)
+void add_gui_screen(struct GuiScreen* screen)
 {
-    assert(GuiScreenCount < GUI_MAX_GUI_SCREENS);
+    assert(gui_screen_count < GUI_MAX_GUI_SCREENS);
 
-    if (GuiScreenCount < GUI_MAX_GUI_SCREENS)
+    if (gui_screen_count < GUI_MAX_GUI_SCREENS)
     {
-        GuiScreens[GuiScreenCount++] = screen;
+        gui_screens[gui_screen_count++] = screen;
     }
 }
 
 //  ---------------------------------------------------------------------------
-void DeactivateGui()
+void deactivate_gui()
 {
-    GuiActive = 0;
+    gui_active = 0;
 }
 
 //  ---------------------------------------------------------------------------
-static void DrawCursor(SDL_Renderer* renderer)
+static void draw_gui_cursor(SDL_Renderer* renderer)
 {
-    if (CursorEnabled && CursorBlink.Visible)
+    if (cursor_enabled && cursor_blink.Visible)
     {
-        DrawTilesetTile(renderer, CursorTilesetId, CursorX, CursorY, FLIP_FLAG_NONE);
+        DrawTilesetTile(
+            renderer,
+            CURSOR_TILESET_ID,
+            cursor_x,
+            cursor_y,
+            FLIP_FLAG_NONE);
     }
 }
 
 //  ---------------------------------------------------------------------------
-static void DrawGuiScreen(SDL_Renderer* renderer, struct GuiScreen* screen)
+static void draw_gui_screen(SDL_Renderer* renderer, struct GuiScreen* screen)
 {
     if (screen->Enabled)
     {
         for (int p = 0; p < screen->PanelCount; ++p)
         {
-            //screen->Panels[p]->Alpha = (int)(255 * FadeProgress);
+            //screen->Panels[p]->Alpha = (int)(255 * fade_progress);
             DrawPanel(renderer, screen->Panels[p]);
         }
     }
 }
 
 //  ---------------------------------------------------------------------------
-void EnableCursor(int enable)
+void enable_gui_cursor(int enable)
 {
-    CursorEnabled = enable == 0 ? 0 : 1;
+    cursor_enabled = enable == 0 ? 0 : 1;
 }
 
 //  ---------------------------------------------------------------------------
-void GuiDraw(struct Game* game)
+void draw_gui(struct Game* game)
 {
-    if (FadeProgress > 0)
+    if (fade_progress > 0)
     {
-        DrawScreenFade(game->renderer, 0.9f * FadeProgress);
+        DrawScreenFade(game->renderer, 0.9f * fade_progress);
     }
 
-    if (GuiActive)
+    if (gui_active)
     {
-        for (int s = 0; s < GuiScreenCount; ++s)
+        for (int s = 0; s < gui_screen_count; ++s)
         {
-            DrawGuiScreen(game->renderer, GuiScreens[s]);
+            draw_gui_screen(game->renderer, gui_screens[s]);
         }
 
-        DrawCursor(game->renderer);
+        draw_gui_cursor(game->renderer);
     }
 }
 
 //  ---------------------------------------------------------------------------
-void GuiUpdate(struct Game* game)
+void update_gui(struct Game* game)
 {
-    static float FadeTicks = 0;
+    static float fade_ticks = 0;
 
-    if (GuiActive)
+    if (gui_active)
     {
-        FadeTicks += game->elapsed_seconds;
-        if (FadeTicks > FadeDuration)
+        fade_ticks += game->elapsed_seconds;
+        if (fade_ticks > FADE_DURATION)
         {
-            FadeTicks = FadeDuration;
+            fade_ticks = FADE_DURATION;
         }
 
-        AddTimeBlinkStateData(&CursorBlink, game->elapsed_seconds);
+        AddTimeBlinkStateData(&cursor_blink, game->elapsed_seconds);
     }
     else
     {
-        FadeTicks -= game->elapsed_seconds;
-        if (FadeTicks < 0)
+        fade_ticks -= game->elapsed_seconds;
+        if (fade_ticks < 0)
         {
-            FadeTicks = 0;
+            fade_ticks = 0;
         }
     }
 
-    FadeProgress = (FadeTicks / FadeDuration);
+    fade_progress = (fade_ticks / FADE_DURATION);
 }
 
 //  ---------------------------------------------------------------------------
-void SetCursorPosition(int x, int y)
+void set_gui_cursor_position(int x, int y)
 {
-    CursorX = x;
-    CursorY = y;
+    cursor_x = x;
+    cursor_y = y;
 }

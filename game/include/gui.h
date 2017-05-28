@@ -4,12 +4,12 @@
 struct Game;
 struct GuiScreen;
 
-void ActivateGui();
-void AddGuiScreen(struct GuiScreen* screen);
-void DeactivateGui();
-void EnableCursor(int enabled);
-void GuiDraw(struct Game* game);
-void GuiUpdate(struct Game* game);
-void SetCursorPosition(int x, int y);
+void activate_gui();
+void add_gui_screen(struct GuiScreen* screen);
+void deactivate_gui();
+void enable_gui_cursor(int enabled);
+void draw_gui(struct Game* game);
+void update_gui(struct Game* game);
+void set_gui_cursor_position(int x, int y);
 
 #endif

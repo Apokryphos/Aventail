@@ -19,7 +19,7 @@ static void ExitStatusGameState(
     enum GameState gameState)
 {
     game->state = gameState;
-    DeactivateGui();
+    deactivate_gui();
     StatusGuiScreen->Enabled = 0;
 }
 
@@ -57,14 +57,14 @@ static void InitStatusGuiScreen(SDL_Renderer* renderer)
         (viewport.w / 2) - (StatusWidget->Panel->Width / 2),
         (viewport.h / 2) - (StatusWidget->Panel->Height / 2));
 
-    AddGuiScreen(StatusGuiScreen);
+    add_gui_screen(StatusGuiScreen);
 }
 
 //  ---------------------------------------------------------------------------
 void StatusGameStateDraw(struct Game* game, int inTransition)
 {
     DrawMap(game->renderer, game->world->map, game->world->actors);
-    GuiDraw(game);
+    draw_gui(game);
 }
 
 //  ---------------------------------------------------------------------------
@@ -77,8 +77,8 @@ void StatusGameStateUpdate(struct Game* game)
 
     StatusGuiScreen->Enabled = 1;
 
-    ActivateGui();
-    EnableCursor(0);
+    activate_gui();
+    enable_gui_cursor(0);
 
     ProcessStatusGameStateInput(game);
 

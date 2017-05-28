@@ -64,7 +64,7 @@ static void ExitGearGameState(
     SelectedGearSlot = 0;
     InventoryWidget->selected_item_index = 0;
     game->state = gameState;
-    DeactivateGui();
+    deactivate_gui();
     GearGuiScreen->Enabled = 0;
 }
 
@@ -215,7 +215,7 @@ static struct GearSlotWidget CreateGearSlotWidget(
 void GearGameStateDraw(struct Game* game, int inTransition)
 {
     DrawMap(game->renderer, game->world->map, game->world->actors);
-    GuiDraw(game);
+    draw_gui(game);
 }
 
 //  ---------------------------------------------------------------------------
@@ -237,7 +237,7 @@ static void InitGearGuiScreen(SDL_Renderer* renderer)
         viewport.w - InventoryWidget->panel->Width - 16,
         32);
 
-    AddGuiScreen(GearGuiScreen);
+    add_gui_screen(GearGuiScreen);
 }
 
 //  ---------------------------------------------------------------------------
@@ -268,7 +268,7 @@ static void UpdateCursor()
 
         struct GearSlotWidget* selectedGearSlot = GetSelectedGearSlotGui();
 
-        SetCursorPosition(
+        set_gui_cursor_position(
             selectedGearSlot->ItemSlotWidget->ItemIconPanel->X + 4,
             selectedGearSlot->ItemSlotWidget->ItemIconPanel->Y + 4);
     }
@@ -278,7 +278,7 @@ static void UpdateCursor()
 
         assert(InventoryWidget->selected_item_slot_widget != NULL);
         assert(InventoryWidget->selected_item_slot_widget->ItemIconPanel != NULL);
-        SetCursorPosition(
+        set_gui_cursor_position(
             InventoryWidget->selected_item_slot_widget->ItemIconPanel->X + 4,
             InventoryWidget->selected_item_slot_widget->ItemIconPanel->Y + 4);
     }
@@ -312,8 +312,8 @@ void GearGameStateUpdate(struct Game* game)
         InventoryWidget->selected_item_index = 0;
     }
 
-    ActivateGui();
-    EnableCursor(1);
+    activate_gui();
+    enable_gui_cursor(1);
     ProcessInventoryGameStateInput(game);
 
     struct Actor* actor = game->world->player.actor;

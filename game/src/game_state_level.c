@@ -88,7 +88,7 @@ void draw_level_game_state(struct Game* game, int in_transition)
         DrawMap(game->renderer, game->world->map, game->world->actors);
     }
 
-    GuiDraw(game);
+    draw_gui(game);
 
     if (in_transition)
     {

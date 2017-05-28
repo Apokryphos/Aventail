@@ -115,7 +115,7 @@ void game_main()
 
         update_active_game_state(&game);
 
-        GuiUpdate(&game);
+        update_gui(&game);
 
         update_audio();
 

@@ -38,7 +38,7 @@ static void ExitInventoryGameState(
     selected_item_type = ITEM_TYPE_NONE;
     inventory_widget->selected_item_index = 0;
     game->state = gameState;
-    DeactivateGui();
+    deactivate_gui();
     inventory_gui_screen->Enabled = 0;
 }
 
@@ -176,7 +176,7 @@ static void ProcessInventoryGameStateInput(struct Game* game)
 void InventoryGameStateDraw(struct Game* game, int inTransition)
 {
     DrawMap(game->renderer, game->world->map, game->world->actors);
-    GuiDraw(game);
+    draw_gui(game);
 }
 
 //  ---------------------------------------------------------------------------
@@ -238,7 +238,7 @@ static void InitInventoryGuiScreen(SDL_Renderer* renderer)
     //SDL_RenderGetViewport(renderer, &viewport);
     set_inventory_widget_position(inventory_widget, 16, 64);
 
-    AddGuiScreen(inventory_gui_screen);
+    add_gui_screen(inventory_gui_screen);
 }
 
 //  ---------------------------------------------------------------------------
@@ -250,13 +250,13 @@ static struct Panel* GetSelectedItemTypePanel()
 //  ---------------------------------------------------------------------------
 static void UpdateCursor()
 {
-    EnableCursor(1);
+    enable_gui_cursor(1);
 
     if (inventory_gui_state == GUI_STATE_SELECT_ITEM_TYPE)
     {
         struct Panel* selectedPanel = GetSelectedItemTypePanel();
 
-        SetCursorPosition(
+        set_gui_cursor_position(
             selectedPanel->X + 4,
             selectedPanel->Y + 4);
     }
@@ -266,7 +266,7 @@ static void UpdateCursor()
 
         assert(inventory_widget->selected_item_slot_widget != NULL);
         assert(inventory_widget->selected_item_slot_widget->ItemIconPanel != NULL);
-        SetCursorPosition(
+        set_gui_cursor_position(
             inventory_widget->selected_item_slot_widget->ItemIconPanel->X + 4,
             inventory_widget->selected_item_slot_widget->ItemIconPanel->Y + 4);
     }
@@ -291,7 +291,7 @@ void InventoryGameStateUpdate(struct Game* game)
         inventory_widget->selected_item_index = 0;
     }
 
-    ActivateGui();
+    activate_gui();
     ProcessInventoryGameStateInput(game);
 
     struct Actor* actor = game->world->player.actor;
