@@ -10,15 +10,18 @@ struct MapLink;
 /*
     Begins a transition to another GameState.
 */
-void BeginGameStateTransition(struct Game* game, enum GameState state);
+void begin_game_state_transition(struct Game* game, enum GameState state);
 /*
     Begins a transition to another map.
     Direction specifies the direction of the transition wipe or DIRECTION_NONE
     for a fade.
 */
-void BeginMapLinkTransition(struct Game* game, struct MapLink* link, enum Direction direction);
-void BeginMapLoadTransition(struct Game* game, const char* mapName);
-void TransitionGameStateDraw(struct Game* game);
-void TransitionGameStateUpdate(struct Game* game);
+void begin_map_link_transition(
+    struct Game* game,
+    struct MapLink* link,
+    enum Direction direction);
+void begin_map_load_transition(struct Game* game, const char* map_name);
+void draw_transition_game_state(struct Game* game);
+void update_transition_game_state(struct Game* game);
 
 #endif

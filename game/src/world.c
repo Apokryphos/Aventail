@@ -272,7 +272,7 @@ static void MoveActor(
                 if (actor == world->player.actor)
                 {
                     active_actor = NULL;
-                    BeginMapLinkTransition(game, dest_tile->link, DIRECTION_NONE);
+                    begin_map_link_transition(game, dest_tile->link, DIRECTION_NONE);
                     return;
                 }
             }
@@ -394,6 +394,6 @@ void simulate_world(struct Game* game, struct World* world)
     if (is_actor_dead(world->player.actor))
     {
         active_actor = NULL;
-        BeginGameStateTransition(game, GAME_STATE_GAME_OVER);
+        begin_game_state_transition(game, GAME_STATE_GAME_OVER);
     }
 }

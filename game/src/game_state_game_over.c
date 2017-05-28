@@ -28,6 +28,6 @@ void GameOverGameStateUpdate(struct Game* game)
         game->world->player.actor = NULL;
         create_player_actor(game->world);
 
-        BeginMapLoadTransition(game, "map01");
+        begin_map_load_transition(game, "map01");
     }
 }

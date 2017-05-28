@@ -36,7 +36,7 @@ void draw_active_game_state(
             break;
         case GAME_STATE_TRANSITION:
             assert(in_transition == 0);
-            TransitionGameStateDraw(game);
+            draw_transition_game_state(game);
             break;
         default:
             printf("draw_active_game_state: Unhandled GameState.\n");
@@ -67,7 +67,7 @@ void update_active_game_state(struct Game* game)
             GameOverGameStateUpdate(game);
             break;
         case GAME_STATE_TRANSITION:
-            TransitionGameStateUpdate(game);
+            update_transition_game_state(game);
             break;
         default:
             printf("update_active_game_state: Unhandled GameState.\n");

@@ -97,7 +97,7 @@ void game_main()
 
     create_player_actor(game.world);
 
-    BeginMapLoadTransition(&game, "map01");
+    begin_map_load_transition(&game, "map01");
 
     struct InputDevice input_device = {0};
     game.input_device = &input_device;
