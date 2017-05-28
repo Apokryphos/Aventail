@@ -2,7 +2,7 @@
 #include <stdlib.h>
 
 //  ---------------------------------------------------------------------------
-void GetDelta(const enum Direction direction, int* dx, int* dy)
+void get_direction_delta(const enum Direction direction, int* dx, int* dy)
 {
     switch (direction)
     {
@@ -35,14 +35,14 @@ void GetDelta(const enum Direction direction, int* dx, int* dy)
 }
 
 //  ---------------------------------------------------------------------------
-const enum Direction GetDirectionByDelta(
-    int startX,
-    int startY,
-    int destX,
-    int destY)
+const enum Direction get_direction_by_delta(
+    int start_x,
+    int start_y,
+    int dest_x,
+    int dest_y)
 {
-    int dx = destX - startX;
-    int dy = destY - startY;
+    int dx = dest_x - start_x;
+    int dy = dest_y - start_y;
 
     if (dx == 0)
     {
@@ -54,7 +54,7 @@ const enum Direction GetDirectionByDelta(
         {
             return DIRECTION_UP;
         }
-        else 
+        else
         {
             return DIRECTION_DOWN;
         }
@@ -69,7 +69,7 @@ const enum Direction GetDirectionByDelta(
         {
             return DIRECTION_LEFT;
         }
-        else 
+        else
         {
             return DIRECTION_RIGHT;
         }
@@ -80,7 +80,7 @@ const enum Direction GetDirectionByDelta(
 }
 
 //  ---------------------------------------------------------------------------
-enum Direction GetOppositeDirection(const enum Direction direction)
+enum Direction get_opposite_direction(const enum Direction direction)
 {
     switch (direction)
     {
@@ -103,7 +103,7 @@ enum Direction GetOppositeDirection(const enum Direction direction)
 }
 
 //  ---------------------------------------------------------------------------
-enum Direction GetRandomDirection()
+enum Direction get_random_direction()
 {
     //  Random direction excluding DIRECTION_NONE
     return (enum Direction)(rand() % 4 + 1);

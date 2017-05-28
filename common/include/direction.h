@@ -10,13 +10,13 @@ enum Direction
     DIRECTION_DOWN,
 };
 
-void GetDelta(const enum Direction direction, int* dx, int* dy);
-const enum Direction GetDirectionByDelta(
-    int startX,
-    int startY,
-    int destX,
-    int destY);
-enum Direction GetOppositeDirection(const enum Direction direction);
-enum Direction GetRandomDirection();
+void get_direction_delta(const enum Direction direction, int* dx, int* dy);
+const enum Direction get_direction_by_delta(
+    int start_x,
+    int start_y,
+    int dest_x,
+    int dest_y);
+enum Direction get_opposite_direction(const enum Direction direction);
+enum Direction get_random_direction();
 
 #endif

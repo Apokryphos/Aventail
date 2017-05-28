@@ -241,7 +241,7 @@ struct AStarPath* BuildAStarPath(
             enum Direction direction = (enum Direction)d;
 
             int dx, dy;
-            GetDelta(direction, &dx, &dy);
+            get_direction_delta(direction, &dx, &dy);
 
             struct Tile* neighborTile = GetTile(
                 aStar->Map,

@@ -7,9 +7,9 @@
 
 //  ---------------------------------------------------------------------------
 struct Map* CreateMap(
-    const int width, 
-    const int height, 
-    const int tileWidth, 
+    const int width,
+    const int height,
+    const int tileWidth,
     const int tileHeight)
 {
     assert(width > 0);
@@ -69,14 +69,14 @@ void DestroyMap(struct Map** map)
 //  ---------------------------------------------------------------------------
 struct Tile* GetNeighbor(
     const struct Map* map,
-    const struct Tile* tile, 
+    const struct Tile* tile,
     const enum Direction direction)
 {
     assert(map != NULL);
     assert(tile != NULL);
 
     int dx, dy;
-    GetDelta(direction, &dx, &dy);
+    get_direction_delta(direction, &dx, &dy);
     return GetTile(map, tile->X + dx, tile->Y + dy);
 }
 

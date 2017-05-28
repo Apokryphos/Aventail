@@ -340,7 +340,7 @@ void SimulateWorld(struct Game* game, struct World* world)
 
             if (path == NULL)
             {
-                ActiveActor->move_direction = GetRandomDirection();
+                ActiveActor->move_direction = get_random_direction();
             }
             else
             {
@@ -349,7 +349,7 @@ void SimulateWorld(struct Game* game, struct World* world)
 
                 if (nextPoint != NULL)
                 {
-                    ActiveActor->move_direction = GetDirectionByDelta(
+                    ActiveActor->move_direction = get_direction_by_delta(
                         ActiveActor->tile->X,
                         ActiveActor->tile->Y,
                         nextPoint->X,
