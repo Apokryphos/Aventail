@@ -4,19 +4,19 @@ int	ArgC;
 char** ArgV;
 
 //  ---------------------------------------------------------------------------
-int ArgCount()
+int get_arg_count()
 {
     return ArgC - 1;
 }
 
 //  ---------------------------------------------------------------------------
-int ArgExists(int index)
+int arg_exists(int index)
 {
     return index > 0 && index < ArgC;
 }
 
 //  ---------------------------------------------------------------------------
-int CheckArg(const char *arg)
+int check_arg(const char *arg)
 {
     for (int a = 1; a < ArgC; a++)
     {
@@ -29,13 +29,13 @@ int CheckArg(const char *arg)
 }
 
 //  ---------------------------------------------------------------------------
-const char* GetArg(int index)
+const char* get_arg_by_index(int index)
 {
     return ArgV[index];
 }
 
 //  ---------------------------------------------------------------------------
-void InitArgs(int argc, char** argv)
+void init_args(int argc, char** argv)
 {
     ArgC = argc;
     ArgV = argv;

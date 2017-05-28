@@ -15,22 +15,22 @@ void ConvertTmxToMap(const char* tmxFilename, const char* mapFilename);
 //  ---------------------------------------------------------------------------
 int main(int argc, char** argv)
 {
-    InitArgs(argc, argv);
+    init_args(argc, argv);
 
-    if (ArgCount() == 2)
+    if (get_arg_count() == 2)
     {
-        const char* tmxFilename = GetArg(1);
-        const char* mapFilename = GetArg(2);
+        const char* tmxFilename = get_arg_by_index(1);
+        const char* mapFilename = get_arg_by_index(2);
 
         ConvertTmxToMap(tmxFilename, mapFilename);
     }
-    else if (ArgCount() == 1)
+    else if (get_arg_count() == 1)
     {
-        const char* tmxFilename = GetArg(1);
+        const char* tmxFilename = get_arg_by_index(1);
         size_t len = strlen(tmxFilename);
 
         char* mapFilename = NULL;
-        
+
         if (len >= 4)
         {
             const char* extension = tmxFilename + len - 4;
@@ -75,7 +75,7 @@ void ConvertTmxToMap(const char* tmxFilename, const char* mapFilename)
 
     struct Map* map = NULL;
     struct ActorList* actors = NULL;
-    
+
     LoadTmx(doc, &map, &actors);
 
     FILE *file;

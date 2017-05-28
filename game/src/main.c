@@ -4,6 +4,6 @@
 //  ---------------------------------------------------------------------------
 int main(int argc, char** argv)
 {
-    InitArgs(argc, argv);
+    init_args(argc, argv);
     GameMain();
 }
