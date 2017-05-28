@@ -113,7 +113,7 @@ void LoadActorItems(struct Actor* actor, xmlNode* propertiesNode)
     char** itemNames = NULL;
     char* itemNamesCsv = NULL;
     ReadProperty(propertiesNode, "Items", &itemNamesCsv);
-    itemCount = Tokenize(itemNamesCsv, &itemNames);
+    itemCount = tokenize_string(itemNamesCsv, &itemNames);
     assert(itemCount < MAX_INVENTORY_ITEMS);
     for (int n = 0; n < itemCount; ++n)
     {

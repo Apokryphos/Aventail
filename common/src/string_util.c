@@ -6,7 +6,7 @@
 const size_t TOKEN_BUFFER_SIZE = 512;
 
 //  ---------------------------------------------------------------------------
-size_t Tokenize(const char* str, char** tokens[])
+size_t tokenize_string(const char* str, char** tokens[])
 {
     //  Specified string is NULL
     if (str == NULL)
@@ -16,11 +16,11 @@ size_t Tokenize(const char* str, char** tokens[])
     }
 
     //  Specified string is length zero
-    size_t strLen = strlen(str);
-    if (strLen == 0)
+    size_t str_len = strlen(str);
+    if (str_len == 0)
     {
         *tokens = NULL;
-        return 0;      
+        return 0;
     }
 
     char* buffer[TOKEN_BUFFER_SIZE];
@@ -28,7 +28,7 @@ size_t Tokenize(const char* str, char** tokens[])
 
     const char* start = str;
 
-    while (start < str + strLen)
+    while (start < str + str_len)
     {
         //  Ignore leading whitespace
         while (isspace(*start))
@@ -45,33 +45,33 @@ size_t Tokenize(const char* str, char** tokens[])
         const char* end = strchr(start, ',');
         if (end == NULL)
         {
-            end = &str[strLen];
+            end = &str[str_len];
         }
 
         //  Ignore trailing whitespace
-        const char* lastChar = end;
-        while ((*lastChar == ',' ||
-                 isspace(*lastChar) || 
-                 *lastChar == '\0') && lastChar > start)
+        const char* last_char = end;
+        while ((*last_char == ',' ||
+                 isspace(*last_char) ||
+                 *last_char == '\0') && last_char > start)
         {
-            --lastChar;
+            --last_char;
         }
 
-        if (lastChar != end)
+        if (last_char != end)
         {
-            end = lastChar + 1;
+            end = last_char + 1;
         }
 
-        size_t tokenLen = end - start;
+        size_t token_len = end - start;
 
-        if (tokenLen > 0)
+        if (token_len > 0)
         {
             assert(b < TOKEN_BUFFER_SIZE);
 
             //  Allocate token string
-            buffer[b] = malloc(sizeof(char) * tokenLen + 1);
-            strncpy(buffer[b], start, tokenLen);
-            buffer[b][tokenLen] = '\0';
+            buffer[b] = malloc(sizeof(char) * token_len + 1);
+            strncpy(buffer[b], start, token_len);
+            buffer[b][token_len] = '\0';
             ++b;
         }
 
