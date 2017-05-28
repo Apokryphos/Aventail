@@ -31,7 +31,7 @@ static struct Stats GetItemSlotStats(struct Item* item)
 {
     if (item != NULL)
     {
-        return item->Stats;
+        return item->stats;
     }
     return (struct Stats) { 0 };
 }
@@ -75,7 +75,7 @@ int equip_item(struct Actor* actor, struct Item* item)
     struct Gear* gear = &actor->gear;
     struct Inventory* inventory = actor->inventory;
 
-    struct Item** item_slot = GetItemSlot(gear, item->Type);
+    struct Item** item_slot = GetItemSlot(gear, item->type);
 
     if (item_slot != NULL)
     {

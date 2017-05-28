@@ -6,14 +6,14 @@
 
 struct Item
 {
-    enum ItemType Type;
-    int TilesetId;
-    int HealAmount;
-    char* Name;
-    struct Stats Stats;
+    enum ItemType type;
+    int tileset_id;
+    int heal_amount;
+    char* name;
+    struct Stats stats;
 };
 
-struct Item* CreateItem(const char* name);
-void DestroyItem(struct Item** item);
+struct Item* create_item(const char* name);
+void destroy_item(struct Item** item);
 
 #endif

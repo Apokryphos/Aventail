@@ -61,7 +61,7 @@ void LoadActorsFromFile(FILE* file, struct Map* map, struct ActorList* actors)
             fread(itemName, sizeof(char), nameLen, file);
             itemName[nameLen] = '\0';
 
-            struct Item* item = CreateItem(itemName);
+            struct Item* item = create_item(itemName);
 
             LoadItemDefinition(item);
 

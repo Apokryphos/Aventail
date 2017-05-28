@@ -13,6 +13,6 @@ enum ItemType
     ITEM_TYPE_ACCESSORY,
 };
 
-const char* get_item_type_category_string(const enum ItemType itemType);
+const char* get_item_type_category_string(const enum ItemType item_type);
 
 #endif

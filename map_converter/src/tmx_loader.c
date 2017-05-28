@@ -117,7 +117,7 @@ void LoadActorItems(struct Actor* actor, xmlNode* propertiesNode)
     assert(itemCount < MAX_INVENTORY_ITEMS);
     for (int n = 0; n < itemCount; ++n)
     {
-        struct Item* item = CreateItem(itemNames[n]);
+        struct Item* item = create_item(itemNames[n]);
         add_item_to_inventory(actor->inventory, item);
         free(itemNames[n]);
     }

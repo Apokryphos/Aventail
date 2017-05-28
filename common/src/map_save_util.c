@@ -53,11 +53,11 @@ void SaveActorsToFile(FILE* file, const struct ActorList* actors)
                 {
                     assert(itemsWritten < itemCount);
 
-                    nameLen = strlen(item->Name);
+                    nameLen = strlen(item->name);
                     assert(nameLen <= MAX_ACTOR_NAME_STRING_LENGTH);
 
                     fwrite(&nameLen, sizeof(int), 1, file);
-                    fwrite(item->Name, sizeof(char), nameLen, file);
+                    fwrite(item->name, sizeof(char), nameLen, file);
 
                     itemsWritten++;
                 }

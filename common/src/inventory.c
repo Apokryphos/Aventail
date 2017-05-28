@@ -46,7 +46,7 @@ void destroy_inventory(struct Inventory** inventory)
         {
             if ((*inventory)->items[n] != NULL)
             {
-                DestroyItem(&(*inventory)->items[n]);
+                destroy_item(&(*inventory)->items[n]);
             }
         }
 
@@ -87,7 +87,7 @@ void get_inventory_items_by_item_type(
     for (size_t n = 0; n < MAX_INVENTORY_ITEMS; ++n)
     {
         if (inventory->items[n] != NULL &&
-            (item_type == ITEM_TYPE_NONE || inventory->items[n]->Type == item_type))
+            (item_type == ITEM_TYPE_NONE || inventory->items[n]->type == item_type))
         {
             items[s++] = inventory->items[n];
             ++(*count);

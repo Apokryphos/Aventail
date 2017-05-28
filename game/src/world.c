@@ -94,19 +94,19 @@ struct Actor* CreatePlayerActor(struct World* world)
     world->Player.Actor = actor;
 
     //  Some starting inventory to test with
-    struct Item* armor = CreateItem("Leather Cuirass");
+    struct Item* armor = create_item("Leather Cuirass");
     LoadItemDefinition(armor);
     equip_item(actor, armor);
 
-    // struct Item* weapon = CreateItem("Bronze Sword");
+    // struct Item* weapon = create_item("Bronze Sword");
     // LoadItemDefinition(weapon);
     // equip_item(actor, weapon);
 
-    struct Item* armor2 = CreateItem("Chainmail");
+    struct Item* armor2 = create_item("Chainmail");
     LoadItemDefinition(armor2);
     add_item_to_inventory(actor->inventory, armor2);
 
-    // struct Item* shield1 = CreateItem("Buckler");
+    // struct Item* shield1 = create_item("Buckler");
     // LoadItemDefinition(shield1);
     // add_item_to_inventory(actor->inventory, shield1);
 
@@ -125,11 +125,11 @@ struct Actor* CreatePlayerActor(struct World* world)
     // add_item_to_inventory(actor->inventory, CreateWeapon("Rapier"));
     // add_item_to_inventory(actor->inventory, CreateWeapon("Cutlass"));
 
-    // struct Item* weapon2 = CreateItem("Iron Short Sword");
+    // struct Item* weapon2 = create_item("Iron Short Sword");
     // LoadItemDefinition(weapon2);
     // add_item_to_inventory(actor->inventory, weapon2);
 
-    struct Item* accessory1 = CreateItem("Healing Ring");
+    struct Item* accessory1 = create_item("Healing Ring");
     LoadItemDefinition(accessory1);
     add_item_to_inventory(actor->inventory, accessory1);
 

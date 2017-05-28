@@ -159,14 +159,14 @@ void UpdateItemSlotWidget(struct ItemSlotWidget* widget, struct Item* item)
 {
     if (item != NULL)
     {
-        widget->ItemIconPanel->Icon.TilesetId = item->TilesetId;
-        widget->ItemNamePanel->Text = item->Name;
+        widget->ItemIconPanel->Icon.TilesetId = item->tileset_id;
+        widget->ItemNamePanel->Text = item->name;
     }
     else
     {
         widget->ItemIconPanel->Icon.TilesetId = -1;
         widget->ItemNamePanel->Text = EmptyString;
-    }  
+    }
 
     for (int s = 0; s < STAT_TYPE_COUNT; ++s)
     {
@@ -174,7 +174,7 @@ void UpdateItemSlotWidget(struct ItemSlotWidget* widget, struct Item* item)
 
         int statValue =
             item != NULL ?
-            GetStatByType(&item->Stats, statType) :
+            GetStatByType(&item->stats, statType) :
             0;
 
         int* currentValue = &widget->StatValues[s];
@@ -197,7 +197,7 @@ void UpdateItemSlotWidget(struct ItemSlotWidget* widget, struct Item* item)
                 asprintf(stringValue, "%d", *currentValue);
             }
 
-            panel->Text = *stringValue; 
+            panel->Text = *stringValue;
         }
 
         panel->Visible = *currentValue != 0;
