@@ -5,21 +5,21 @@
 #include <assert.h>
 
 //  ---------------------------------------------------------------------------
-static struct Item** GetItemSlot(struct Gear* gear, enum ItemType itemType)
+static struct Item** GetItemSlot(struct Gear* gear, enum ItemType item_type)
 {
-    switch (itemType)
+    switch (item_type)
     {
         case ITEM_TYPE_WEAPON:
-            return &gear->Weapon;
+            return &gear->weapon;
 
         case ITEM_TYPE_ARMOR:
-            return &gear->Armor;
+            return &gear->armor;
 
         case ITEM_TYPE_SHIELD:
-            return &gear->Shield;
+            return &gear->shield;
 
         case ITEM_TYPE_ACCESSORY:
-            return &gear->Accessory;
+            return &gear->accessory;
 
         default:
             return NULL;
@@ -39,25 +39,27 @@ static struct Stats GetItemSlotStats(struct Item* item)
 //  ---------------------------------------------------------------------------
 static void CalculateGearStats(struct Gear* gear)
 {
-    struct Stats weaponStats = GetItemSlotStats(gear->Weapon);
-    struct Stats armorStats = GetItemSlotStats(gear->Armor);
-    struct Stats shieldStats = GetItemSlotStats(gear->Shield);
-    struct Stats accessoryStats = GetItemSlotStats(gear->Accessory);
+    struct Stats weapon_stats = GetItemSlotStats(gear->weapon);
+    struct Stats armor_stats = GetItemSlotStats(gear->armor);
+    struct Stats shield_stats = GetItemSlotStats(gear->shield);
+    struct Stats accessory_stats = GetItemSlotStats(gear->accessory);
 
-    gear->Stats = (struct Stats) { 0 };
-    gear->Stats = AddStats(gear->Stats, weaponStats);
-    gear->Stats = AddStats(gear->Stats, armorStats);
-    gear->Stats = AddStats(gear->Stats, shieldStats);
-    gear->Stats = AddStats(gear->Stats, accessoryStats);
+    gear->stats = (struct Stats) { 0 };
+    gear->stats = AddStats(gear->stats, weapon_stats);
+    gear->stats = AddStats(gear->stats, armor_stats);
+    gear->stats = AddStats(gear->stats, shield_stats);
+    gear->stats = AddStats(gear->stats, accessory_stats);
 }
 
 //  ---------------------------------------------------------------------------
-static int RemoveItemFromSlot(struct Item** itemSlot, struct Inventory* inventory)
+static int RemoveItemFromSlot(
+    struct Item** item_slot,
+    struct Inventory* inventory)
 {
-    if (*itemSlot != NULL)
+    if (*item_slot != NULL)
     {
-        AddInventoryItem(inventory, *itemSlot);
-        *itemSlot = NULL;
+        AddInventoryItem(inventory, *item_slot);
+        *item_slot = NULL;
         return 1;
     }
 
@@ -65,7 +67,7 @@ static int RemoveItemFromSlot(struct Item** itemSlot, struct Inventory* inventor
 }
 
 //  ---------------------------------------------------------------------------
-int EquipItem(struct Actor* actor, struct Item* item)
+int equip_item(struct Actor* actor, struct Item* item)
 {
     assert(item != NULL);
     assert(actor != NULL);
@@ -73,12 +75,12 @@ int EquipItem(struct Actor* actor, struct Item* item)
     struct Gear* gear = &actor->gear;
     struct Inventory* inventory = actor->inventory;
 
-    struct Item** itemSlot = GetItemSlot(gear, item->Type);
+    struct Item** item_slot = GetItemSlot(gear, item->Type);
 
-    if (itemSlot != NULL)
+    if (item_slot != NULL)
     {
-        RemoveItemFromSlot(itemSlot, inventory);
-        *itemSlot = item;
+        RemoveItemFromSlot(item_slot, inventory);
+        *item_slot = item;
         CalculateGearStats(gear);
         return 1;
     }
@@ -87,17 +89,17 @@ int EquipItem(struct Actor* actor, struct Item* item)
 }
 
 //  ---------------------------------------------------------------------------
-int RemoveGearItem(struct Actor* actor, enum ItemType itemType)
+int remove_item_from_gear(struct Actor* actor, enum ItemType item_type)
 {
     assert(actor != NULL);
 
     struct Gear* gear = &actor->gear;
     struct Inventory* inventory = actor->inventory;
 
-    struct Item** itemSlot = GetItemSlot(gear, itemType);
-    if (itemSlot != NULL)
+    struct Item** item_slot = GetItemSlot(gear, item_type);
+    if (item_slot != NULL)
     {
-        int removed = RemoveItemFromSlot(itemSlot, inventory);
+        int removed = RemoveItemFromSlot(item_slot, inventory);
         CalculateGearStats(gear);
         return removed;
     }
@@ -106,10 +108,10 @@ int RemoveGearItem(struct Actor* actor, enum ItemType itemType)
 }
 
 //  ---------------------------------------------------------------------------
-void RemoveAllGearItems(struct Actor* actor)
+void remove_all_items_from_gear(struct Actor* actor)
 {
-    RemoveGearItem(actor, ITEM_TYPE_WEAPON);
-    RemoveGearItem(actor, ITEM_TYPE_ARMOR);
-    RemoveGearItem(actor, ITEM_TYPE_SHIELD);
-    RemoveGearItem(actor, ITEM_TYPE_ACCESSORY);
+    remove_item_from_gear(actor, ITEM_TYPE_WEAPON);
+    remove_item_from_gear(actor, ITEM_TYPE_ARMOR);
+    remove_item_from_gear(actor, ITEM_TYPE_SHIELD);
+    remove_item_from_gear(actor, ITEM_TYPE_ACCESSORY);
 }

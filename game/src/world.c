@@ -30,8 +30,8 @@ static void Attack(struct Actor* source, struct Actor* target, struct World* wor
 
         --source->action_points;
 
-        struct Stats sourceStats = AddStats(source->stats, source->gear.Stats);
-        struct Stats targetStats = AddStats(target->stats, target->gear.Stats);
+        struct Stats sourceStats = AddStats(source->stats, source->gear.stats);
+        struct Stats targetStats = AddStats(target->stats, target->gear.stats);
 
         int damage = 1;
         if (sourceStats.Attack > targetStats.Defend)
@@ -96,11 +96,11 @@ struct Actor* CreatePlayerActor(struct World* world)
     //  Some starting inventory to test with
     struct Item* armor = CreateItem("Leather Cuirass");
     LoadItemDefinition(armor);
-    EquipItem(actor, armor);
+    equip_item(actor, armor);
 
     // struct Item* weapon = CreateItem("Bronze Sword");
     // LoadItemDefinition(weapon);
-    // EquipItem(actor, weapon);
+    // equip_item(actor, weapon);
 
     struct Item* armor2 = CreateItem("Chainmail");
     LoadItemDefinition(armor2);

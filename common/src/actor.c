@@ -55,7 +55,7 @@ void destroy_actor(struct Actor** actor)
 
     if (*actor != NULL)
     {
-        RemoveAllGearItems(*actor);
+        remove_all_items_from_gear(*actor);
         DestroyInventory(&(*actor)->inventory);
         free((*actor)->name);
         free(*actor);

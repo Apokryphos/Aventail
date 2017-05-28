@@ -123,7 +123,7 @@ static void ProcessSelectInventoryItemSlotStateInput(struct Game* game)
         {
             // struct Actor* actor = game->World->Player.Actor;
             //struct Item* item = InventoryWidget->Items[InventoryWidget->SelectedItemIndex];
-            // EquipItem(actor, item);
+            // equip_item(actor, item);
             // RemoveInventoryItem(actor->inventory, item);
             // UpdateInventoryWidget(InventoryWidget, actor->inventory);
 
