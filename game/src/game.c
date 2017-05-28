@@ -110,7 +110,7 @@ void GameMain()
         ticks = SDL_GetTicks();
         game.ElapsedSeconds = (ticks - lastTicks) / 1000.0f;
 
-        UpdateInput(game.InputDevice);
+        update_input(game.InputDevice);
         game.Quit = game.InputDevice->Quit;
 
         UpdateGameState(&game);

@@ -2,17 +2,17 @@
 #include <SDL2/SDL.h>
 
 //  ---------------------------------------------------------------------------
-void UpdateInput(struct InputDevice* inputDevice)
+void update_input(struct InputDevice* input_device)
 {
     //  Reset
-    inputDevice->MoveDirection = DIRECTION_NONE;
-    inputDevice->Cancel = 0;
-    inputDevice->Gear = 0;
-    inputDevice->Inventory = 0;
-    inputDevice->DebugKillPlayerActor = 0;
-    inputDevice->Accept = 0;
-    inputDevice->Remove = 0;
-    inputDevice->Status = 0;
+    input_device->MoveDirection = DIRECTION_NONE;
+    input_device->Cancel = 0;
+    input_device->Gear = 0;
+    input_device->Inventory = 0;
+    input_device->DebugKillPlayerActor = 0;
+    input_device->Accept = 0;
+    input_device->Remove = 0;
+    input_device->Status = 0;
 
     SDL_Event event;
     while(SDL_PollEvent(&event))
@@ -20,7 +20,7 @@ void UpdateInput(struct InputDevice* inputDevice)
         switch(event.type)
         {
             case SDL_QUIT:
-                inputDevice->Quit = 1;
+                input_device->Quit = 1;
                 break;
 
             case SDL_KEYDOWN:
@@ -29,48 +29,48 @@ void UpdateInput(struct InputDevice* inputDevice)
                     switch (key)
                     {
                         case SDLK_q:
-                            inputDevice->Quit = 1;
+                            input_device->Quit = 1;
                             break;
                         case SDLK_ESCAPE:
-                            inputDevice->Cancel = 1;
+                            input_device->Cancel = 1;
                             break;
                         case SDLK_RETURN:
-                            inputDevice->Accept = 1;
+                            input_device->Accept = 1;
                             break;
                         case SDLK_r:
-                            inputDevice->Remove = 1;
+                            input_device->Remove = 1;
                             break;
                         case SDLK_g:
-                            inputDevice->Gear = 1;
+                            input_device->Gear = 1;
                             break;
                         case SDLK_i:
-                            inputDevice->Inventory = 1;
+                            input_device->Inventory = 1;
                             break;
                         case SDLK_k:
-                            inputDevice->DebugKillPlayerActor = 1;
+                            input_device->DebugKillPlayerActor = 1;
                             break;
                         case SDLK_s:
-                            inputDevice->Status = 1;
+                            input_device->Status = 1;
                             break;
                         case SDLK_UP:
-                            inputDevice->MoveDirection = DIRECTION_UP;
+                            input_device->MoveDirection = DIRECTION_UP;
                             break;
                         case SDLK_DOWN:
-                            inputDevice->MoveDirection = DIRECTION_DOWN;
+                            input_device->MoveDirection = DIRECTION_DOWN;
                             break;
                         case SDLK_LEFT:
-                            inputDevice->MoveDirection = DIRECTION_LEFT;
+                            input_device->MoveDirection = DIRECTION_LEFT;
                             break;
                         case SDLK_RIGHT:
-                            inputDevice->MoveDirection = DIRECTION_RIGHT;
+                            input_device->MoveDirection = DIRECTION_RIGHT;
                             break;
                     }
                 }
                 break;
 
                 case SDL_MOUSEMOTION:
-                    inputDevice->CursorX = event.motion.x;
-                    inputDevice->CursorY = event.motion.y;
+                    input_device->CursorX = event.motion.x;
+                    input_device->CursorY = event.motion.y;
                     break;
 
             default:

@@ -1,6 +1,6 @@
 #ifndef INPUT_HEADER_INCLUDED
 #define INPUT_HEADER_INCLUDED
 
-void UpdateInput(struct InputDevice* inputDevice);
+void update_input(struct InputDevice* input_device);
 
 #endif
