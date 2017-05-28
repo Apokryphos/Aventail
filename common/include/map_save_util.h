@@ -6,7 +6,7 @@ struct Map;
 
 #include <stdio.h>
 
-void SaveActorsToFile(FILE* file, const struct ActorList* actors);
-void SaveMapToFile(FILE* file, const struct Map* map);
+void save_actors_to_file(FILE* file, const struct ActorList* actors);
+void save_map_to_file(FILE* file, const struct Map* map);
 
 #endif

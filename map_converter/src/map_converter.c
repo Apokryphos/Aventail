@@ -80,8 +80,8 @@ void ConvertTmxToMap(const char* tmxFilename, const char* mapFilename)
 
     FILE *file;
     file = fopen(mapFilename,"wb");
-    SaveMapToFile(file, map);
-    SaveActorsToFile(file, actors);
+    save_map_to_file(file, map);
+    save_actors_to_file(file, actors);
     fclose(file);
 
     printf("Converted TMX file %s to %s.\n", tmxFilename, mapFilename);

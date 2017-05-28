@@ -12,7 +12,7 @@
 #include <string.h>
 
 //  ---------------------------------------------------------------------------
-void SaveActorsToFile(FILE* file, const struct ActorList* actors)
+void save_actors_to_file(FILE* file, const struct ActorList* actors)
 {
     assert(actors != NULL);
 
@@ -80,7 +80,7 @@ void SaveActorsToFile(FILE* file, const struct ActorList* actors)
 }
 
 //  ---------------------------------------------------------------------------
-void SaveMapToFile(FILE* file, const struct Map* map)
+void save_map_to_file(FILE* file, const struct Map* map)
 {
     printf("Saving map header...\n");
     fwrite(&map->Width, sizeof(int), 1, file);
