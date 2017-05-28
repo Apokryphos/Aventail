@@ -4,40 +4,47 @@
 #include <string.h>
 
 //  ---------------------------------------------------------------------------
-static char* CreateAssetPath(
-    const char* basePath,
-    const char* assetPath,
-    const char* assetFilename,
+static char* create_asset_file_path(
+    const char* base_path,
+    const char* asset_path,
+    const char* asset_filename,
     const char* extension)
 {
-    assert(basePath != NULL);
-    assert(assetPath != NULL);
-    assert(assetFilename != NULL);
+    assert(base_path != NULL);
+    assert(asset_path != NULL);
+    assert(asset_filename != NULL);
 
-    char *fullPath = malloc(strlen(basePath) + strlen(assetPath) + strlen(assetFilename) + strlen(extension) + 1);
-    if (fullPath == NULL)
+    char *full_path = malloc(
+        strlen(base_path) +
+        strlen(asset_path) +
+        strlen(asset_filename) +
+        strlen(extension) + 1);
+
+    if (full_path == NULL)
     {
 		printf("Could not create asset file path.");
 		exit(1);
     }
-    sprintf(fullPath, "%s%s%s%s", basePath, assetPath, assetFilename, extension);
-    return fullPath;
+
+    sprintf(full_path, "%s%s%s%s", base_path, asset_path, asset_filename, extension);
+
+    return full_path;
 }
 
 //  ---------------------------------------------------------------------------
-char* create_map_file_path(const char* basePath, const char* assetFilename)
+char* create_map_file_path(const char* base_path, const char* asset_filename)
 {
-    return CreateAssetPath(basePath, "assets/maps/", assetFilename, ".map");
+    return create_asset_file_path(base_path, "assets/maps/", asset_filename, ".map");
 }
 
 //  ---------------------------------------------------------------------------
-char* create_sfx_file_path(const char* basePath, const char* assetFilename)
+char* create_sfx_file_path(const char* base_path, const char* asset_filename)
 {
-    return CreateAssetPath(basePath, "assets/sfx/", assetFilename, ".ogg");
+    return create_asset_file_path(base_path, "assets/sfx/", asset_filename, ".ogg");
 }
 
 //  ---------------------------------------------------------------------------
-char* create_texture_file_path(const char* basePath, const char* assetFilename)
+char* create_texture_file_path(const char* base_path, const char* asset_filename)
 {
-    return CreateAssetPath(basePath, "assets/gfx/", assetFilename, ".png");
+    return create_asset_file_path(base_path, "assets/gfx/", asset_filename, ".png");
 }
