@@ -24,7 +24,7 @@ void GameOverGameStateUpdate(struct Game* game)
 
         //  TODO: Player is destroyed and recreated here...hacky.
         RemoveActor(game->World->Actors, game->World->Player.Actor);
-        DestroyActor(&game->World->Player.Actor);
+        destroy_actor(&game->World->Player.Actor);
         game->World->Player.Actor = NULL;
         CreatePlayerActor(game->World);
 

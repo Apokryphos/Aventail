@@ -15,32 +15,32 @@ typedef void ActorOnTouchFunction(struct Actor* source, struct Actor* target);
 
 struct Actor
 {
-    enum Direction MoveDirection;
-    enum ActorType Type;
-    int ActionPoints;
-    int MaxActionPoints;
-    int Collision;
-    int TilesetId;
-    int Health;
-    int MaxHealth;
-    int Cash;
-    char* Name;
-    ActorOnTouchFunction* OnTouch;
-    struct Inventory* Inventory;
-    struct Map* Map;
-    struct Tile* Tile;
-    struct Stats Stats;
-    struct Gear Gear;
+    enum Direction move_direction;
+    enum ActorType type;
+    int collision;
+    int tileset_id;
+    int action_points;
+    int max_action_points;
+    int health;
+    int max_health;
+    int cash;
+    char* name;
+    ActorOnTouchFunction* on_touch;
+    struct Inventory* inventory;
+    struct Map* map;
+    struct Tile* tile;
+    struct Stats stats;
+    struct Gear gear;
 };
 
-struct Actor* CreateActor(
+struct Actor* create_actor(
     struct Map* map,
     const char *name,
-    const int tileX,
-    const int tileY, 
-    const int tilesetId);
-void DestroyActor(struct Actor** actor);
-int ActorIsDead(const struct Actor* actor);
-int ActorIsFoe(const struct Actor* actor, const struct Actor* other);
+    const int tile_x,
+    const int tile_y,
+    const int tileset_id);
+void destroy_actor(struct Actor** actor);
+int is_actor_dead(const struct Actor* actor);
+int is_actor_foe(const struct Actor* actor, const struct Actor* other);
 
 #endif

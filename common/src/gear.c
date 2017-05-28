@@ -70,8 +70,8 @@ int EquipItem(struct Actor* actor, struct Item* item)
     assert(item != NULL);
     assert(actor != NULL);
 
-    struct Gear* gear = &actor->Gear;
-    struct Inventory* inventory = actor->Inventory;
+    struct Gear* gear = &actor->gear;
+    struct Inventory* inventory = actor->inventory;
 
     struct Item** itemSlot = GetItemSlot(gear, item->Type);
 
@@ -91,8 +91,8 @@ int RemoveGearItem(struct Actor* actor, enum ItemType itemType)
 {
     assert(actor != NULL);
 
-    struct Gear* gear = &actor->Gear;
-    struct Inventory* inventory = actor->Inventory;
+    struct Gear* gear = &actor->gear;
+    struct Inventory* inventory = actor->inventory;
 
     struct Item** itemSlot = GetItemSlot(gear, itemType);
     if (itemSlot != NULL)

@@ -19,7 +19,7 @@ void SaveActorsToFile(FILE* file, const struct ActorList* actors)
     if (actors->Count > 0)
     {
         printf("Saving %d actors...\n", actors->Count);
-        
+
         fwrite(&actors->Count, sizeof(int), 1, file);
 
         struct ActorListNode* node = actors->First;
@@ -27,27 +27,27 @@ void SaveActorsToFile(FILE* file, const struct ActorList* actors)
         {
             const struct Actor* actor = node->Actor;
 
-            int type = (int)actor->Type;
+            int type = (int)actor->type;
 
-            fwrite(&actor->TilesetId, sizeof(int), 1, file);
-            fwrite(&actor->Tile->X, sizeof(int), 1, file);
-            fwrite(&actor->Tile->Y, sizeof(int), 1, file);
-            fwrite(&actor->Collision, sizeof(int), 1, file);
+            fwrite(&actor->tileset_id, sizeof(int), 1, file);
+            fwrite(&actor->tile->X, sizeof(int), 1, file);
+            fwrite(&actor->tile->Y, sizeof(int), 1, file);
+            fwrite(&actor->collision, sizeof(int), 1, file);
             fwrite(&type, sizeof(int), 1, file);
-            fwrite(&actor->Cash, sizeof(int), 1, file);
+            fwrite(&actor->cash, sizeof(int), 1, file);
 
-            size_t nameLen = strlen(actor->Name);
+            size_t nameLen = strlen(actor->name);
             assert(nameLen <= MAX_ACTOR_NAME_STRING_LENGTH);
 
             fwrite(&nameLen, sizeof(int), 1, file);
-            fwrite(actor->Name, sizeof(char), nameLen, file);
+            fwrite(actor->name, sizeof(char), nameLen, file);
 
             size_t itemsWritten = 0;
-            size_t itemCount = GetInventoryItemCount(actor->Inventory);
+            size_t itemCount = GetInventoryItemCount(actor->inventory);
             fwrite(&itemCount, sizeof(int), 1, file);
             for (size_t n = 0; n < MaxInventoryItems; ++n)
             {
-                struct Item* item = actor->Inventory->Items[n];
+                struct Item* item = actor->inventory->Items[n];
 
                 if (item != NULL)
                 {
@@ -67,14 +67,14 @@ void SaveActorsToFile(FILE* file, const struct ActorList* actors)
 
             printf(
                 "[Actor] NAME: %s GID: %d POS: %d, %d COL: %d TYPE: %d CASH: %d ITEMS: %zu\n",
-                actor->Name,
-                actor->TilesetId,
-                actor->Tile->X,
-                actor->Tile->Y,
-                actor->Collision,
-                actor->Type,
-                actor->Cash,
-                GetInventoryItemCount(actor->Inventory));
+                actor->name,
+                actor->tileset_id,
+                actor->tile->X,
+                actor->tile->Y,
+                actor->collision,
+                actor->type,
+                actor->cash,
+                GetInventoryItemCount(actor->inventory));
         }
     }
 }

@@ -124,8 +124,8 @@ static void ProcessSelectInventoryItemSlotStateInput(struct Game* game)
             // struct Actor* actor = game->World->Player.Actor;
             //struct Item* item = InventoryWidget->Items[InventoryWidget->SelectedItemIndex];
             // EquipItem(actor, item);
-            // RemoveInventoryItem(actor->Inventory, item);
-            // UpdateInventoryWidget(InventoryWidget, actor->Inventory);
+            // RemoveInventoryItem(actor->inventory, item);
+            // UpdateInventoryWidget(InventoryWidget, actor->inventory);
 
             // InventoryWidget->SelectedItemIndex = 0;
             // InventoryGuiState = GUI_STATE_SELECT_GEAR_SLOT;
@@ -297,7 +297,7 @@ void InventoryGameStateUpdate(struct Game* game)
     struct Actor* actor = game->World->Player.Actor;
 
     InventoryWidget->ItemType = SelectedItemType;
-    UpdateInventoryWidget(InventoryWidget, actor->Inventory);
+    UpdateInventoryWidget(InventoryWidget, actor->inventory);
 
     struct Panel* selectedPanel = GetSelectedItemTypePanel();
     for (int p = 0; p < ITEM_TYPE_COUNT; ++p)

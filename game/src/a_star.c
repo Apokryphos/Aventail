@@ -34,8 +34,8 @@ static void ResetAStar(struct AStar* aStar)
 
 //  ---------------------------------------------------------------------------
 static void UpdateAStar(
-    struct AStar* aStar, 
-    struct Map* map, 
+    struct AStar* aStar,
+    struct Map* map,
     struct ActorList* actorList)
 {
     assert(aStar->Map == map);
@@ -46,7 +46,7 @@ static void UpdateAStar(
     struct ActorListNode* actorNode = actorList->First;
     while (actorNode != NULL)
     {
-        struct Tile* tile = actorNode->Actor->Tile;
+        struct Tile* tile = actorNode->Actor->tile;
         if (tile != NULL)
         {
             size_t index = tile->Y * aStar->Map->Width + tile->X;
@@ -90,7 +90,7 @@ void DestroyAStar(struct AStar** aStar)
 static int InClosedList(struct AStar* aStar, size_t nodeIndex)
 {
     assert(nodeIndex < aStar->NodeCount);
-    
+
     for (size_t n = 0; n < aStar->ClosedCount; ++n)
     {
         if (aStar->Closed[n] == nodeIndex)
@@ -106,7 +106,7 @@ static int InClosedList(struct AStar* aStar, size_t nodeIndex)
 static int InOpenList(struct AStar* aStar, size_t nodeIndex)
 {
     assert(nodeIndex < aStar->NodeCount);
-    
+
     for (size_t n = 0; n < aStar->OpenCount; ++n)
     {
         if (aStar->Open[n] == nodeIndex)
@@ -255,7 +255,7 @@ struct AStarPath* BuildAStarPath(
                 size_t neighborIndex = GetTileIndex(aStar->Map, neighborTile);
                 struct AStarNode* neighborNode = &aStar->Nodes[neighborIndex];
 
-                if (neighborNode->Walkable && 
+                if (neighborNode->Walkable &&
                     InClosedList(aStar, neighborIndex) == 0)
                 {
                     if (InOpenList(aStar, neighborIndex))

@@ -22,16 +22,16 @@ static void LootActor(struct Actor* source, struct Actor* target, struct World* 
 //  ---------------------------------------------------------------------------
 static void Attack(struct Actor* source, struct Actor* target, struct World* world)
 {
-    assert(source->ActionPoints > 0);
+    assert(source->action_points > 0);
 
-    if (source->Health > 0 && target->Health > 0)
+    if (source->health > 0 && target->health > 0)
     {
         PlaySfx(SFX_ATTACK_01);
 
-        --source->ActionPoints;
+        --source->action_points;
 
-        struct Stats sourceStats = AddStats(source->Stats, source->Gear.Stats);
-        struct Stats targetStats = AddStats(target->Stats, target->Gear.Stats);
+        struct Stats sourceStats = AddStats(source->stats, source->gear.Stats);
+        struct Stats targetStats = AddStats(target->stats, target->gear.Stats);
 
         int damage = 1;
         if (sourceStats.Attack > targetStats.Defend)
@@ -39,14 +39,14 @@ static void Attack(struct Actor* source, struct Actor* target, struct World* wor
             damage = (sourceStats.Attack - targetStats.Defend) + 1;
         }
 
-        target->Health -= damage;
+        target->health -= damage;
 
-        if (target->Health <= 0)
+        if (target->health <= 0)
         {
-            target->Collision = 0;
-            target->Health = 0;
-            target->MoveDirection = DIRECTION_NONE;
-            target->TilesetId = BonesTilesetId;
+            target->collision = 0;
+            target->health = 0;
+            target->move_direction = DIRECTION_NONE;
+            target->tileset_id = BonesTilesetId;
 
             LootActor(source, target, world);
         }
@@ -56,11 +56,11 @@ static void Attack(struct Actor* source, struct Actor* target, struct World* wor
 //  ---------------------------------------------------------------------------
 static int CanAct(const struct Actor* actor)
 {
-    return 
-        (actor->Type == ACTOR_TYPE_PLAYER || 
-        actor->Type == ACTOR_TYPE_VILLAIN) &&
-        actor->Health > 0 &&
-        actor->ActionPoints > 0;
+    return
+        (actor->type == ACTOR_TYPE_PLAYER ||
+        actor->type == ACTOR_TYPE_VILLAIN) &&
+        actor->health > 0 &&
+        actor->action_points > 0;
 }
 
 //  ---------------------------------------------------------------------------
@@ -73,11 +73,11 @@ static struct Actor* CreateLootContainer(
     assert(world->Map != NULL);
     assert(inventory != NULL);
 
-    struct Actor* actor = CreateActor(world->Map, "Loot", x, y, 91);
-    actor->Type = ACTOR_TYPE_CONTAINER;
+    struct Actor* actor = create_actor(world->Map, "Loot", x, y, 91);
+    actor->type = ACTOR_TYPE_CONTAINER;
     AddActorToFront(world->Actors, actor);
 
-    GiveInventoryItems(inventory, actor->Inventory);
+    GiveInventoryItems(inventory, actor->inventory);
 
     return actor;
 }
@@ -87,8 +87,8 @@ struct Actor* CreatePlayerActor(struct World* world)
 {
     assert(world->Player.Actor == NULL);
 
-    struct Actor* actor = CreateActor(NULL, "Player", -1, -1, 190);
-    actor->Type = ACTOR_TYPE_PLAYER;
+    struct Actor* actor = create_actor(NULL, "Player", -1, -1, 190);
+    actor->type = ACTOR_TYPE_PLAYER;
     LoadPlayerDefinition(actor);
     AddActorToFront(world->Actors, actor);
     world->Player.Actor = actor;
@@ -104,34 +104,34 @@ struct Actor* CreatePlayerActor(struct World* world)
 
     struct Item* armor2 = CreateItem("Chainmail");
     LoadItemDefinition(armor2);
-    AddInventoryItem(actor->Inventory, armor2);
+    AddInventoryItem(actor->inventory, armor2);
 
     // struct Item* shield1 = CreateItem("Buckler");
     // LoadItemDefinition(shield1);
-    // AddInventoryItem(actor->Inventory, shield1);
+    // AddInventoryItem(actor->inventory, shield1);
 
-    // AddInventoryItem(actor->Inventory, CreateWeapon("Dagger"));
-    // AddInventoryItem(actor->Inventory, CreateWeapon("Dirk"));
-    // AddInventoryItem(actor->Inventory, CreateWeapon("Knife"));
-    // AddInventoryItem(actor->Inventory, CreateWeapon("Shiv"));
-    // AddInventoryItem(actor->Inventory, CreateWeapon("Katana"));
-    // AddInventoryItem(actor->Inventory, CreateWeapon("Nodachi"));
-    // AddInventoryItem(actor->Inventory, CreateWeapon("Short Sword"));
-    // AddInventoryItem(actor->Inventory, CreateWeapon("Great Sword"));
-    // AddInventoryItem(actor->Inventory, CreateWeapon("Claymore"));
-    // AddInventoryItem(actor->Inventory, CreateWeapon("Longsword"));
-    // AddInventoryItem(actor->Inventory, CreateWeapon("Broadsword"));
-    // AddInventoryItem(actor->Inventory, CreateWeapon("Sabre"));
-    // AddInventoryItem(actor->Inventory, CreateWeapon("Rapier"));
-    // AddInventoryItem(actor->Inventory, CreateWeapon("Cutlass"));
+    // AddInventoryItem(actor->inventory, CreateWeapon("Dagger"));
+    // AddInventoryItem(actor->inventory, CreateWeapon("Dirk"));
+    // AddInventoryItem(actor->inventory, CreateWeapon("Knife"));
+    // AddInventoryItem(actor->inventory, CreateWeapon("Shiv"));
+    // AddInventoryItem(actor->inventory, CreateWeapon("Katana"));
+    // AddInventoryItem(actor->inventory, CreateWeapon("Nodachi"));
+    // AddInventoryItem(actor->inventory, CreateWeapon("Short Sword"));
+    // AddInventoryItem(actor->inventory, CreateWeapon("Great Sword"));
+    // AddInventoryItem(actor->inventory, CreateWeapon("Claymore"));
+    // AddInventoryItem(actor->inventory, CreateWeapon("Longsword"));
+    // AddInventoryItem(actor->inventory, CreateWeapon("Broadsword"));
+    // AddInventoryItem(actor->inventory, CreateWeapon("Sabre"));
+    // AddInventoryItem(actor->inventory, CreateWeapon("Rapier"));
+    // AddInventoryItem(actor->inventory, CreateWeapon("Cutlass"));
 
     // struct Item* weapon2 = CreateItem("Iron Short Sword");
     // LoadItemDefinition(weapon2);
-    // AddInventoryItem(actor->Inventory, weapon2);
+    // AddInventoryItem(actor->inventory, weapon2);
 
     struct Item* accessory1 = CreateItem("Healing Ring");
     LoadItemDefinition(accessory1);
-    AddInventoryItem(actor->Inventory, accessory1);
+    AddInventoryItem(actor->inventory, accessory1);
 
     return actor;
 }
@@ -168,39 +168,42 @@ void DestroyWorld(struct World** world)
 //  ---------------------------------------------------------------------------
 static void LootActor(struct Actor* source, struct Actor* target, struct World* world)
 {
-    if (target->Cash > 0)
+    if (target->cash > 0)
     {
-        source->Cash += target->Cash;
-        target->Cash = 0;
+        source->cash += target->cash;
+        target->cash = 0;
     }
 
-    if (GetInventoryItemCount(target->Inventory) > 0)
+    if (GetInventoryItemCount(target->inventory) > 0)
     {
-        GiveInventoryItems(target->Inventory, source->Inventory);
+        GiveInventoryItems(target->inventory, source->inventory);
 
-        if (GetInventoryItemCount(target->Inventory) > 0)
+        if (GetInventoryItemCount(target->inventory) > 0)
         {
-            CreateLootContainer(world, target->Tile->X, target->Tile->Y, target->Inventory);
+            CreateLootContainer(world, target->tile->X, target->tile->Y, target->inventory);
         }
-    }   
+    }
 }
 
 //  ---------------------------------------------------------------------------
 static void MoveActor(struct Actor* actor, struct Game* game, struct World* world)
 {
-    assert(actor->ActionPoints > 0);
+    assert(actor->action_points > 0);
 
-    if (actor->MoveDirection == DIRECTION_NONE)
+    if (actor->move_direction == DIRECTION_NONE)
     {
         return;
     }
 
     struct Actor* target = NULL;
 
-    struct Tile* destTile = GetNeighbor(actor->Map, actor->Tile, actor->MoveDirection);
+    struct Tile* destTile = GetNeighbor(
+        actor->map,
+        actor->tile,
+        actor->move_direction);
 
     //  Reset move direction
-    actor->MoveDirection = DIRECTION_NONE;
+    actor->move_direction = DIRECTION_NONE;
 
     //  Check if destination tile is valid
     if (destTile != NULL && destTile->Collision == 0)
@@ -214,14 +217,14 @@ static void MoveActor(struct Actor* actor, struct Game* game, struct World* worl
 
             //  Check if another actor occupies destination tile
             //  and is collidable
-            if (otherActor->Tile == destTile &&
+            if (otherActor->tile == destTile &&
                 otherActor != actor)
             {
-                if (otherActor->Collision)
+                if (otherActor->collision)
                 {
                     //  Attack first foe on tile
                     if (target == NULL &&
-                        ActorIsFoe(actor, otherActor))
+                        is_actor_foe(actor, otherActor))
                     {
                         target = otherActor;
                     }
@@ -229,9 +232,9 @@ static void MoveActor(struct Actor* actor, struct Game* game, struct World* worl
                     canMove = 0;
                 }
 
-                if (otherActor->OnTouch != NULL)
+                if (otherActor->on_touch != NULL)
                 {
-                    (*otherActor->OnTouch)(actor, otherActor);
+                    (*otherActor->on_touch)(actor, otherActor);
                 }
             }
             otherActorNode = otherActorNode->Next;
@@ -245,11 +248,11 @@ static void MoveActor(struct Actor* actor, struct Game* game, struct World* worl
         //  Move actor to destination tile
         else if (canMove)
         {
-            --actor->ActionPoints;
+            --actor->action_points;
 
             if (destTile->Link == NULL)
             {
-                actor->Tile = destTile;
+                actor->tile = destTile;
             }
             else
             {
@@ -293,7 +296,7 @@ static void ResetActionPoints(struct World* world)
     {
         struct Actor* actor = actorNode->Actor;
 
-        actor->ActionPoints = actor->MaxActionPoints;
+        actor->action_points = actor->max_action_points;
 
         actorNode = actorNode->Next;
     }
@@ -308,7 +311,7 @@ void SimulateWorld(struct Game* game, struct World* world)
     if (lastMap != world->Map && world != NULL)
     {
         lastMap = world->Map;
-        
+
         if (aStar != NULL)
         {
             DestroyAStar(&aStar);
@@ -326,29 +329,29 @@ void SimulateWorld(struct Game* game, struct World* world)
 
     if (ActiveActor != NULL)
     {
-        if (ActiveActor->Type == ACTOR_TYPE_VILLAIN)
+        if (ActiveActor->type == ACTOR_TYPE_VILLAIN)
         {
             struct AStarPath* path = BuildAStarPath(
                 aStar,
-                ActiveActor->Tile,
-                world->Player.Actor->Tile,
+                ActiveActor->tile,
+                world->Player.Actor->tile,
                 world->Map,
                 world->Actors);
 
             if (path == NULL)
             {
-                ActiveActor->MoveDirection = GetRandomDirection();
+                ActiveActor->move_direction = GetRandomDirection();
             }
             else
             {
                 struct Point* nextPoint =
-                    GetNextPathPoint(path, ActiveActor->Tile);
+                    GetNextPathPoint(path, ActiveActor->tile);
 
                 if (nextPoint != NULL)
                 {
-                    ActiveActor->MoveDirection = GetDirectionByDelta(
-                        ActiveActor->Tile->X,
-                        ActiveActor->Tile->Y,
+                    ActiveActor->move_direction = GetDirectionByDelta(
+                        ActiveActor->tile->X,
+                        ActiveActor->tile->Y,
                         nextPoint->X,
                         nextPoint->Y);
                 }
@@ -357,17 +360,17 @@ void SimulateWorld(struct Game* game, struct World* world)
             }
         }
 
-        if (ActiveActor->ActionPoints > 0)
+        if (ActiveActor->action_points > 0)
         {
             MoveActor(ActiveActor, game, world);
 
             if (ActiveActor != NULL &&
-                ActiveActor->Type == ACTOR_TYPE_VILLAIN &&
-                ActiveActor->ActionPoints > 0)
+                ActiveActor->type == ACTOR_TYPE_VILLAIN &&
+                ActiveActor->action_points > 0)
             {
                 //  Villains always expend action points to prevent
                 //  their turn from never ending
-                --ActiveActor->ActionPoints;
+                --ActiveActor->action_points;
             }
         }
         else
@@ -376,7 +379,7 @@ void SimulateWorld(struct Game* game, struct World* world)
         }
     }
 
-    if (ActorIsDead(world->Player.Actor))
+    if (is_actor_dead(world->Player.Actor))
     {
         ActiveActor = NULL;
         BeginGameStateTransition(game, GAME_STATE_GAME_OVER);

@@ -118,7 +118,7 @@ void LoadActorItems(struct Actor* actor, xmlNode* propertiesNode)
     for (int n = 0; n < itemCount; ++n)
     {
         struct Item* item = CreateItem(itemNames[n]);
-        AddInventoryItem(actor->Inventory, item);
+        AddInventoryItem(actor->inventory, item);
         free(itemNames[n]);
     }
     free(itemNames);
@@ -230,29 +230,29 @@ void LoadTmx(const xmlDoc* doc, struct Map** map, struct ActorList** actors)
                     ReadAttribute(objectNode, "type", &type);
                     if (strcmp(type, "Actor") == 0)
                     {
-                        struct Actor* actor = CreateActor(*map, name, tileX, tileY, gid);
+                        struct Actor* actor = create_actor(*map, name, tileX, tileY, gid);
                         AddActorToBack(*actors, actor);
                     }
                     else if (strcmp(type, "Villain") == 0)
                     {
-                        struct Actor* actor = CreateActor(*map, name, tileX, tileY, gid);
-                        actor->Type = ACTOR_TYPE_VILLAIN;
-                        actor->Cash = cash;
+                        struct Actor* actor = create_actor(*map, name, tileX, tileY, gid);
+                        actor->type = ACTOR_TYPE_VILLAIN;
+                        actor->cash = cash;
                         LoadActorItems(actor, propertiesNode);
                         AddActorToBack(*actors, actor);
                     }
                     else if (strcmp(type, "Container") == 0)
                     {
-                        struct Actor* actor = CreateActor(*map, name, tileX, tileY, gid);
-                        actor->Type = ACTOR_TYPE_CONTAINER;
-                        actor->Cash = cash;
+                        struct Actor* actor = create_actor(*map, name, tileX, tileY, gid);
+                        actor->type = ACTOR_TYPE_CONTAINER;
+                        actor->cash = cash;
                         LoadActorItems(actor, propertiesNode);
                         AddActorToBack(*actors, actor);
                     }
                     else if (strcmp(type, "Door") == 0)
                     {
-                        struct Actor* actor = CreateActor(*map, name, tileX, tileY, gid);
-                        actor->Type = ACTOR_TYPE_DOOR;
+                        struct Actor* actor = create_actor(*map, name, tileX, tileY, gid);
+                        actor->type = ACTOR_TYPE_DOOR;
                         AddActorToBack(*actors, actor);
                     }
                     else if (strcmp(type, "MapLink") == 0)

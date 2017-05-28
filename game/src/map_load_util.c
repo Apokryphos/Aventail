@@ -23,7 +23,7 @@ void LoadActorsFromFile(FILE* file, struct Map* map, struct ActorList* actors)
     int actorCount = 0;
     fread(&actorCount, sizeof(int), 1, file);
     printf("Loading %d actors...\n", actorCount);
-    
+
     for (int a = 0; a < actorCount; ++a)
     {
         int tilesetId = 0;
@@ -44,12 +44,12 @@ void LoadActorsFromFile(FILE* file, struct Map* map, struct ActorList* actors)
 
         fread(&nameLen, sizeof(int), 1, file);
         assert(nameLen <= MAX_ACTOR_NAME_STRING_LENGTH);
-        
+
         name = malloc(sizeof(char) * nameLen + 1);
         fread(name, sizeof(char), nameLen, file);
         name[nameLen] = '\0';
 
-        struct Actor* actor = CreateActor(map, name, tileX, tileY, tilesetId);
+        struct Actor* actor = create_actor(map, name, tileX, tileY, tilesetId);
 
         size_t itemCount = 0;
         fread(&itemCount, sizeof(int), 1, file);
@@ -65,38 +65,38 @@ void LoadActorsFromFile(FILE* file, struct Map* map, struct ActorList* actors)
 
             LoadItemDefinition(item);
 
-            AddInventoryItem(actor->Inventory, item);
+            AddInventoryItem(actor->inventory, item);
 
             free(itemName);
         }
 
-        actor->Collision = collision;
-        actor->Type = (enum ActorType)type;
+        actor->collision = collision;
+        actor->type = (enum ActorType)type;
 
-        if (actor->Type == ACTOR_TYPE_DOOR)
+        if (actor->type == ACTOR_TYPE_DOOR)
         {
-            actor->OnTouch = &ActivateDoor;
+            actor->on_touch = &ActivateDoor;
         }
 
-        if (actor->Type == ACTOR_TYPE_CONTAINER)
+        if (actor->type == ACTOR_TYPE_CONTAINER)
         {
-            actor->OnTouch = &ActivateContainer;
+            actor->on_touch = &ActivateContainer;
         }
 
-        actor->Cash = cash;
+        actor->cash = cash;
 
         LoadActorDefinition(actor);
 
         printf(
             "[Actor] NAME: %s GID: %d POS: %d, %d COL: %d TYPE: %d CASH: %d ITEMS: %zu\n",
-            actor->Name,
-            actor->TilesetId,
-            actor->Tile->X,
-            actor->Tile->Y,
-            actor->Collision,
-            actor->Type,
-            actor->Cash,
-            GetInventoryItemCount(actor->Inventory));
+            actor->name,
+            actor->tileset_id,
+            actor->tile->X,
+            actor->tile->Y,
+            actor->collision,
+            actor->type,
+            actor->cash,
+            GetInventoryItemCount(actor->inventory));
 
         AddActorToBack(actors, actor);
 
@@ -118,7 +118,7 @@ struct Map* LoadMapFromFile(FILE* file)
 
     int tileCount = GetTileCount(map);
     printf("Loading %d tiles...\n", tileCount);
-    
+
     for (int t = 0; t < tileCount; ++t)
     {
         struct Tile* tile = &map->Tiles[t];
@@ -140,7 +140,7 @@ struct Map* LoadMapFromFile(FILE* file)
 
         fread(&destMapLen, sizeof(int), 1, file);
         assert(destMapLen <= MAX_DEST_MAP_STRING_LENGTH);
-        
+
         destMap = malloc(sizeof(char) * destMapLen + 1);
         fread(destMap, sizeof(char), destMapLen, file);
         destMap[destMapLen] = '\0';

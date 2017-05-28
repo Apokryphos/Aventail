@@ -100,7 +100,7 @@ void UpdateStatusWidget(struct StatusWidget* widget, struct Actor* actor)
 
     if (actor != NULL)
     {
-        actorName = actor->Name;
+        actorName = actor->name;
     }
 
     SetGuiString(&widget->ActorName, actorName);
@@ -109,19 +109,19 @@ void UpdateStatusWidget(struct StatusWidget* widget, struct Actor* actor)
     SetGuiGaugeString(
         widget->HealthGaugeString,
         "Health",
-        actor->Health,
-        actor->MaxHealth);
+        actor->health,
+        actor->max_health);
     widget->HealthGaugePanel->Text = widget->HealthGaugeString->String;
 
-    SetGuiIntString(widget->CashIntString, "Cash", actor->Cash);
+    SetGuiIntString(widget->CashIntString, "Cash", actor->cash);
     widget->CashPanel->Text = widget->CashIntString->String;
 
-    SetGuiIntString(widget->AttackIntString, "Attack", actor->Stats.Attack);
+    SetGuiIntString(widget->AttackIntString, "Attack", actor->stats.Attack);
     widget->AttackPanel->Text = widget->AttackIntString->String;
 
-    SetGuiIntString(widget->DefendIntString, "Defend", actor->Stats.Defend);
+    SetGuiIntString(widget->DefendIntString, "Defend", actor->stats.Defend);
     widget->DefendPanel->Text = widget->DefendIntString->String;
 
-    SetGuiIntString(widget->VitalityIntString, "Vitality", actor->Stats.Vitality);
+    SetGuiIntString(widget->VitalityIntString, "Vitality", actor->stats.Vitality);
     widget->VitalityPanel->Text = widget->VitalityIntString->String;
 }

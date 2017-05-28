@@ -8,75 +8,75 @@
 #include <string.h>
 
 //  ---------------------------------------------------------------------------
-struct Actor* CreateActor(
+struct Actor* create_actor(
     struct Map* map,
     const char* name,
-    const int tileX, 
-    const int tileY,
-    const int tilesetId)
+    const int tile_x,
+    const int tile_y,
+    const int tileset_id)
 {
     struct Actor* actor = malloc(sizeof(struct Actor));
 
-    actor->Name = strdup(name);
-    actor->Inventory = CreateInventory();
-    
-    actor->Map = map;
+    actor->name = strdup(name);
+    actor->inventory = CreateInventory();
 
-    actor->Tile = NULL;
+    actor->map = map;
+
+    actor->tile = NULL;
     if (map != NULL)
     {
-        assert(InBounds(map, tileX, tileY));
-        actor->Tile = GetTile(map, tileX, tileY);
+        assert(InBounds(map, tile_x, tile_y));
+        actor->tile = GetTile(map, tile_x, tile_y);
     }
 
-    actor->MaxActionPoints = 1;
-    actor->ActionPoints = actor->MaxActionPoints;
-    actor->Collision = 1;
-    actor->OnTouch = NULL;
-    actor->MoveDirection = DIRECTION_NONE;
-    actor->TilesetId = tilesetId;
-    actor->Type = ACTOR_TYPE_NONE;
-    actor->MaxHealth = 100;
-    actor->Health = actor->MaxHealth;
-    actor->Cash = 0;
-    actor->Stats.Attack = 0;
-    actor->Stats.Defend = 0;
-    actor->Stats.Vitality = 0;
+    actor->max_action_points = 1;
+    actor->action_points = actor->max_action_points;
+    actor->collision = 1;
+    actor->on_touch = NULL;
+    actor->move_direction = DIRECTION_NONE;
+    actor->tileset_id = tileset_id;
+    actor->type = ACTOR_TYPE_NONE;
+    actor->max_health = 100;
+    actor->health = actor->max_health;
+    actor->cash = 0;
+    actor->stats.Attack = 0;
+    actor->stats.Defend = 0;
+    actor->stats.Vitality = 0;
 
-    actor->Gear = (struct Gear) { 0 };
+    actor->gear = (struct Gear) { 0 };
 
     return actor;
 }
 
 //  ---------------------------------------------------------------------------
-void DestroyActor(struct Actor** actor)
+void destroy_actor(struct Actor** actor)
 {
     assert(actor != NULL);
 
     if (*actor != NULL)
     {
         RemoveAllGearItems(*actor);
-        DestroyInventory(&(*actor)->Inventory);
-        free((*actor)->Name);
+        DestroyInventory(&(*actor)->inventory);
+        free((*actor)->name);
         free(*actor);
         *actor = NULL;
     }
 }
 
 //  ---------------------------------------------------------------------------
-int ActorIsDead(const struct Actor* actor)
+int is_actor_dead(const struct Actor* actor)
 {
     assert(actor != NULL);
-    return actor->Health <= 0;
+    return actor->health <= 0;
 }
 
 //  ---------------------------------------------------------------------------
-int ActorIsFoe(const struct Actor* actor, const struct Actor* other)
+int is_actor_foe(const struct Actor* actor, const struct Actor* other)
 {
     assert(actor != NULL);
     assert(other != NULL);
-    
+
     return
-        (actor->Type == ACTOR_TYPE_PLAYER && other->Type == ACTOR_TYPE_VILLAIN) ||
-        (actor->Type == ACTOR_TYPE_VILLAIN && other->Type == ACTOR_TYPE_PLAYER);
+        (actor->type == ACTOR_TYPE_PLAYER && other->type == ACTOR_TYPE_VILLAIN) ||
+        (actor->type == ACTOR_TYPE_VILLAIN && other->type == ACTOR_TYPE_PLAYER);
 }

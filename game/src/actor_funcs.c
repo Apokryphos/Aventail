@@ -8,16 +8,16 @@ void ActivateContainer(struct Actor* source, struct Actor* target)
 {
     int playSfx = 0;
 
-    if (target->Cash > 0)
+    if (target->cash > 0)
     {
         playSfx = 1;
-        source->Cash += target->Cash;
-        target->Cash = 0;
+        source->cash += target->cash;
+        target->cash = 0;
     }
 
-    if (GetInventoryItemCount(target->Inventory) > 0)
+    if (GetInventoryItemCount(target->inventory) > 0)
     {
-        if (GiveInventoryItems(target->Inventory, source->Inventory))
+        if (GiveInventoryItems(target->inventory, source->inventory))
         {
             playSfx = 1;
         }
@@ -30,26 +30,26 @@ void ActivateContainer(struct Actor* source, struct Actor* target)
     }
 
     //  Check if container is empty and change sprite if it is
-    if (target->Cash == 0 && 
-        GetInventoryItemCount(target->Inventory) == 0)
+    if (target->cash == 0 &&
+        GetInventoryItemCount(target->inventory) == 0)
     {
-        target->TilesetId = 85;
+        target->tileset_id = 85;
     }
 }
 
 //  ---------------------------------------------------------------------------
 void ActivateDoor(struct Actor* source, struct Actor* target)
 {
-    if (target->Collision)
+    if (target->collision)
     {
-        target->Collision = 0;
+        target->collision = 0;
 
         PlaySfx(SFX_DOOR);
 
-        switch (target->TilesetId)
+        switch (target->tileset_id)
         {
             case 41:
-                target->TilesetId = 31;
+                target->tileset_id = 31;
                 break;
         }
     }

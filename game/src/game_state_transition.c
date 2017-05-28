@@ -26,7 +26,7 @@ static float TransitionTicks = 0;
 
 //  ---------------------------------------------------------------------------
 void LoadMap(
-    struct Game* game, 
+    struct Game* game,
     const char* assetFilename,
     struct Map** map,
     struct ActorList* actors)
@@ -84,8 +84,8 @@ void LoadMapLink(struct Game* game)
     assert(destTile != NULL);
     assert(InBounds(world->Map, destX, destY));
 
-    world->Player.Actor->Map = world->Map;
-    world->Player.Actor->Tile = destTile;
+    world->Player.Actor->map = world->Map;
+    world->Player.Actor->tile = destTile;
 
     PlaySfx(SFX_STEPS_ENTER);
 }
@@ -106,8 +106,8 @@ void BeginGameStateTransition(struct Game* game, enum GameState state)
 
 //  ---------------------------------------------------------------------------
 void BeginMapLinkTransition(
-    struct Game* game, 
-    struct MapLink* link, 
+    struct Game* game,
+    struct MapLink* link,
     enum Direction direction)
 {
     BeginGameState = game->State;
@@ -236,9 +236,9 @@ void TransitionGameStateUpdate(struct Game* game)
                     free(TransitionMapName);
                     TransitionMapName = NULL;
 
-                    game->World->Player.Actor->Map = game->World->Map;
-                    game->World->Player.Actor->Tile = GetTile(game->World->Map, 12, 10);
-                    
+                    game->World->Player.Actor->map = game->World->Map;
+                    game->World->Player.Actor->tile = GetTile(game->World->Map, 12, 10);
+
                 }
 
                 EndGameState = GAME_STATE_LEVEL;

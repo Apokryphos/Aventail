@@ -16,7 +16,7 @@ void AddActorToBack(struct ActorList* list, struct Actor* actor)
     node->Next = NULL;
 
     if (list->First == NULL)
-    {  
+    {
         assert(list->Count == 0);
 
         list->First = node;
@@ -46,7 +46,7 @@ void AddActorToFront(struct ActorList* list, struct Actor* actor)
 
     if (list->First == NULL)
     {
-        AddActorToBack(list, actor);        
+        AddActorToBack(list, actor);
     }
     else
     {
@@ -100,7 +100,7 @@ void DestroyActorList(struct ActorList** list)
     while (node != NULL)
     {
         struct ActorListNode* next = node->Next;
-        DestroyActor(&node->Actor);
+        destroy_actor(&node->Actor);
         free(node);
         node = next;
     }

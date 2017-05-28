@@ -95,12 +95,12 @@ void DrawMap(
     {
         struct Actor* actor = actorNode->Actor;
 
-        if (actor->Tile != NULL)
+        if (actor->tile != NULL)
         {
-            GetTilesetRect(&MapTileset, actor->TilesetId, &sourceRect);
+            GetTilesetRect(&MapTileset, actor->tileset_id, &sourceRect);
 
-            destRect.x = actor->Tile->X * destRect.w;
-            destRect.y = actor->Tile->Y * destRect.h;
+            destRect.x = actor->tile->X * destRect.w;
+            destRect.y = actor->tile->Y * destRect.h;
             SDL_RenderCopy(renderer, MapTileset.Texture, &sourceRect, &destRect);
         }
 

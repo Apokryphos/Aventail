@@ -5,27 +5,27 @@
 void LoadActorDefinition(struct Actor* actor)
 {
     //  Simple definitions until loading from data files is supported
-    if (strcasecmp(actor->Name, "slime") == 0)
+    if (strcasecmp(actor->name, "slime") == 0)
     {
-        actor->MaxHealth = 6;
-        actor->Health = actor->MaxHealth;
-        actor->Stats.Attack = 3;
-        actor->Stats.Defend = 1;
+        actor->max_health = 6;
+        actor->health = actor->max_health;
+        actor->stats.Attack = 3;
+        actor->stats.Defend = 1;
     }
-    else if (strcasecmp(actor->Name, "spider") == 0)
+    else if (strcasecmp(actor->name, "spider") == 0)
     {
-        actor->MaxHealth = 8;
-        actor->Health = actor->MaxHealth;
-        actor->Stats.Attack = 3;
-        actor->Stats.Defend = 4;
+        actor->max_health = 8;
+        actor->health = actor->max_health;
+        actor->stats.Attack = 3;
+        actor->stats.Defend = 4;
     }
 }
 
 //  ---------------------------------------------------------------------------
 void LoadPlayerDefinition(struct Actor* actor)
 {
-    actor->MaxHealth = 20;
-    actor->Health = actor->MaxHealth;
-    actor->Stats.Attack = 2;
-    actor->Stats.Defend = 2;
+    actor->max_health = 20;
+    actor->health = actor->max_health;
+    actor->stats.Attack = 2;
+    actor->stats.Defend = 2;
 }
