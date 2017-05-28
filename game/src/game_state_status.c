@@ -26,17 +26,17 @@ static void ExitStatusGameState(
 //  ---------------------------------------------------------------------------
 static void ProcessStatusGameStateInput(struct Game* game)
 {
-    struct InputDevice* inputDevice = game->input_device;
+    struct InputDevice* input_device = game->input_device;
 
-    if (inputDevice->Cancel || inputDevice->Status)
+    if (input_device->cancel || input_device->status)
     {
         ExitStatusGameState(game, GAME_STATE_LEVEL);
     }
-    else if (inputDevice->Inventory)
+    else if (input_device->inventory)
     {
         ExitStatusGameState(game, GAME_STATE_INVENTORY);
     }
-    else if (inputDevice->Gear)
+    else if (input_device->gear)
     {
         ExitStatusGameState(game, GAME_STATE_GEAR);
     }

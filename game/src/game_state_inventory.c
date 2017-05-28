@@ -81,9 +81,9 @@ static void ProcessSelectItemTypeStateInput(struct Game* game)
 {
     assert(inventory_gui_state == GUI_STATE_SELECT_ITEM_TYPE);
 
-    struct InputDevice* inputDevice = game->input_device;
+    struct InputDevice* input_device = game->input_device;
 
-    if (inputDevice->Accept)
+    if (input_device->accept)
     {
         if (inventory_widget->item_count > 0)
         {
@@ -91,15 +91,15 @@ static void ProcessSelectItemTypeStateInput(struct Game* game)
             inventory_widget->selected_item_index = 0;
         }
     }
-    else if (inputDevice->Cancel)
+    else if (input_device->cancel)
     {
         ExitInventoryGameState(game, GAME_STATE_LEVEL);
     }
-    else if (inputDevice->MoveDirection == DIRECTION_RIGHT)
+    else if (input_device->move_direction == DIRECTION_RIGHT)
     {
         SelectNextItemType();
     }
-    else if (inputDevice->MoveDirection == DIRECTION_LEFT)
+    else if (input_device->move_direction == DIRECTION_LEFT)
     {
         SelectPreviousItemType();
     }
@@ -110,14 +110,14 @@ static void ProcessSelectInventoryItemSlotStateInput(struct Game* game)
 {
     assert(inventory_gui_state == GUI_STATE_SELECT_INVENTORY_ITEM_SLOT);
 
-    struct InputDevice* inputDevice = game->input_device;
+    struct InputDevice* input_device = game->input_device;
 
-    if (inputDevice->Cancel)
+    if (input_device->cancel)
     {
         inventory_widget->selected_item_index = 0;
         inventory_gui_state = GUI_STATE_SELECT_ITEM_TYPE;
     }
-    else if (inputDevice->Accept)
+    else if (input_device->accept)
     {
         if (inventory_widget->item_count > 0)
         {
@@ -131,11 +131,11 @@ static void ProcessSelectInventoryItemSlotStateInput(struct Game* game)
             // inventory_gui_state = GUI_STATE_SELECT_GEAR_SLOT;
         }
     }
-    else if (inputDevice->MoveDirection == DIRECTION_DOWN)
+    else if (input_device->move_direction == DIRECTION_DOWN)
     {
         select_next_inventory_widget_item_slot(inventory_widget);
     }
-    else if (inputDevice->MoveDirection == DIRECTION_UP)
+    else if (input_device->move_direction == DIRECTION_UP)
     {
         select_previous_inventory_widget_item_slot(inventory_widget);
     }
@@ -144,17 +144,17 @@ static void ProcessSelectInventoryItemSlotStateInput(struct Game* game)
 //  ---------------------------------------------------------------------------
 static void ProcessInventoryGameStateInput(struct Game* game)
 {
-    struct InputDevice* inputDevice = game->input_device;
+    struct InputDevice* input_device = game->input_device;
 
-    if (inputDevice->Inventory)
+    if (input_device->inventory)
     {
         ExitInventoryGameState(game, GAME_STATE_LEVEL);
     }
-    else if (inputDevice->Gear)
+    else if (input_device->gear)
     {
         ExitInventoryGameState(game, GAME_STATE_GEAR);
     }
-    else if (inputDevice->Status)
+    else if (input_device->status)
     {
         ExitInventoryGameState(game, GAME_STATE_STATUS);
     }

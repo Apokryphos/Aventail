@@ -20,7 +20,7 @@ void draw_active_game_state(
     switch (game_state)
     {
         case GAME_STATE_LEVEL:
-            LevelGameStateDraw(game, in_transition);
+            draw_level_game_state(game, in_transition);
             break;
         case GAME_STATE_GEAR:
             GearGameStateDraw(game, in_transition);
@@ -32,7 +32,7 @@ void draw_active_game_state(
             StatusGameStateDraw(game, in_transition);
             break;
         case GAME_STATE_GAME_OVER:
-            draw_game_over_state(game, in_transition);
+            draw_game_over_game_state(game, in_transition);
             break;
         case GAME_STATE_TRANSITION:
             assert(in_transition == 0);
@@ -52,7 +52,7 @@ void update_active_game_state(struct Game* game)
     switch (game->state)
     {
         case GAME_STATE_LEVEL:
-            LevelGameStateUpdate(game);
+            update_level_game_state(game);
             break;
         case GAME_STATE_GEAR:
             GearGameStateUpdate(game);
@@ -64,7 +64,7 @@ void update_active_game_state(struct Game* game)
             StatusGameStateUpdate(game);
             break;
         case GAME_STATE_GAME_OVER:
-            update_game_over_state(game);
+            update_game_over_game_state(game);
             break;
         case GAME_STATE_TRANSITION:
             update_transition_game_state(game);

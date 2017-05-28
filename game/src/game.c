@@ -111,7 +111,7 @@ void game_main()
         game.elapsed_seconds = (ticks - last_ticks) / 1000.0f;
 
         update_input(game.input_device);
-        game.quit = game.input_device->Quit;
+        game.quit = game.input_device->quit;
 
         update_active_game_state(&game);
 

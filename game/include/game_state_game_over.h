@@ -3,7 +3,7 @@
 
 struct Game;
 
-void draw_game_over_state(struct Game* game, int in_transition);
-void update_game_over_state(struct Game* game);
+void draw_game_over_game_state(struct Game* game, int in_transition);
+void update_game_over_game_state(struct Game* game);
 
 #endif

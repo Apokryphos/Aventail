@@ -5,17 +5,17 @@
 
 struct InputDevice
 {
-    enum Direction MoveDirection;
-    int Accept;
-    int Cancel;
-    int CursorX;
-    int CursorY;
-    int Inventory;
-    int Gear;
-    int Remove;
-    int Status;
-    int Quit;
-    int DebugKillPlayerActor;
+    enum Direction move_direction;
+    int accept;
+    int cancel;
+    int mouse_cursor_x;
+    int mouse_cursor_y;
+    int inventory;
+    int gear;
+    int remove;
+    int status;
+    int quit;
+    int debug_kill_player;
 };
 
 #endif
