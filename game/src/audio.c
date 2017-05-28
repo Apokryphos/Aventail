@@ -26,7 +26,7 @@ static void LoadSfx(Mix_Chunk** chunk, const struct Game* game, char* assetName)
     assert(*chunk == NULL);
     assert(assetName != NULL);
 
-    char* fullPath = CreateSfxPath(game->BasePath, assetName);
+    char* fullPath = create_sfx_file_path(game->BasePath, assetName);
     *chunk = Mix_LoadWAV(fullPath);
     free(fullPath);
 }
@@ -82,7 +82,7 @@ void AudioShutdown()
     Mix_CloseAudio();
     Mix_Quit();
 
-    //  Clear queue 
+    //  Clear queue
     for (size_t c = 0; c < AUDIO_QUEUE_SIZE; ++c)
     {
         ChunkQueue[c] = NULL;
@@ -170,6 +170,6 @@ void PlaySfx(const enum SfxId id)
                 ChannelQueue[c] = channel;
                 break;
             }
-        }     
+        }
     }
 }

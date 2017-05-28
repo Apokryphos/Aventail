@@ -34,7 +34,7 @@ void LoadMap(
     assert(*map == NULL);
     assert(assetFilename != NULL);
 
-    char *fullpath = CreateMapPath(game->BasePath, assetFilename);
+    char *fullpath = create_map_file_path(game->BasePath, assetFilename);
     printf("%s\n", fullpath);
     FILE *file = fopen(fullpath, "rb");
     assert(file != NULL);

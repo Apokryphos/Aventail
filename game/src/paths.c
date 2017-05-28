@@ -5,8 +5,8 @@
 
 //  ---------------------------------------------------------------------------
 static char* CreateAssetPath(
-    const char* basePath, 
-    const char* assetPath, 
+    const char* basePath,
+    const char* assetPath,
     const char* assetFilename,
     const char* extension)
 {
@@ -19,25 +19,25 @@ static char* CreateAssetPath(
     {
 		printf("Could not create asset file path.");
 		exit(1);
-    } 
+    }
     sprintf(fullPath, "%s%s%s%s", basePath, assetPath, assetFilename, extension);
     return fullPath;
 }
 
 //  ---------------------------------------------------------------------------
-char* CreateMapPath(const char* basePath, const char* assetFilename)
+char* create_map_file_path(const char* basePath, const char* assetFilename)
 {
     return CreateAssetPath(basePath, "assets/maps/", assetFilename, ".map");
 }
 
 //  ---------------------------------------------------------------------------
-char* CreateSfxPath(const char* basePath, const char* assetFilename)
+char* create_sfx_file_path(const char* basePath, const char* assetFilename)
 {
     return CreateAssetPath(basePath, "assets/sfx/", assetFilename, ".ogg");
 }
 
 //  ---------------------------------------------------------------------------
-char* CreateTexturePath(const char* basePath, const char* assetFilename)
+char* create_texture_file_path(const char* basePath, const char* assetFilename)
 {
     return CreateAssetPath(basePath, "assets/gfx/", assetFilename, ".png");
 }

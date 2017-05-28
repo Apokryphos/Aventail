@@ -165,7 +165,7 @@ void GameShutdown(struct Game* game)
 //  ---------------------------------------------------------------------------
 void LoadTexture(struct Game* game, SDL_Texture **texture, const char* assetFilename)
 {
-    char *fullpath = CreateTexturePath(game->BasePath, assetFilename);
+    char *fullpath = create_texture_file_path(game->BasePath, assetFilename);
     *texture = IMG_LoadTexture(game->Renderer, fullpath);
     free(fullpath);
 }
