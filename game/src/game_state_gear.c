@@ -200,10 +200,10 @@ static struct GearSlotWidget create_gear_slot_widget(
     {
         .index = slot_index,
         .slot_panel = slot_panel,
-        .item_slot_widget = CreateItemSlotWidget(gui_screen),
+        .item_slot_widget = create_item_slot_widget(gui_screen),
     };
 
-    SetItemSlotWidgetPosition(
+    set_item_slot_widget_position(
         gear_slot_widget.item_slot_widget,
         slot_panel->X,
         slot_panel->Y);
@@ -269,18 +269,18 @@ static void update_cursor()
         struct GearSlotWidget* selected_gear_slot = get_selected_gear_slot_gui();
 
         set_gui_cursor_position(
-            selected_gear_slot->item_slot_widget->ItemIconPanel->X + 4,
-            selected_gear_slot->item_slot_widget->ItemIconPanel->Y + 4);
+            selected_gear_slot->item_slot_widget->item_icon_panel->X + 4,
+            selected_gear_slot->item_slot_widget->item_icon_panel->Y + 4);
     }
     else if (gear_gui_state == GUI_STATE_SELECT_INVENTORY_ITEM_SLOT)
     {
         assert(inventory_widget->selected_item_index < MAX_INVENTORY_ITEMS);
 
         assert(inventory_widget->selected_item_slot_widget != NULL);
-        assert(inventory_widget->selected_item_slot_widget->ItemIconPanel != NULL);
+        assert(inventory_widget->selected_item_slot_widget->item_icon_panel != NULL);
         set_gui_cursor_position(
-            inventory_widget->selected_item_slot_widget->ItemIconPanel->X + 4,
-            inventory_widget->selected_item_slot_widget->ItemIconPanel->Y + 4);
+            inventory_widget->selected_item_slot_widget->item_icon_panel->X + 4,
+            inventory_widget->selected_item_slot_widget->item_icon_panel->Y + 4);
     }
 }
 
@@ -289,7 +289,7 @@ static void update_gear_slot_widget(
     struct GearSlotWidget* gear_slot_widget,
     struct Item* item)
 {
-    UpdateItemSlotWidget(gear_slot_widget->item_slot_widget, item);
+    update_item_slot_widget(gear_slot_widget->item_slot_widget, item);
 }
 
 //  ---------------------------------------------------------------------------

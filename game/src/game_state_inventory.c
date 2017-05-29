@@ -31,19 +31,19 @@ static struct Panel* item_type_panels[ITEM_TYPE_COUNT];
 static struct InventoryWidget* inventory_widget = NULL;
 
 //  ---------------------------------------------------------------------------
-static void ExitInventoryGameState(
+static void exit_inventory_game_state(
     struct Game* game,
-    enum GameState gameState)
+    enum GameState game_state)
 {
     selected_item_type = ITEM_TYPE_NONE;
     inventory_widget->selected_item_index = 0;
-    game->state = gameState;
+    game->state = game_state;
     deactivate_gui();
     inventory_gui_screen->enabled = 0;
 }
 
 //  ---------------------------------------------------------------------------
-static void SelectNextItemType()
+static void select_next_item_type()
 {
     int t = (int)selected_item_type;
 
@@ -60,7 +60,7 @@ static void SelectNextItemType()
 }
 
 //  ---------------------------------------------------------------------------
-static void SelectPreviousItemType()
+static void select_previous_item_type()
 {
     int t = (int)selected_item_type;
 
@@ -77,7 +77,7 @@ static void SelectPreviousItemType()
 }
 
 //  ---------------------------------------------------------------------------
-static void ProcessSelectItemTypeStateInput(struct Game* game)
+static void process_select_item_type_state_input(struct Game* game)
 {
     assert(inventory_gui_state == GUI_STATE_SELECT_ITEM_TYPE);
 
@@ -93,15 +93,15 @@ static void ProcessSelectItemTypeStateInput(struct Game* game)
     }
     else if (input_device->cancel)
     {
-        ExitInventoryGameState(game, GAME_STATE_LEVEL);
+        exit_inventory_game_state(game, GAME_STATE_LEVEL);
     }
     else if (input_device->move_direction == DIRECTION_RIGHT)
     {
-        SelectNextItemType();
+        select_next_item_type();
     }
     else if (input_device->move_direction == DIRECTION_LEFT)
     {
-        SelectPreviousItemType();
+        select_previous_item_type();
     }
 }
 
@@ -148,22 +148,22 @@ static void process_inventory_game_state_input(struct Game* game)
 
     if (input_device->inventory)
     {
-        ExitInventoryGameState(game, GAME_STATE_LEVEL);
+        exit_inventory_game_state(game, GAME_STATE_LEVEL);
     }
     else if (input_device->gear)
     {
-        ExitInventoryGameState(game, GAME_STATE_GEAR);
+        exit_inventory_game_state(game, GAME_STATE_GEAR);
     }
     else if (input_device->status)
     {
-        ExitInventoryGameState(game, GAME_STATE_STATUS);
+        exit_inventory_game_state(game, GAME_STATE_STATUS);
     }
     else
     {
         switch (inventory_gui_state)
         {
             case GUI_STATE_SELECT_ITEM_TYPE:
-                ProcessSelectItemTypeStateInput(game);
+                process_select_item_type_state_input(game);
                 break;
             case GUI_STATE_SELECT_INVENTORY_ITEM_SLOT:
                 process_select_inventory_item_slot_state_input(game);
@@ -173,16 +173,16 @@ static void process_inventory_game_state_input(struct Game* game)
 }
 
 //  ---------------------------------------------------------------------------
-void InventoryGameStateDraw(struct Game* game, int inTransition)
+void draw_inventory_game_state(struct Game* game, int in_transition)
 {
     draw_map(game->renderer, game->world->map, game->world->actors);
     draw_gui(game);
 }
 
 //  ---------------------------------------------------------------------------
-static int GetItemTypeIconTilesetId(enum ItemType itemType)
+static int get_item_type_icon_tileset(enum ItemType item_type)
 {
-    switch (itemType)
+    switch (item_type)
     {
         default:
             return 248;
@@ -202,29 +202,29 @@ static int GetItemTypeIconTilesetId(enum ItemType itemType)
 }
 
 //  ---------------------------------------------------------------------------
-static struct Panel* CreateItemTypePanel(enum ItemType itemType)
+static struct Panel* create_item_type_panel(enum ItemType item_type)
 {
     struct Panel* panel = create_panel(
-        get_item_type_category_string(itemType),
+        get_item_type_category_string(item_type),
         PANEL_BORDER_STYLE_1);
 
     panel->width = 24;
     panel->height = 24;
     panel->background = 1;
     panel->icon.style = PANEL_ICON_STYLE_NORMAL;
-    panel->icon.tileset_id = GetItemTypeIconTilesetId(itemType);
+    panel->icon.tileset_id = get_item_type_icon_tileset(item_type);
 
     return panel;
 }
 
 //  ---------------------------------------------------------------------------
-static void InitInventoryGuiScreen(SDL_Renderer* renderer)
+static void init_inventory_gui_screen(SDL_Renderer* renderer)
 {
     inventory_gui_screen = create_gui_screen();
 
     for (int t = 0; t < ITEM_TYPE_COUNT; ++t)
     {
-        struct Panel* panel = CreateItemTypePanel((enum ItemType)t);
+        struct Panel* panel = create_item_type_panel((enum ItemType)t);
         panel->X = 42 + (t * panel->width);
         panel->Y = 32;
         item_type_panels[t] = panel;
@@ -242,42 +242,42 @@ static void InitInventoryGuiScreen(SDL_Renderer* renderer)
 }
 
 //  ---------------------------------------------------------------------------
-static struct Panel* GetSelectedItemTypePanel()
+static struct Panel* get_selected_item_type_panel()
 {
     return item_type_panels[(int)selected_item_type];
 }
 
 //  ---------------------------------------------------------------------------
-static void UpdateCursor()
+static void update_cursor()
 {
     enable_gui_cursor(1);
 
     if (inventory_gui_state == GUI_STATE_SELECT_ITEM_TYPE)
     {
-        struct Panel* selectedPanel = GetSelectedItemTypePanel();
+        struct Panel* selected_panel = get_selected_item_type_panel();
 
         set_gui_cursor_position(
-            selectedPanel->X + 4,
-            selectedPanel->Y + 4);
+            selected_panel->X + 4,
+            selected_panel->Y + 4);
     }
     else if (inventory_gui_state == GUI_STATE_SELECT_INVENTORY_ITEM_SLOT)
     {
         assert(inventory_widget->selected_item_index < MAX_INVENTORY_ITEMS);
 
         assert(inventory_widget->selected_item_slot_widget != NULL);
-        assert(inventory_widget->selected_item_slot_widget->ItemIconPanel != NULL);
+        assert(inventory_widget->selected_item_slot_widget->item_icon_panel != NULL);
         set_gui_cursor_position(
-            inventory_widget->selected_item_slot_widget->ItemIconPanel->X + 4,
-            inventory_widget->selected_item_slot_widget->ItemIconPanel->Y + 4);
+            inventory_widget->selected_item_slot_widget->item_icon_panel->X + 4,
+            inventory_widget->selected_item_slot_widget->item_icon_panel->Y + 4);
     }
 }
 
 //  ---------------------------------------------------------------------------
-void InventoryGameStateUpdate(struct Game* game)
+void update_inventory_game_state(struct Game* game)
 {
     if (inventory_gui_screen == NULL)
     {
-        InitInventoryGuiScreen(game->renderer);
+        init_inventory_gui_screen(game->renderer);
     }
 
     inventory_gui_screen->enabled = 1;
@@ -299,12 +299,12 @@ void InventoryGameStateUpdate(struct Game* game)
     inventory_widget->item_type = selected_item_type;
     update_inventory_widget(inventory_widget, actor->inventory);
 
-    struct Panel* selectedPanel = GetSelectedItemTypePanel();
+    struct Panel* selected_panel = get_selected_item_type_panel();
     for (int p = 0; p < ITEM_TYPE_COUNT; ++p)
     {
         struct Panel* panel = item_type_panels[p];
-        panel->show_title = panel == selectedPanel;
+        panel->show_title = panel == selected_panel;
     }
 
-    UpdateCursor();
+    update_cursor();
 }

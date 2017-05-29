@@ -32,7 +32,7 @@ struct InventoryWidget* create_inventory_widget(struct GuiScreen* gui_screen)
 
     for (int p = 0; p < INVENTORY_WIDGET_MAX_VISIBLE_ITEMS; ++p)
     {
-        widget->item_slot_widgets[p] = CreateItemSlotWidget(gui_screen);
+        widget->item_slot_widgets[p] = create_item_slot_widget(gui_screen);
     }
 
     widget->bottom_scroll_arrow_panel = create_panel(NULL, PANEL_BORDER_STYLE_NONE);
@@ -68,7 +68,7 @@ void destroy_inventory_widget(struct InventoryWidget** widget)
         }
         for (int p = 0; p < INVENTORY_WIDGET_MAX_VISIBLE_ITEMS; ++p)
         {
-            DestroyItemSlotWidget(&(*widget)->item_slot_widgets[p]);
+            destroy_item_slot_widget(&(*widget)->item_slot_widgets[p]);
         }
         free((*widget)->items);
 
@@ -137,7 +137,7 @@ void set_inventory_widget_position(struct InventoryWidget* widget, int x, int y)
     const int itemPanelHeight = 32;
     for (int p = 0; p < INVENTORY_WIDGET_MAX_VISIBLE_ITEMS; ++p)
     {
-        SetItemSlotWidgetPosition(
+        set_item_slot_widget_position(
             widget->item_slot_widgets[p],
             x,
             y + (p * itemPanelHeight) + (p * 4));
@@ -158,7 +158,7 @@ void update_inventory_widget(
     //  Hide all of the item slot widgets
     for (int s = 0; s < INVENTORY_WIDGET_MAX_VISIBLE_ITEMS; ++s)
     {
-        SetItemSlotWidgetVisible(widget->item_slot_widgets[s], 0);
+        set_item_slot_widget_visible(widget->item_slot_widgets[s], 0);
     }
 
     if (widget->item_count > 0)
@@ -221,8 +221,8 @@ void update_inventory_widget(
             assert(item != NULL);
             if (s < INVENTORY_WIDGET_MAX_VISIBLE_ITEMS)
             {
-                SetItemSlotWidgetVisible(widget->item_slot_widgets[s], 1);
-                UpdateItemSlotWidget(widget->item_slot_widgets[s], item);
+                set_item_slot_widget_visible(widget->item_slot_widgets[s], 1);
+                update_item_slot_widget(widget->item_slot_widgets[s], item);
                 ++s;
             }
             else

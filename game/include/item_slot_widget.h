@@ -9,22 +9,22 @@ struct Panel;
 
 struct ItemSlotWidget
 {
-    struct Panel* ItemIconPanel;
-    struct Panel* ItemNamePanel;
-    struct Panel* StatIconPanels[STAT_TYPE_COUNT];
-    struct Panel* StatValuePanels[STAT_TYPE_COUNT];
-    int StatValues[STAT_TYPE_COUNT];
-    char* StatValueStrings[STAT_TYPE_COUNT];
+    struct Panel* item_icon_panel;
+    struct Panel* item_name_panel;
+    struct Panel* stat_icon_panels[STAT_TYPE_COUNT];
+    struct Panel* stat_value_panels[STAT_TYPE_COUNT];
+    int stat_values[STAT_TYPE_COUNT];
+    char* stat_value_strings[STAT_TYPE_COUNT];
 };
 
-struct ItemSlotWidget* CreateItemSlotWidget(struct GuiScreen* screen);
+struct ItemSlotWidget* create_item_slot_widget(struct GuiScreen* gui_screen);
 
-void DestroyItemSlotWidget(struct ItemSlotWidget** widget);
+void destroy_item_slot_widget(struct ItemSlotWidget** widget);
 
-void SetItemSlotWidgetPosition(struct ItemSlotWidget* widget, int x, int y);
+void set_item_slot_widget_position(struct ItemSlotWidget* widget, int x, int y);
 
-void SetItemSlotWidgetVisible(struct ItemSlotWidget* widget, int visible);
+void set_item_slot_widget_visible(struct ItemSlotWidget* widget, int visible);
 
-void UpdateItemSlotWidget(struct ItemSlotWidget* widget, struct Item* item);
+void update_item_slot_widget(struct ItemSlotWidget* widget, struct Item* item);
 
 #endif
