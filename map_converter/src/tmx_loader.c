@@ -14,10 +14,10 @@
 #include <string.h>
 
 //  ---------------------------------------------------------------------------
-int IsCollision(const int tilesetId)
+static int is_collision_tile(const int tileset_id)
 {
     //  TODO: Temp hack until tileset loading is complete
-    switch (tilesetId)
+    switch (tileset_id)
     {
         case 20:
         case 21:
@@ -43,12 +43,12 @@ int IsCollision(const int tilesetId)
 }
 
 //  ---------------------------------------------------------------------------
-xmlNode* GetPropertiesNode(xmlNode* parentNode)
+static xmlNode* get_properties_node(xmlNode* parent_node)
 {
-    xmlNode* node = parentNode->xmlChildrenNode;
+    xmlNode* node = parent_node->xmlChildrenNode;
     while (node != NULL)
     {
-        if (IsNode(node, "properties"))
+        if (is_node(node, "properties"))
         {
             return node;
         }
@@ -59,19 +59,21 @@ xmlNode* GetPropertiesNode(xmlNode* parentNode)
 }
 
 //  ---------------------------------------------------------------------------
-xmlNode* GetPropertyNode(xmlNode* propertiesNode, const char* propertyName)
+static xmlNode* get_property_node(
+    xmlNode* properties_node,
+    const char* property_name)
 {
-    if (propertiesNode != NULL)
+    if (properties_node != NULL)
     {
-        xmlNode* node = propertiesNode->xmlChildrenNode;
+        xmlNode* node = properties_node->xmlChildrenNode;
         while (node != NULL)
         {
-            if (IsNode(node, "property"))
+            if (is_node(node, "property"))
             {
                 char* name = NULL;
-                ReadAttribute(node, "name", &name);
+                read_attribute(node, "name", &name);
 
-                if (strcmp(name, propertyName) == 0)
+                if (strcmp(name, property_name) == 0)
                 {
                     free(name);
                     return node;
@@ -87,32 +89,38 @@ xmlNode* GetPropertyNode(xmlNode* propertiesNode, const char* propertyName)
 }
 
 //  ---------------------------------------------------------------------------
-void ReadIntProperty(xmlNode* propertiesNode, char* propertyName, int* value)
+static void read_int_property(
+    xmlNode* properties_node,
+    char* property_name,
+    int* value)
 {
-    xmlNode* propertyNode = GetPropertyNode(propertiesNode, propertyName);
-    if (propertyNode != NULL)
+    xmlNode* property_node = get_property_node(properties_node, property_name);
+    if (property_node != NULL)
     {
-        ReadIntAttribute(propertyNode, "value", value);
+        read_int_attribute(property_node, "value", value);
     }
 }
 
 //  ---------------------------------------------------------------------------
-void ReadProperty(xmlNode* propertiesNode, char* propertyName, char** value)
+static void read_property(
+    xmlNode* properties_node,
+    char* property_name,
+    char** value)
 {
-    xmlNode* propertyNode = GetPropertyNode(propertiesNode, propertyName);
-    if (propertyNode != NULL)
+    xmlNode* property_node = get_property_node(properties_node, property_name);
+    if (property_node != NULL)
     {
-        ReadAttribute(propertyNode, "value", value);
+        read_attribute(property_node, "value", value);
     }
 }
 
 //  ---------------------------------------------------------------------------
-void LoadActorItems(struct Actor* actor, xmlNode* propertiesNode)
+void LoadActorItems(struct Actor* actor, xmlNode* properties_node)
 {
     size_t itemCount = 0;
     char** itemNames = NULL;
     char* itemNamesCsv = NULL;
-    ReadProperty(propertiesNode, "Items", &itemNamesCsv);
+    read_property(properties_node, "Items", &itemNamesCsv);
     itemCount = tokenize_string(itemNamesCsv, &itemNames);
     assert(itemCount < MAX_INVENTORY_ITEMS);
     for (int n = 0; n < itemCount; ++n)
@@ -125,7 +133,7 @@ void LoadActorItems(struct Actor* actor, xmlNode* propertiesNode)
 }
 
 //  ---------------------------------------------------------------------------
-void LoadTmx(const xmlDoc* doc, struct Map** map, struct ActorList** actors)
+void load_tmx(const xmlDoc* doc, struct Map** map, struct ActorList** actors)
 {
     assert(doc != NULL);
     assert(*map == NULL);
@@ -133,143 +141,143 @@ void LoadTmx(const xmlDoc* doc, struct Map** map, struct ActorList** actors)
 
     xmlNode* root = xmlDocGetRootElement(doc);
     assert(root != NULL);
-    assert(IsNode(root, "map"));
+    assert(is_node(root, "map"));
 
     assert(xmlStrcmp(root->name, (const xmlChar*)"map") == 0);
 
-    int mapWidth, mapHeight, tileWidth, tileHeight;
-    ReadIntAttribute(root, "width", &mapWidth);
-    ReadIntAttribute(root, "height", &mapHeight);
-    ReadIntAttribute(root, "tilewidth", &tileWidth);
-    ReadIntAttribute(root, "tileheight", &tileHeight);
+    int map_width, map_height, tile_width, tile_height;
+    read_int_attribute(root, "width", &map_width);
+    read_int_attribute(root, "height", &map_height);
+    read_int_attribute(root, "tilewidth", &tile_width);
+    read_int_attribute(root, "tileheight", &tile_height);
 
     printf("Parsing TMX...\n");
-    printf("Map Size: %d x %d\n", mapWidth, mapHeight);
-    printf("Tile Size: %d x %d\n", tileWidth, tileHeight);
+    printf("Map Size: %d x %d\n", map_width, map_height);
+    printf("Tile Size: %d x %d\n", tile_width, tile_height);
 
-    *map = create_map(mapWidth, mapHeight, tileWidth, tileHeight);
+    *map = create_map(map_width, map_height, tile_width, tile_height);
     *actors = create_actor_list();
 
     xmlNode* node = root->xmlChildrenNode;
     while (node != NULL)
     {
         //  Tile layer
-        if (IsNode(node, "layer"))
+        if (is_node(node, "layer"))
         {
-            xmlNode* dataNode = node->xmlChildrenNode;
-            while (dataNode != NULL)
+            xmlNode* data_node = node->xmlChildrenNode;
+            while (data_node != NULL)
             {
-                if (IsNode(dataNode, "data"))
+                if (is_node(data_node, "data"))
                 {
-                    int tileX = 0;
-                    int tileY = 0;
+                    int tile_x = 0;
+                    int tile_y = 0;
 
-                    xmlNode* tileNode = dataNode->xmlChildrenNode;
-                    while (tileNode != NULL)
+                    xmlNode* tile_node = data_node->xmlChildrenNode;
+                    while (tile_node != NULL)
                     {
-                        if (IsNode(tileNode, "tile"))
+                        if (is_node(tile_node, "tile"))
                         {
                             int gid;
-                            ReadIntAttribute(tileNode, "gid", &gid);
+                            read_int_attribute(tile_node, "gid", &gid);
 
-                            struct Tile* tile = get_map_tile(*map, tileX, tileY);
+                            struct Tile* tile = get_map_tile(*map, tile_x, tile_y);
                             tile->tileset_id = gid - 1;
 
-                            tile->collision = IsCollision(tile->tileset_id);
+                            tile->collision = is_collision_tile(tile->tileset_id);
 
-                            ++tileX;
-                            if (tileX > mapWidth - 1)
+                            ++tile_x;
+                            if (tile_x > map_width - 1)
                             {
-                                tileX = 0;
-                                ++tileY;
+                                tile_x = 0;
+                                ++tile_y;
                             }
                         }
 
-                        tileNode = tileNode->next;
+                        tile_node = tile_node->next;
                     }
                 }
-                dataNode = dataNode->next;
+                data_node = data_node->next;
             }
         }
-        else if (IsNode(node, "objectgroup"))
+        else if (is_node(node, "objectgroup"))
         {
-            xmlNode* objectNode = node->xmlChildrenNode;
-            while (objectNode != NULL)
+            xmlNode* object_node = node->xmlChildrenNode;
+            while (object_node != NULL)
             {
-                if (IsNode(objectNode, "object"))
+                if (is_node(object_node, "object"))
                 {
                     int gid = 0;
-                    int tileX = 0;
-                    int tileY = 0;
+                    int tile_x = 0;
+                    int tile_y = 0;
                     char* name = NULL;
 
-                    ReadAttribute(objectNode, "name", &name);
-                    ReadIntAttribute(objectNode, "x", &tileX);
-                    ReadIntAttribute(objectNode, "y", &tileY);
+                    read_attribute(object_node, "name", &name);
+                    read_int_attribute(object_node, "x", &tile_x);
+                    read_int_attribute(object_node, "y", &tile_y);
 
-                    tileX /= (*map)->tile_width;
-                    tileY /= (*map)->tile_height;
+                    tile_x /= (*map)->tile_width;
+                    tile_y /= (*map)->tile_height;
 
-                    if (HasAttribute(objectNode, "gid"))
+                    if (has_attribute(object_node, "gid"))
                     {
-                        ReadIntAttribute(objectNode, "gid", &gid);
+                        read_int_attribute(object_node, "gid", &gid);
 
                         //  Adjust GID
                         --gid;
 
                         //  Adjust Y component of Tile objects
-                        --tileY;
+                        --tile_y;
                     }
 
-                    xmlNode* propertiesNode = GetPropertiesNode(objectNode);
+                    xmlNode* properties_node = get_properties_node(object_node);
 
                     int cash = 0;
-                    ReadIntProperty(propertiesNode, "Cash", &cash);
+                    read_int_property(properties_node, "Cash", &cash);
 
                     char* type = NULL;
-                    ReadAttribute(objectNode, "type", &type);
+                    read_attribute(object_node, "type", &type);
                     if (strcmp(type, "Actor") == 0)
                     {
-                        struct Actor* actor = create_actor(*map, name, tileX, tileY, gid);
+                        struct Actor* actor = create_actor(*map, name, tile_x, tile_y, gid);
                         add_actor_to_actor_list_back(*actors, actor);
                     }
                     else if (strcmp(type, "Villain") == 0)
                     {
-                        struct Actor* actor = create_actor(*map, name, tileX, tileY, gid);
+                        struct Actor* actor = create_actor(*map, name, tile_x, tile_y, gid);
                         actor->type = ACTOR_TYPE_VILLAIN;
                         actor->cash = cash;
-                        LoadActorItems(actor, propertiesNode);
+                        LoadActorItems(actor, properties_node);
                         add_actor_to_actor_list_back(*actors, actor);
                     }
                     else if (strcmp(type, "Container") == 0)
                     {
-                        struct Actor* actor = create_actor(*map, name, tileX, tileY, gid);
+                        struct Actor* actor = create_actor(*map, name, tile_x, tile_y, gid);
                         actor->type = ACTOR_TYPE_CONTAINER;
                         actor->cash = cash;
-                        LoadActorItems(actor, propertiesNode);
+                        LoadActorItems(actor, properties_node);
                         add_actor_to_actor_list_back(*actors, actor);
                     }
                     else if (strcmp(type, "Door") == 0)
                     {
-                        struct Actor* actor = create_actor(*map, name, tileX, tileY, gid);
+                        struct Actor* actor = create_actor(*map, name, tile_x, tile_y, gid);
                         actor->type = ACTOR_TYPE_DOOR;
                         add_actor_to_actor_list_back(*actors, actor);
                     }
                     else if (strcmp(type, "MapLink") == 0)
                     {
-                        char* destMap = NULL;
-                        int destX, destY;
+                        char* dest_map = NULL;
+                        int dest_x, dest_y;
 
-                        ReadProperty(propertiesNode, "DestMap", &destMap);
-                        ReadIntProperty(propertiesNode, "DestX", &destX);
-                        ReadIntProperty(propertiesNode, "DestY", &destY);
+                        read_property(properties_node, "DestMap", &dest_map);
+                        read_int_property(properties_node, "DestX", &dest_x);
+                        read_int_property(properties_node, "DestY", &dest_y);
 
-                        struct MapLink* link = create_map_link(destMap, destX, destY);
+                        struct MapLink* link = create_map_link(dest_map, dest_x, dest_y);
 
-                        struct Tile* tile = get_map_tile(*map, tileX, tileY);
+                        struct Tile* tile = get_map_tile(*map, tile_x, tile_y);
                         tile->link = link;
 
-                        free(destMap);
+                        free(dest_map);
                     }
 
                     if (name != NULL)
@@ -282,7 +290,7 @@ void LoadTmx(const xmlDoc* doc, struct Map** map, struct ActorList** actors)
                         free(type);
                     }
                 }
-                objectNode = objectNode->next;
+                object_node = object_node->next;
             }
         }
         node = node->next;

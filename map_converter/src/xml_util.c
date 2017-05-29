@@ -5,39 +5,39 @@
 #include <string.h>
 
 //  ---------------------------------------------------------------------------
-int HasAttribute(const xmlNode* node, const char* name)
+int has_attribute(const xmlNode* node, const char* name)
 {
     return xmlHasProp(node, (const xmlChar*)name) != NULL;
 }
 
 //  ---------------------------------------------------------------------------
-int IsNode(const xmlNode* node, const char* name)
+int is_node(const xmlNode* node, const char* name)
 {
     return xmlStrcmp(node->name, (const xmlChar*)name) == 0;
 }
 
 //  ---------------------------------------------------------------------------
-void ReadAttribute(const xmlNode* node, const char* name, char** value)
+void read_attribute(const xmlNode* node, const char* name, char** value)
 {
     assert(*value == NULL);
 
     if (xmlHasProp(node, (const xmlChar*)name) != NULL)
     {
-        xmlChar* strValue = xmlGetProp(node, (const xmlChar*)name);
-        int len = xmlStrlen(strValue);
+        xmlChar* str_value = xmlGetProp(node, (const xmlChar*)name);
+        int len = xmlStrlen(str_value);
         *value = malloc(sizeof(char*) * len + 1);
-        strcpy(*value, (char *)strValue);
-        xmlFree(strValue);
+        strcpy(*value, (char *)str_value);
+        xmlFree(str_value);
     }
 }
 
 //  ---------------------------------------------------------------------------
-void ReadIntAttribute(const xmlNode* node, const char* name, int* value)
+void read_int_attribute(const xmlNode* node, const char* name, int* value)
 {
     if (xmlHasProp(node, (const xmlChar*)name) != NULL)
     {
-        xmlChar* strValue = xmlGetProp(node, (const xmlChar*)name);
-        *value = strtol((char*)strValue, NULL, 10);
-        xmlFree(strValue);
+        xmlChar* str_value = xmlGetProp(node, (const xmlChar*)name);
+        *value = strtol((char*)str_value, NULL, 10);
+        xmlFree(str_value);
     }
 }

@@ -5,6 +5,6 @@ struct ActorList;
 struct Map;
 typedef struct _xmlDoc xmlDoc;
 
-void LoadTmx(const xmlDoc* doc, struct Map** map, struct ActorList** actors);
+void load_tmx(const xmlDoc* doc, struct Map** map, struct ActorList** actors);
 
 #endif

@@ -10,7 +10,7 @@
 #include <libxml/parser.h>
 #include <libxml/xmlmemory.h>
 
-void ConvertTmxToMap(const char* tmxFilename, const char* mapFilename);
+void convert_tmx_to_map(const char* tmx_filename, const char* map_filename);
 
 //  ---------------------------------------------------------------------------
 int main(int argc, char** argv)
@@ -19,41 +19,41 @@ int main(int argc, char** argv)
 
     if (get_arg_count() == 2)
     {
-        const char* tmxFilename = get_arg_by_index(1);
-        const char* mapFilename = get_arg_by_index(2);
+        const char* tmx_filename = get_arg_by_index(1);
+        const char* map_filename = get_arg_by_index(2);
 
-        ConvertTmxToMap(tmxFilename, mapFilename);
+        convert_tmx_to_map(tmx_filename, map_filename);
     }
     else if (get_arg_count() == 1)
     {
-        const char* tmxFilename = get_arg_by_index(1);
-        size_t len = strlen(tmxFilename);
+        const char* tmx_filename = get_arg_by_index(1);
+        size_t len = strlen(tmx_filename);
 
-        char* mapFilename = NULL;
+        char* map_filename = NULL;
 
         if (len >= 4)
         {
-            const char* extension = tmxFilename + len - 4;
+            const char* extension = tmx_filename + len - 4;
             if (strcasecmp(extension, ".tmx") == 0)
             {
                 //  Replace ".tmx" with ".map"
-                mapFilename = malloc(sizeof(char) * len + 1);
-                strncpy(mapFilename, tmxFilename, len + 4);
-                strncpy(mapFilename + len - 4, ".map", 4);
+                map_filename = malloc(sizeof(char) * len + 1);
+                strncpy(map_filename, tmx_filename, len + 4);
+                strncpy(map_filename + len - 4, ".map", 4);
             }
         }
 
-        if (mapFilename == NULL)
+        if (map_filename == NULL)
         {
             //  Add ".map" to end of filename retaining original extension
-            mapFilename = malloc(sizeof(char) * len + 5);
-            snprintf(mapFilename, len + 5, "%s.map", tmxFilename);
-            mapFilename[len + 4] = '\0';
+            map_filename = malloc(sizeof(char) * len + 5);
+            snprintf(map_filename, len + 5, "%s.map", tmx_filename);
+            map_filename[len + 4] = '\0';
         }
 
-        ConvertTmxToMap(tmxFilename, mapFilename);
+        convert_tmx_to_map(tmx_filename, map_filename);
 
-        free(mapFilename);
+        free(map_filename);
     }
     else
     {
@@ -64,27 +64,27 @@ int main(int argc, char** argv)
 }
 
 //  ---------------------------------------------------------------------------
-void ConvertTmxToMap(const char* tmxFilename, const char* mapFilename)
+void convert_tmx_to_map(const char* tmx_filename, const char* map_filename)
 {
-    xmlDoc* doc = xmlReadFile(tmxFilename, NULL, 0);
+    xmlDoc* doc = xmlReadFile(tmx_filename, NULL, 0);
     if (doc == NULL)
     {
-        printf("Error: Could not parse TMX file %s.\n", tmxFilename);
+        printf("Error: Could not parse TMX file %s.\n", tmx_filename);
         return;
     }
 
     struct Map* map = NULL;
     struct ActorList* actors = NULL;
 
-    LoadTmx(doc, &map, &actors);
+    load_tmx(doc, &map, &actors);
 
     FILE *file;
-    file = fopen(mapFilename,"wb");
+    file = fopen(map_filename,"wb");
     save_map_to_file(file, map);
     save_actors_to_file(file, actors);
     fclose(file);
 
-    printf("Converted TMX file %s to %s.\n", tmxFilename, mapFilename);
+    printf("Converted TMX file %s to %s.\n", tmx_filename, map_filename);
 
     xmlFreeDoc(doc);
     xmlCleanupParser();
