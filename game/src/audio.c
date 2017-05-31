@@ -6,6 +6,9 @@
 
 #define AUDIO_QUEUE_SIZE 16
 
+//  Flag to prevent seg faults or other errors when shutting audio down
+static int audio_initialized = 0;
+
 static const int CHANNEL_RESERVE_COUNT = 2;
 static const int STEPS_ENTER_SFX_CHANNEL = 0;
 static const int STEPS_EXIT_SFX_CHANNEL = 1;
@@ -38,15 +41,18 @@ int audio_init()
     int init = Mix_Init(init_flags);
     if ((init & init_flags) != init_flags)
     {
-        printf("Mix_Init failed to initialize OGG support.\n");
-        printf("%s\n", Mix_GetError());
-        return -1;
+        fprintf(stderr, "Mix_Init failed to initialize OGG support.\n");
+        fprintf(stderr, "%s\n", Mix_GetError());
+        return 1;
     }
 
     if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) == -1)
     {
-        return -1;
+        fprintf(stderr, "Mix_OpenAudio: %s\n", Mix_GetError());
+        return 1;
     }
+
+    audio_initialized = 1;
 
     load_sfx(&attack_mix_chunk, "attack01");
     load_sfx(&cash_pickup_mix_chunk, "cash_pickup_01");
@@ -68,19 +74,38 @@ int audio_init()
 }
 
 //  ---------------------------------------------------------------------------
+static void free_mix_chunk(Mix_Chunk** chunk)
+{
+    if (*chunk != NULL)
+    {
+        //  Mix_FreeChunk can segfault if chunk is NULL
+        Mix_FreeChunk(*chunk);
+        *chunk = NULL;
+    }
+}
+
+//  ---------------------------------------------------------------------------
 void shutdown_audio()
 {
     //  Halt playback on all channels
-    Mix_HaltChannel(-1);
+    if (audio_initialized)
+    {
+        Mix_HaltChannel(-1);
+    }
 
-    Mix_FreeChunk(attack_mix_chunk);
-    Mix_FreeChunk(cash_pickup_mix_chunk);
-    Mix_FreeChunk(door_mix_chunk);
-    Mix_FreeChunk(steps_enter_mix_chunk);
-    Mix_FreeChunk(steps_exit_mix_chunk);
+    free_mix_chunk(&attack_mix_chunk);
+    free_mix_chunk(&cash_pickup_mix_chunk);
+    free_mix_chunk(&door_mix_chunk);
+    free_mix_chunk(&steps_enter_mix_chunk);
+    free_mix_chunk(&steps_exit_mix_chunk);
 
-    Mix_CloseAudio();
-    Mix_Quit();
+    if (audio_initialized)
+    {
+        Mix_CloseAudio();
+        Mix_Quit();
+    }
+
+    audio_initialized = 0;
 
     //  Clear queue
     for (size_t c = 0; c < AUDIO_QUEUE_SIZE; ++c)

@@ -30,6 +30,12 @@ static void game_init(int width, int height)
     assert(width > 0);
     assert(height > 0);
 
+    if (game != NULL)
+    {
+        fprintf(stderr, "Cannot initialize game more than once.\n");
+        exit(EXIT_FAILURE);
+    }
+
     game = malloc(sizeof(struct Game));
     if (game == NULL)
     {
@@ -39,24 +45,27 @@ static void game_init(int width, int height)
     }
     game->quit = 0;
     game->elapsed_seconds = 0;
-    game->state = GAME_STATE_NONE;
+    game->state = GAME_STATE_LEVEL;
     game->input_device = NULL;
     game->world = NULL;
 
+    //  Initialize SDL
     if (SDL_Init(SDL_INIT_EVERYTHING) != 0)
     {
-        fprintf(stderr, "SDL failed to initialize: %sn", SDL_GetError());
+        fprintf(stderr, "SDL failed to initialize: %s\n", SDL_GetError());
         exit(EXIT_FAILURE);
     }
 
     paths_init();
 
+    //  Initialize SDL2_mixer
     if (audio_init() != 0)
     {
-  		fprintf(stderr, "SDL2_mixer failed to initialize: %sn", Mix_GetError());
+  		fprintf(stderr, "SDL2_mixer failed to initialize: %s\n", Mix_GetError());
 		exit(EXIT_FAILURE);
     }
 
+    //  Initialize SDL window
     window = SDL_CreateWindow(
         "Aventail",
         SDL_WINDOWPOS_UNDEFINED,
@@ -67,21 +76,26 @@ static void game_init(int width, int height)
 
     if (window == NULL)
     {
-		fprintf(stderr, "SDL failed to create window: %sn", SDL_GetError());
+		fprintf(stderr, "SDL failed to create window: %s\n", SDL_GetError());
 		exit(EXIT_FAILURE);
     }
 
+    //  Initialize SDL renderer and graphics assets
     if (render_init(window) != 0)
     {
-        printf("Failed to initialize graphics.\n");
+        fprintf(stderr, "Failed to initialize graphics.\n");
         exit(EXIT_FAILURE);
     }
 
-    game->elapsed_seconds = 0;
-    game->quit = 0;
-    game->state = GAME_STATE_LEVEL;
-
-    IMG_Init(IMG_INIT_PNG);
+    //  Initialize SDL_image
+    int flags = IMG_INIT_PNG;
+    int result = IMG_Init(flags);
+    if ((result & flags) != flags)
+    {
+        fprintf(stderr, "SDL_image failed to initialize PNG support.\n");
+        fprintf(stderr, "IMG_Init: %s\n", IMG_GetError());
+        exit(EXIT_FAILURE);
+    }
 }
 
 //  ---------------------------------------------------------------------------
@@ -137,6 +151,8 @@ int game_main()
 //  ---------------------------------------------------------------------------
 void game_shutdown()
 {
+    printf("Shutting down...\n");
+
     render_shutdown();
 
     if (game != NULL)
@@ -154,6 +170,7 @@ void game_shutdown()
         // }
 
         free(game);
+        game = NULL;
     }
 
     if (window != NULL)
