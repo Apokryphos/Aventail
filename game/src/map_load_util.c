@@ -15,14 +15,13 @@
 #include <string.h>
 
 //  ---------------------------------------------------------------------------
-void load_actors_from_file(FILE* file, struct Map* map, struct ActorList* actors)
+int load_actors_from_file(FILE* file, struct Map* map, struct ActorList* actors)
 {
     assert(map != NULL);
     assert(actors != NULL);
 
     int actor_count = 0;
     fread(&actor_count, sizeof(int), 1, file);
-    printf("Loading %d actors...\n", actor_count);
 
     for (int a = 0; a < actor_count; ++a)
     {
@@ -43,8 +42,11 @@ void load_actors_from_file(FILE* file, struct Map* map, struct ActorList* actors
         fread(&cash, sizeof(int), 1, file);
 
         fread(&name_len, sizeof(int), 1, file);
-        assert(name_len <= MAX_ACTOR_NAME_STRING_LENGTH);
-
+        if (validate_map_file_string_len(name_len))
+        {
+            fprintf(stderr, "Actor name length is not valid.\n");
+            return 1;
+        }
         name = malloc(sizeof(char) * name_len + 1);
         fread(name, sizeof(char), name_len, file);
         name[name_len] = '\0';
@@ -56,7 +58,11 @@ void load_actors_from_file(FILE* file, struct Map* map, struct ActorList* actors
         for (size_t n = 0; n < itemCount; ++n)
         {
             fread(&name_len, sizeof(int), 1, file);
-
+            if (validate_map_file_string_len(name_len))
+            {
+                fprintf(stderr, "Item name length is not valid.\n");
+                return 1;
+            }
             char* item_name = malloc(sizeof(char) * name_len + 1);
             fread(item_name, sizeof(char), name_len, file);
             item_name[name_len] = '\0';
@@ -87,48 +93,27 @@ void load_actors_from_file(FILE* file, struct Map* map, struct ActorList* actors
 
         load_actor_definition(actor);
 
-        printf(
-            "[Actor] NAME: %s GID: %d POS: %d, %d COL: %d TYPE: %d CASH: %d ITEMS: %zu\n",
-            actor->name,
-            actor->tileset_id,
-            actor->tile->x,
-            actor->tile->y,
-            actor->collision,
-            actor->type,
-            actor->cash,
-            get_inventory_item_count(actor->inventory));
+        //dump_actor_info(actor);
 
         add_actor_to_actor_list_back(actors, actor);
 
         free(name);
     }
+
+    return 0;
 }
 
 //  ---------------------------------------------------------------------------
-struct Map* load_map_from_file(FILE* file)
+int load_map_links_from_file(FILE* file, struct Map* map)
 {
-    printf("Loading map header...\n");
-    int width, height, tile_width, tile_height;
-    fread(&width, sizeof(int), 1, file);
-    fread(&height, sizeof(int), 1, file);
-    fread(&tile_width, sizeof(int), 1, file);
-    fread(&tile_height, sizeof(int), 1, file);
-
-    struct Map* map = create_map(width, height, tile_width, tile_height);
-
-    int tile_count = get_map_tile_count(map);
-    printf("Loading %d tiles...\n", tile_count);
-
-    for (int t = 0; t < tile_count; ++t)
-    {
-        struct Tile* tile = &map->tiles[t];
-        fread(&tile->tileset_id, sizeof(int), 1, file);
-        fread(&tile->collision, sizeof(int), 1, file);
-    }
-
     int map_link_count = 0;
     fread(&map_link_count, sizeof(int), 1, file);
-    printf("Loading %d map links...\n", map_link_count);
+
+    if (validate_map_file_map_link_count(map_link_count) != 0)
+    {
+        return ERROR_MAP_FILE_LOAD;
+    }
+
     for (int n = 0; n < map_link_count; ++n)
     {
         char* dest_map = NULL;
@@ -139,7 +124,11 @@ struct Map* load_map_from_file(FILE* file)
         fread(&tile_y, sizeof(int), 1, file);
 
         fread(&dest_map_len, sizeof(int), 1, file);
-        assert(dest_map_len <= MAX_DEST_MAP_STRING_LENGTH);
+        if (validate_map_file_string_len(dest_map_len))
+        {
+            fprintf(stderr, "Destination map name length is not valid.\n");
+            return ERROR_MAP_FILE_LOAD;
+        }
 
         dest_map = malloc(sizeof(char) * dest_map_len + 1);
         fread(dest_map, sizeof(char), dest_map_len, file);
@@ -155,14 +144,61 @@ struct Map* load_map_from_file(FILE* file)
         struct Tile* tile = &map->tiles[tile_y * map->width + tile_x];
         tile->link = link;
 
-        printf(
-            "[MapLink] MAP: %s POS: %d, %d DEST: %d, %d\n",
-            link->dest_map,
-            tile_x,
-            tile_y,
-            link->dest_x,
-            link->dest_y);
+        //dump_map_link_info(tile);
     }
 
-    return map;
+    return 0;
+}
+
+//  ---------------------------------------------------------------------------
+int load_map_from_file(
+    FILE* file,
+    struct Map** map,
+    struct ActorList** actors)
+{
+    int width, height, tile_width, tile_height;
+    fread(&width, sizeof(int), 1, file);
+    fread(&height, sizeof(int), 1, file);
+    fread(&tile_width, sizeof(int), 1, file);
+    fread(&tile_height, sizeof(int), 1, file);
+
+    *map = create_map(width, height, tile_width, tile_height);
+    if (*map == NULL)
+    {
+        fprintf(stderr, "Failed to create map.\n");
+        return ERROR_MAP_FILE_LOAD;
+    }
+
+    int tile_count = get_map_tile_count(*map);
+    for (int t = 0; t < tile_count; ++t)
+    {
+        struct Tile* tile = &(*map)->tiles[t];
+        fread(&tile->tileset_id, sizeof(int), 1, file);
+        fread(&tile->collision, sizeof(int), 1, file);
+    }
+
+    if (load_map_links_from_file(file, *map) != 0)
+    {
+        fprintf(stderr, "Failed to load map links.\n");
+        destroy_map(map);
+        return ERROR_MAP_FILE_LOAD;
+    }
+
+    *actors = create_actor_list();
+    if (*actors == NULL)
+    {
+        fprintf(stderr, "Failed to create actor list.\n");
+        destroy_map(map);
+        return ERROR_MAP_FILE_LOAD;
+    }
+
+    if (load_actors_from_file(file, *map, *actors) != 0)
+    {
+        fprintf(stderr, "Failed to load map actors.\n");
+        destroy_map(map);
+        destroy_actor_list(actors);
+        return ERROR_MAP_FILE_LOAD;
+    }
+
+    return 0;
 }

@@ -37,8 +37,11 @@ void save_actors_to_file(FILE* file, const struct ActorList* actors)
             fwrite(&actor->cash, sizeof(int), 1, file);
 
             size_t name_len = strlen(actor->name);
-            assert(name_len <= MAX_ACTOR_NAME_STRING_LENGTH);
-
+            if (validate_map_file_string_len(name_len))
+            {
+                fprintf(stderr, "Actor map name length is not valid.\n");
+                exit(1);
+            }
             fwrite(&name_len, sizeof(int), 1, file);
             fwrite(actor->name, sizeof(char), name_len, file);
 
@@ -54,8 +57,11 @@ void save_actors_to_file(FILE* file, const struct ActorList* actors)
                     assert(item_write_count < item_count);
 
                     name_len = strlen(item->name);
-                    assert(name_len <= MAX_ACTOR_NAME_STRING_LENGTH);
-
+                    if (validate_map_file_string_len(name_len))
+                    {
+                        fprintf(stderr, "Item map name length is not valid.\n");
+                        exit(1);
+                    }
                     fwrite(&name_len, sizeof(int), 1, file);
                     fwrite(item->name, sizeof(char), name_len, file);
 
@@ -65,16 +71,7 @@ void save_actors_to_file(FILE* file, const struct ActorList* actors)
 
             node = node->next;
 
-            printf(
-                "[Actor] NAME: %s GID: %d POS: %d, %d COL: %d TYPE: %d CASH: %d ITEMS: %zu\n",
-                actor->name,
-                actor->tileset_id,
-                actor->tile->x,
-                actor->tile->y,
-                actor->collision,
-                actor->type,
-                actor->cash,
-                get_inventory_item_count(actor->inventory));
+            dump_actor_info(actor);
         }
     }
 }
@@ -112,8 +109,12 @@ void save_map_to_file(FILE* file, const struct Map* map)
 
         if (link != NULL)
         {
-            size_t dest_map_len = strlen(link->dest_map);
-            assert(dest_map_len <= MAX_DEST_MAP_STRING_LENGTH);
+            int dest_map_len = strlen(link->dest_map);
+            if (validate_map_file_string_len(dest_map_len))
+            {
+                fprintf(stderr, "Destination map name length is not valid.\n");
+                exit(1);
+            }
 
             fwrite(&tile->x, sizeof(int), 1, file);
             fwrite(&tile->y, sizeof(int), 1, file);
@@ -122,13 +123,7 @@ void save_map_to_file(FILE* file, const struct Map* map)
             fwrite(&link->dest_x, sizeof(int), 1, file);
             fwrite(&link->dest_y, sizeof(int), 1, file);
 
-            printf(
-                "[MapLink] MAP: %s POS: %d, %d DEST: %d, %d\n",
-                link->dest_map,
-                tile->x,
-                tile->y,
-                link->dest_x,
-                link->dest_y);
+            dump_map_link_info(tile);
         }
     }
 }

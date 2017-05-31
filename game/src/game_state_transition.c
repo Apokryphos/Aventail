@@ -26,37 +26,41 @@ static const float TRANSITION_DURATION = 0.66f;
 static float transition_ticks = 0;
 
 //  ---------------------------------------------------------------------------
-static void load_map(
-    const char* asset_filename,
-    struct Map** map,
-    struct ActorList* actors)
+static void load_map(const char* asset_filename, struct World* world)
 {
-    assert(*map == NULL);
     assert(asset_filename != NULL);
+    assert(world != NULL);
 
-    char *full_path = create_map_file_path(asset_filename);
-    printf("%s\n", full_path);
-    FILE *file = fopen(full_path, "rb");
-    assert(file != NULL);
-    free(full_path);
-    *map = load_map_from_file(file);
-    load_actors_from_file(file, *map, actors);
-    fclose(file);
-}
-
-//  ---------------------------------------------------------------------------
-static void unload_map(struct World* world)
-{
     //  Remove player from actors so it doesn't get freed
     remove_actor_from_actor_list(world->actors, world->player.actor);
 
     destroy_actor_list(&world->actors);
     destroy_map(&world->map);
 
-    world->actors = create_actor_list();
+    char *full_path = create_map_file_path(asset_filename);
+    FILE *file = fopen(full_path, "rb");
 
-    //  Add player actor back
+    if (file == NULL)
+    {
+        perror("");
+        fprintf(stderr, "Failed to open map file '%s'.\n", full_path);
+        free(full_path);
+        exit(EXIT_FAILURE);
+    }
+
+    if (load_map_from_file(file, &world->map, &world->actors) != 0)
+    {
+        fprintf(stderr, "Failed to load map file '%s'.\n", full_path);
+        fclose(file);
+        free(full_path);
+        exit(EXIT_FAILURE);
+    }
+
+    //  Add player actor back in
     add_actor_to_actor_list_back(world->actors, world->player.actor);
+
+    free(full_path);
+    fclose(file);
 }
 
 //  ---------------------------------------------------------------------------
@@ -74,9 +78,7 @@ static void load_map_link(struct Game* game)
 
     struct World* world = game->world;
 
-    unload_map(world);
-
-    load_map(dest_map, &world->map, world->actors);
+    load_map(dest_map, world);
 
     free(dest_map);
 
@@ -140,7 +142,7 @@ void begin_map_load_transition(struct Game* game, const char* map_name)
 }
 
 //  ---------------------------------------------------------------------------
-static void DrawTransitionEffect(struct Game* game)
+static void draw_transition_effect(struct Game* game)
 {
     //Uint8 alpha = 255;
     float progress = (transition_ticks / TRANSITION_DURATION);
@@ -205,7 +207,7 @@ void draw_transition_game_state(struct Game* game)
         draw_game_state(game, end_game_state, 1);
     }
 
-    DrawTransitionEffect(game);
+    draw_transition_effect(game);
 }
 
 //  ---------------------------------------------------------------------------
@@ -229,15 +231,7 @@ void update_transition_game_state(struct Game* game)
                 }
                 else
                 {
-                    if (game->world->map != NULL)
-                    {
-                        unload_map(game->world);
-                    }
-
-                    load_map(
-                        transition_map_name,
-                        &game->world->map,
-                        game->world->actors);
+                    load_map(transition_map_name, game->world);
 
                     free(transition_map_name);
                     transition_map_name = NULL;
@@ -246,7 +240,6 @@ void update_transition_game_state(struct Game* game)
 
                     game->world->player.actor->tile =
                         get_map_tile(game->world->map, 12, 10);
-
                 }
 
                 end_game_state = GAME_STATE_LEVEL;

@@ -84,7 +84,10 @@ void convert_tmx_to_map(const char* tmx_filename, const char* map_filename)
     save_actors_to_file(file, actors);
     fclose(file);
 
-    printf("Converted TMX file %s to %s.\n", tmx_filename, map_filename);
+    printf(
+        "\x1B[33mConverted TMX file %s to %s.\x1B[0m\n",
+        tmx_filename,
+        map_filename);
 
     xmlFreeDoc(doc);
     xmlCleanupParser();

@@ -1,6 +1,8 @@
 # Aventail
 
-A small game written in C.
+A small game written in C with Linux.  
+
+![screenshot](/screenshot.gif?raw=true)
 
 # Map Converter
 
@@ -16,12 +18,16 @@ Game
 Map Converter
 * libxml2
 
+Test
+* [Unity](http://www.throwtheswitch.org/unity/)
+
 # Directory Structure
 
 assets - game assets (audio, image, and map files)  
 common - common source and header files  
 game - game source and header files  
 map_converter - map converter source and header files  
+test - [Unity](http://www.throwtheswitch.org/unity/) tests  
 
 # Build
 
@@ -49,8 +55,13 @@ make clean
 
 Several directories are created by the makefile:  
 bin: Contains the game executable and assets.  
+bin_tests: Contains the unit test executables.  
 tools: Contains the map converter executable.  
 build: Contains object files.  
 
-The TMX files in the assets/maps directory will be converted to MAP
-format and placed in the bin/assets/maps directory.
+The TMX files in the assets/maps directory will be converted to MAP format and placed in the bin/assets/maps directory.
+
+CMake files are also included but these are still new.  
+The tests are built with CMake not the makefile.
+The assets are not built by CMake yet.  
+

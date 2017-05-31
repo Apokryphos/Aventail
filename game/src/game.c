@@ -143,8 +143,6 @@ int game_main()
         render_swap();
     }
 
-    game_shutdown(&game);
-
     return 0;
 }
 

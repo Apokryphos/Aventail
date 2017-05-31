@@ -6,7 +6,9 @@ struct Map;
 
 #include <stdio.h>
 
-void load_actors_from_file(FILE* file, struct Map* map, struct ActorList* actors);
-struct Map* load_map_from_file(FILE* file);
+struct Map* load_map_from_file(
+    FILE* file,
+    struct Map** map,
+    struct ActorList** actors);
 
 #endif

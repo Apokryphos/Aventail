@@ -2,8 +2,11 @@
 #include "map_link.h"
 #include "tile.h"
 #include <assert.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+const int MAX_MAP_SIZE = 25;
 
 //  ---------------------------------------------------------------------------
 struct Map* create_map(
@@ -12,18 +15,54 @@ struct Map* create_map(
     const int tile_width,
     const int tile_height)
 {
-    assert(width > 0);
-    assert(height > 0);
-    assert(tile_width > 0);
-    assert(tile_height > 0);
+    if (width <= 0 || width > MAX_MAP_SIZE)
+    {
+        fprintf(
+            stderr,
+            "Invalid map width specified. Map width must be greater than zero and less than or equal to %d.\n",
+            MAX_MAP_SIZE);
+        fprintf(
+            stderr,
+            "Specified map width is %d.\n",
+            width);
+        return NULL;
+    }
+
+    if (height <= 0 || height > MAX_MAP_SIZE)
+    {
+        fprintf(
+            stderr,
+            "Invalid map height specified. Map height must be greater than zero and less than or equal to %d.\n",
+            MAX_MAP_SIZE);
+        fprintf(
+            stderr,
+            "Specified map height is %d.\n",
+            height);
+        return NULL;
+    }
 
     struct Map* map = malloc(sizeof(struct Map));
+    if (map == NULL)
+    {
+        perror("");
+        fprintf(stderr, "Failed to allocate map.\n");
+        free(map);
+        return NULL;
+    }
+
     map->width = width;
     map->height = height;
     map->tile_width = tile_width;
     map->tile_height = tile_height;
 
     map->tiles = malloc(sizeof(struct Tile) * width * height);
+    if (map->tiles == NULL)
+    {
+        perror("");
+        fprintf(stderr, "Failed to allocate map tiles.\n");
+        free(map);
+        return NULL;
+    }
 
     for (int y = 0; y < height; ++y)
     {

@@ -4,6 +4,8 @@
 #include "direction.h"
 #include <stddef.h>
 
+extern const int MAX_MAP_SIZE;
+
 struct Tile;
 
 struct Map

@@ -54,7 +54,11 @@ dkms.conf
 # Visual Studio Code
 .vscode/*
 
-# Directories created by makefile
+# Directories created by make and CMake
 bin/*
+bin_tests/*
 build/*
 tools/*
+
+# Unity testing library
+Unity/*
