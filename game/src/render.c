@@ -4,18 +4,36 @@
 #include "game.h"
 #include "map.h"
 #include "panel.h"
+#include "paths.h"
 #include "tile.h"
 #include "tileset.h"
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
 #include <assert.h>
 #include <string.h>
 
 //  SDL_RenderSetScale scale amount
 static const int RENDER_SCALE = 2;
 
+static SDL_Renderer* renderer = NULL;
+
 static struct Tileset font_tileset;
 static struct Tileset gui_tileset;
 static struct Tileset map_tileset;
+
+//  ---------------------------------------------------------------------------
+void get_viewport(SDL_Rect* rect)
+{
+     SDL_RenderGetViewport(renderer, rect);
+}
+
+//  ---------------------------------------------------------------------------
+void load_texture(SDL_Texture **texture, const char* asset_name)
+{
+    char *full_path = create_texture_file_path(asset_name);
+    *texture = IMG_LoadTexture(renderer, full_path);
+    free(full_path);
+}
 
 //  ---------------------------------------------------------------------------
 void measure_text(const char* text, int* width, int* height)
@@ -27,7 +45,7 @@ void measure_text(const char* text, int* width, int* height)
 }
 
 //  ---------------------------------------------------------------------------
-void draw_screen_fade(SDL_Renderer* renderer, float progress)
+void draw_screen_fade(float progress)
 {
     if (progress < 0)
     {
@@ -59,7 +77,6 @@ void draw_screen_fade(SDL_Renderer* renderer, float progress)
 
 //  ---------------------------------------------------------------------------
 void draw_text(
-    SDL_Renderer* renderer,
     const char* text,
     const int x,
     const int y)
@@ -93,7 +110,6 @@ void draw_text(
 
 //  ---------------------------------------------------------------------------
 void draw_map(
-    SDL_Renderer* renderer,
     const struct Map* map,
     const struct ActorList* actors)
 {
@@ -146,7 +162,6 @@ void draw_map(
 
 //  ---------------------------------------------------------------------------
 void draw_tileset_tile(
-    SDL_Renderer* renderer,
     int tileset_id,
     const int x,
     const int y,
@@ -179,7 +194,6 @@ void draw_tileset_tile(
 
 //  ---------------------------------------------------------------------------
 void draw_gui_tileset_tile(
-    SDL_Renderer* renderer,
     const int tileset_id,
     const int x,
     const int y,
@@ -211,7 +225,7 @@ void draw_gui_tileset_tile(
 }
 
 //  ---------------------------------------------------------------------------
-static void draw_panel_text(SDL_Renderer* renderer, const struct Panel* panel)
+static void draw_panel_text(const struct Panel* panel)
 {
     assert(renderer != NULL);
     assert(panel != NULL);
@@ -229,14 +243,11 @@ static void draw_panel_text(SDL_Renderer* renderer, const struct Panel* panel)
         text_x = panel->X + (panel->width / 2) - (text_width / 2);
         text_y = panel->Y + (panel->height / 2) - (text_height / 2);
     }
-    draw_text(renderer, panel->text, text_x, text_y);
+    draw_text(panel->text, text_x, text_y);
 }
 
 //  ---------------------------------------------------------------------------
-static void draw_panel_title(
-    SDL_Renderer* renderer,
-    const struct Panel* panel,
-    const char* text)
+static void draw_panel_title(const struct Panel* panel, const char* text)
 {
     assert(renderer != NULL);
     assert(panel != NULL);
@@ -246,11 +257,11 @@ static void draw_panel_title(
     measure_text(text, &text_width, &text_height);
     int text_x = panel->X + (panel->width / 2) - (text_width / 2);
     int text_y = panel->Y - text_height;
-    draw_text(renderer, text, text_x, text_y);
+    draw_text(text, text_x, text_y);
 }
 
 //  ---------------------------------------------------------------------------
-void draw_panel_border(SDL_Renderer* renderer, const struct Panel* panel)
+void draw_panel_border(const struct Panel* panel)
 {
     if (panel->border_style == PANEL_BORDER_STYLE_NONE)
     {
@@ -364,7 +375,7 @@ void draw_panel_border(SDL_Renderer* renderer, const struct Panel* panel)
 }
 
 //  ---------------------------------------------------------------------------
-void draw_panel(SDL_Renderer* renderer, const struct Panel* panel)
+void draw_panel(const struct Panel* panel)
 {
     assert(renderer != NULL);
     assert(panel != NULL);
@@ -377,7 +388,7 @@ void draw_panel(SDL_Renderer* renderer, const struct Panel* panel)
 
     if (panel->show_title && panel->title != NULL)
     {
-        draw_panel_title(renderer, panel, panel->title);
+        draw_panel_title(panel, panel->title);
     }
 
     if (panel->background)
@@ -398,14 +409,13 @@ void draw_panel(SDL_Renderer* renderer, const struct Panel* panel)
         SDL_SetTextureAlphaMod(gui_tileset.texture, panel->alpha);
     }
 
-    draw_panel_border(renderer, panel);
+    draw_panel_border(panel);
 
     if (panel->icon.tileset_id > -1)
     {
         if (panel->icon.style == PANEL_ICON_STYLE_NORMAL)
         {
             draw_tileset_tile(
-                renderer,
                 panel->icon.tileset_id,
                 panel->X + (panel->width / 2) - (map_tileset.tile_width / 2),
                 panel->Y + (panel->height / 2) - (map_tileset.tile_height / 2),
@@ -414,7 +424,6 @@ void draw_panel(SDL_Renderer* renderer, const struct Panel* panel)
         else if (panel->icon.style == PANEL_ICON_STYLE_SMALL)
         {
             draw_gui_tileset_tile(
-                renderer,
                 panel->icon.tileset_id,
                 panel->X + (panel->width / 2) - (gui_tileset.tile_width / 2),
                 panel->Y + (panel->height / 2) - (gui_tileset.tile_height / 2),
@@ -424,7 +433,7 @@ void draw_panel(SDL_Renderer* renderer, const struct Panel* panel)
 
     if (panel->text != NULL)
     {
-        draw_panel_text(renderer, panel);
+        draw_panel_text(panel);
     }
 
     if (panel->alpha < 255)
@@ -436,14 +445,13 @@ void draw_panel(SDL_Renderer* renderer, const struct Panel* panel)
 
 //  ---------------------------------------------------------------------------
 void draw_alpha_text(
-    SDL_Renderer* renderer,
     const char* text,
     const int x,
     const int y,
     const int alpha)
 {
     SDL_SetTextureAlphaMod(font_tileset.texture, alpha);
-    draw_text(renderer, text, x, y);
+    draw_text(text, x, y);
     SDL_SetTextureAlphaMod(font_tileset.texture, 255);
 }
 
@@ -467,48 +475,81 @@ void get_tile_rect(
 }
 
 //  ---------------------------------------------------------------------------
-int init_gfx(struct Game* game)
+void render_clear()
 {
+    assert(renderer != NULL);
+    SDL_RenderClear(renderer);
+}
+
+//  ---------------------------------------------------------------------------
+int render_init(SDL_Window* window)
+{
+    assert(renderer == NULL);
     assert(font_tileset.texture == NULL);
     assert(gui_tileset.texture == NULL);
     assert(map_tileset.texture == NULL);
 
-    SDL_RenderSetScale(game->renderer, RENDER_SCALE, RENDER_SCALE);
+    renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 
-    load_tileset(game, &font_tileset, "font");
+    if (renderer == NULL)
+    {
+		fprintf(stderr, "SDL failed to create window: %sn", SDL_GetError());
+		exit(EXIT_FAILURE);
+    }
+
+    //  Clear window
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+    SDL_RenderClear(renderer);
+    SDL_RenderPresent(renderer);
+
+    SDL_RenderSetScale(renderer, RENDER_SCALE, RENDER_SCALE);
+
+    load_tileset(&font_tileset, "font");
     if (font_tileset.texture == NULL)
     {
-        printf("Failed to load font tileset texture.\n");
-        return -1;
+        fprintf(stderr, "Failed to load font tileset texture.\n");
+        return 1;
     }
 
     font_tileset.tile_width = 5;
     font_tileset.tile_height = 12;
 
-    load_tileset(game, &gui_tileset, "tileset");
+    load_tileset(&gui_tileset, "tileset");
     if (gui_tileset.texture == NULL)
     {
-        printf("Failed to load GUI tileset texture.\n");
-        return -1;
+        fprintf(stderr, "Failed to load GUI tileset texture.\n");
+        return 1;
     }
 
     gui_tileset.tile_width = 8;
     gui_tileset.tile_height = 8;
 
-    load_tileset(game, &map_tileset, "tileset");
+    load_tileset(&map_tileset, "tileset");
     if (map_tileset.texture == NULL)
     {
-        printf("Failed to load map tileset texture.\n");
-        return -1;
+        fprintf(stderr, "Failed to load map tileset texture.\n");
+        return 1;
     }
 
     return 0;
 }
 
 //  ---------------------------------------------------------------------------
-void shutdown_gfx()
+void render_shutdown()
 {
     SDL_DestroyTexture(font_tileset.texture);
     SDL_DestroyTexture(gui_tileset.texture);
     SDL_DestroyTexture(map_tileset.texture);
+
+    if (renderer != NULL)
+    {
+        SDL_DestroyRenderer(renderer);
+        renderer = NULL;
+    }
+}
+
+//  ---------------------------------------------------------------------------
+void render_swap()
+{
+    SDL_RenderPresent(renderer);
 }

@@ -10,7 +10,7 @@
 #include <stdio.h>
 
 //  ---------------------------------------------------------------------------
-void draw_active_game_state(
+void draw_game_state(
     struct Game* game,
     enum GameState game_state,
     int in_transition)

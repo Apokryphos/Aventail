@@ -214,12 +214,12 @@ static struct GearSlotWidget create_gear_slot_widget(
 //  ---------------------------------------------------------------------------
 void draw_gear_game_state(struct Game* game, int in_transition)
 {
-    draw_map(game->renderer, game->world->map, game->world->actors);
+    draw_map(game->world->map, game->world->actors);
     draw_gui(game);
 }
 
 //  ---------------------------------------------------------------------------
-static void init_gear_gui_screen(SDL_Renderer* renderer)
+static void init_gear_gui_screen()
 {
     gear_gui_screen = create_gui_screen();
 
@@ -231,7 +231,7 @@ static void init_gear_gui_screen(SDL_Renderer* renderer)
     inventory_widget = create_inventory_widget(gear_gui_screen);
 
     SDL_Rect viewport;
-    SDL_RenderGetViewport(renderer, &viewport);
+    get_viewport(&viewport);
     set_inventory_widget_position(
         inventory_widget,
         viewport.w - inventory_widget->panel->width - 16,
@@ -297,7 +297,7 @@ void update_gear_game_state(struct Game* game)
 {
     if (gear_gui_screen == NULL)
     {
-        init_gear_gui_screen(game->renderer);
+        init_gear_gui_screen();
     }
 
     gear_gui_screen->enabled = 1;

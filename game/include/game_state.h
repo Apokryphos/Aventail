@@ -15,10 +15,20 @@ enum GameState
     GAME_STATE_GAME_OVER,
 };
 
-void draw_active_game_state(
+/*
+*   Draws the specified game state.
+*
+*   During transitions, the specified game state might not be the same as the
+*   game's state member.
+*/
+void draw_game_state(
     struct Game* game,
     enum GameState game_state,
     int in_transition);
+
+/*
+*   Updates the state specified by the game argument's state member.
+*/
 void update_active_game_state(struct Game* game);
 
 #endif

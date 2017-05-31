@@ -1,6 +1,7 @@
 #include <SDL2/SDL.h>
-#include "tileset.h"
 #include "game.h"
+#include "tileset.h"
+#include "render.h"
 #include <assert.h>
 
 //  ---------------------------------------------------------------------------
@@ -30,11 +31,10 @@ void get_tileset_rect(
 
 //  ---------------------------------------------------------------------------
 void load_tileset(
-    struct Game* game,
     struct Tileset* tileset,
     const char* asset_path)
 {
-    load_texture(game, &tileset->texture, asset_path);
+    load_texture(&tileset->texture, asset_path);
 
     tileset->tile_width = 16;
     tileset->tile_height = 16;

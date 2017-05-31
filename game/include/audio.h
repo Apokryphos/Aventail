@@ -12,7 +12,7 @@ enum SfxId
     SFX_STEPS_EXIT,
 };
 
-int init_audio(const struct Game* game);
+int audio_init();
 void shutdown_audio();
 void update_audio();
 void play_sfx(const enum SfxId id);

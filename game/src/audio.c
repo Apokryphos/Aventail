@@ -20,22 +20,19 @@ static Mix_Chunk* steps_enter_mix_chunk = NULL;
 static Mix_Chunk* steps_exit_mix_chunk = NULL;
 
 //  ---------------------------------------------------------------------------
-static void load_sfx(
-    Mix_Chunk** chunk,
-    const struct Game* game,
-    char* asset_name)
+static void load_sfx(Mix_Chunk** chunk, char* asset_name)
 {
     assert(chunk != NULL);
     assert(*chunk == NULL);
     assert(asset_name != NULL);
 
-    char* full_path = create_sfx_file_path(game->base_path, asset_name);
+    char* full_path = create_sfx_file_path(asset_name);
     *chunk = Mix_LoadWAV(full_path);
     free(full_path);
 }
 
 //  ---------------------------------------------------------------------------
-int init_audio(const struct Game* game)
+int audio_init()
 {
     int init_flags = MIX_INIT_OGG;
     int init = Mix_Init(init_flags);
@@ -51,11 +48,11 @@ int init_audio(const struct Game* game)
         return -1;
     }
 
-    load_sfx(&attack_mix_chunk, game, "attack01");
-    load_sfx(&cash_pickup_mix_chunk, game, "cash_pickup_01");
-    load_sfx(&door_mix_chunk, game, "door");
-    load_sfx(&steps_enter_mix_chunk, game, "steps_enter");
-    load_sfx(&steps_exit_mix_chunk, game, "steps_exit");
+    load_sfx(&attack_mix_chunk, "attack01");
+    load_sfx(&cash_pickup_mix_chunk, "cash_pickup_01");
+    load_sfx(&door_mix_chunk, "door");
+    load_sfx(&steps_enter_mix_chunk, "steps_enter");
+    load_sfx(&steps_exit_mix_chunk, "steps_exit");
 
     //  Reserve a channel for stair effects
     Mix_ReserveChannels(CHANNEL_RESERVE_COUNT);

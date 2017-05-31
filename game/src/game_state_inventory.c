@@ -175,7 +175,7 @@ static void process_inventory_game_state_input(struct Game* game)
 //  ---------------------------------------------------------------------------
 void draw_inventory_game_state(struct Game* game, int in_transition)
 {
-    draw_map(game->renderer, game->world->map, game->world->actors);
+    draw_map(game->world->map, game->world->actors);
     draw_gui(game);
 }
 
@@ -218,7 +218,7 @@ static struct Panel* create_item_type_panel(enum ItemType item_type)
 }
 
 //  ---------------------------------------------------------------------------
-static void init_inventory_gui_screen(SDL_Renderer* renderer)
+static void init_inventory_gui_screen()
 {
     inventory_gui_screen = create_gui_screen();
 
@@ -277,7 +277,7 @@ void update_inventory_game_state(struct Game* game)
 {
     if (inventory_gui_screen == NULL)
     {
-        init_inventory_gui_screen(game->renderer);
+        init_inventory_gui_screen();
     }
 
     inventory_gui_screen->enabled = 1;

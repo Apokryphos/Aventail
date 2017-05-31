@@ -55,12 +55,11 @@ void deactivate_gui()
 }
 
 //  ---------------------------------------------------------------------------
-static void draw_gui_cursor(SDL_Renderer* renderer)
+static void draw_gui_cursor()
 {
     if (cursor_enabled && cursor_blink.visible)
     {
         draw_tileset_tile(
-            renderer,
             CURSOR_TILESET_ID,
             cursor_x,
             cursor_y,
@@ -69,14 +68,14 @@ static void draw_gui_cursor(SDL_Renderer* renderer)
 }
 
 //  ---------------------------------------------------------------------------
-static void draw_gui_screen(SDL_Renderer* renderer, struct GuiScreen* screen)
+static void draw_gui_screen(struct GuiScreen* screen)
 {
     if (screen->enabled)
     {
         for (int p = 0; p < screen->panel_count; ++p)
         {
             //screen->panels[p]->alpha = (int)(255 * fade_progress);
-            draw_panel(renderer, screen->panels[p]);
+            draw_panel(screen->panels[p]);
         }
     }
 }
@@ -92,17 +91,17 @@ void draw_gui(struct Game* game)
 {
     if (fade_progress > 0)
     {
-        draw_screen_fade(game->renderer, 0.9f * fade_progress);
+        draw_screen_fade(0.9f * fade_progress);
     }
 
     if (gui_active)
     {
         for (int s = 0; s < gui_screen_count; ++s)
         {
-            draw_gui_screen(game->renderer, gui_screens[s]);
+            draw_gui_screen(gui_screens[s]);
         }
 
-        draw_gui_cursor(game->renderer);
+        draw_gui_cursor();
     }
 }
 

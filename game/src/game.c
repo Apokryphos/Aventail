@@ -18,32 +18,46 @@
 #include <assert.h>
 #include <stdlib.h>
 
+static struct Game* game = NULL;
+static SDL_Window* window = NULL;
+
+static void game_shutdown();
+
 //  ---------------------------------------------------------------------------
-void init_game(struct Game* game, int width, int height)
+static void game_init(int width, int height)
 {
-    assert(game != NULL);
+    assert(game == NULL);
     assert(width > 0);
     assert(height > 0);
 
+    game = malloc(sizeof(struct Game));
+    if (game == NULL)
+    {
+        perror("");
+        fprintf(stderr, "Failed to create game.\n");
+        exit(EXIT_FAILURE);
+    }
+    game->quit = 0;
+    game->elapsed_seconds = 0;
+    game->state = GAME_STATE_NONE;
+    game->input_device = NULL;
+    game->world = NULL;
+
     if (SDL_Init(SDL_INIT_EVERYTHING) != 0)
     {
-		printf("SDL failed to initialize: %sn", SDL_GetError());
-		exit(1);
-	}
-
-    game->base_path = SDL_GetBasePath();
-    if (game->base_path == NULL)
-    {
-        game->base_path = SDL_strdup("./");
+        fprintf(stderr, "SDL failed to initialize: %sn", SDL_GetError());
+        exit(EXIT_FAILURE);
     }
 
-    if (init_audio(game) != 0)
+    paths_init();
+
+    if (audio_init() != 0)
     {
-  		printf("SDL2_mixer failed to initialize: %sn", Mix_GetError());
-		exit(1);
+  		fprintf(stderr, "SDL2_mixer failed to initialize: %sn", Mix_GetError());
+		exit(EXIT_FAILURE);
     }
 
-    game->window = SDL_CreateWindow(
+    window = SDL_CreateWindow(
         "Aventail",
         SDL_WINDOWPOS_UNDEFINED,
         SDL_WINDOWPOS_UNDEFINED,
@@ -51,24 +65,17 @@ void init_game(struct Game* game, int width, int height)
         height,
         SDL_WINDOW_OPENGL);
 
-    if (game->window == NULL)
+    if (window == NULL)
     {
-		printf("SDL failed to create window: %sn", SDL_GetError());
-		exit(1);
+		fprintf(stderr, "SDL failed to create window: %sn", SDL_GetError());
+		exit(EXIT_FAILURE);
     }
 
-    game->renderer = SDL_CreateRenderer(game->window, -1, SDL_RENDERER_ACCELERATED);
-
-    if (game->renderer == NULL)
+    if (render_init(window) != 0)
     {
-		printf("SDL failed to create window: %sn", SDL_GetError());
-		exit(1);
+        printf("Failed to initialize graphics.\n");
+        exit(EXIT_FAILURE);
     }
-
-    //  Clear window
-    SDL_SetRenderDrawColor(game->renderer, 0, 0, 0, 255);
-    SDL_RenderClear(game->renderer);
-    SDL_RenderPresent(game->renderer);
 
     game->elapsed_seconds = 0;
     game->quit = 0;
@@ -78,97 +85,85 @@ void init_game(struct Game* game, int width, int height)
 }
 
 //  ---------------------------------------------------------------------------
-void game_main()
+int game_main()
 {
+    if (atexit(&game_shutdown))
+    {
+        fprintf(stderr, "Failed to register atexit function.\n");
+        return 1;
+    }
+
     //  Use same seed everytime for now
     srand(0);
 
-    struct Game game = {0};
+    game_init(800, 800);
 
-    init_game(&game, 800, 800);
+    game->world = create_world();
 
-    if (init_gfx(&game) != 0)
-    {
-        printf("Failed to initialize graphics.\n");
-        shutdown_game(&game);
-    }
+    create_player_actor(game->world);
 
-    game.world = create_world();
-
-    create_player_actor(game.world);
-
-    begin_map_load_transition(&game, "map01");
+    begin_map_load_transition(game, "map01");
 
     struct InputDevice input_device = {0};
-    game.input_device = &input_device;
+    game->input_device = &input_device;
 
     unsigned int last_ticks = 0;
     unsigned int ticks = 0;
-    while (game.quit == 0)
+    while (game->quit == 0)
     {
         last_ticks = ticks;
         ticks = SDL_GetTicks();
-        game.elapsed_seconds = (ticks - last_ticks) / 1000.0f;
+        game->elapsed_seconds = (ticks - last_ticks) / 1000.0f;
 
-        update_input(game.input_device);
-        game.quit = game.input_device->quit;
+        update_input(game->input_device);
+        game->quit = game->input_device->quit;
 
-        update_active_game_state(&game);
+        update_active_game_state(game);
 
-        update_gui(&game);
+        update_gui(game);
 
         update_audio();
 
-        SDL_RenderClear(game.renderer);
-        draw_active_game_state(&game, game.state, 0);
-        SDL_RenderPresent(game.renderer);
+        render_clear();
+        draw_game_state(game, game->state, 0);
+        render_swap();
     }
 
-    shutdown_game(&game);
+    game_shutdown(&game);
+
+    return 0;
 }
 
 //  ---------------------------------------------------------------------------
-void shutdown_game(struct Game* game)
+void game_shutdown()
 {
-    shutdown_gfx();
+    render_shutdown();
 
-    if (game->base_path != NULL)
+    if (game != NULL)
     {
-        SDL_free(game->base_path);
-        game->base_path = NULL;
+        if (game->world != NULL)
+        {
+            destroy_world(&game->world);
+            game->world = NULL;
+        }
+
+        // if (game->input_device != NULL)
+        // {
+        //     free(game->input_device);
+        //     game->input_device = NULL;
+        // }
+
+        free(game);
     }
 
-    if (game->world != NULL)
+    if (window != NULL)
     {
-        destroy_world(&game->world);
-        game->world = NULL;
-    }
-
-    if (game->renderer != NULL)
-    {
-        SDL_DestroyRenderer(game->renderer);
-        game->renderer = NULL;
-    }
-
-    if (game->window != NULL)
-    {
-        SDL_DestroyWindow(game->window);
-        game->window = NULL;
+        SDL_DestroyWindow(window);
+        window = NULL;
     }
 
     shutdown_audio();
 
     IMG_Quit();
     SDL_Quit();
-}
-
-//  ---------------------------------------------------------------------------
-void load_texture(
-    struct Game* game,
-    SDL_Texture **texture,
-    const char* asset_filename)
-{
-    char *full_path = create_texture_file_path(game->base_path, asset_filename);
-    *texture = IMG_LoadTexture(game->renderer, full_path);
-    free(full_path);
 }

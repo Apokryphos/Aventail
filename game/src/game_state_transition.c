@@ -7,6 +7,7 @@
 #include "map_link.h"
 #include "map_load_util.h"
 #include "paths.h"
+#include "render.h"
 #include "world.h"
 #include <assert.h>
 #include <stdlib.h>
@@ -26,7 +27,6 @@ static float transition_ticks = 0;
 
 //  ---------------------------------------------------------------------------
 static void load_map(
-    struct Game* game,
     const char* asset_filename,
     struct Map** map,
     struct ActorList* actors)
@@ -34,7 +34,7 @@ static void load_map(
     assert(*map == NULL);
     assert(asset_filename != NULL);
 
-    char *full_path = create_map_file_path(game->base_path, asset_filename);
+    char *full_path = create_map_file_path(asset_filename);
     printf("%s\n", full_path);
     FILE *file = fopen(full_path, "rb");
     assert(file != NULL);
@@ -76,7 +76,7 @@ static void load_map_link(struct Game* game)
 
     unload_map(world);
 
-    load_map(game, dest_map, &world->map, world->actors);
+    load_map(dest_map, &world->map, world->actors);
 
     free(dest_map);
 
@@ -142,53 +142,55 @@ void begin_map_load_transition(struct Game* game, const char* map_name)
 //  ---------------------------------------------------------------------------
 static void DrawTransitionEffect(struct Game* game)
 {
-    Uint8 alpha = 255;
+    //Uint8 alpha = 255;
     float progress = (transition_ticks / TRANSITION_DURATION);
 
-    SDL_Rect dest_rect;
-    SDL_RenderGetViewport(game->renderer, &dest_rect);
+    draw_screen_fade(transition_phase == 0 ? progress : 1 - progress);
 
-    switch (transition_direction)
-    {
-        case DIRECTION_DOWN:
-            dest_rect.y = transition_phase == 0 ?
-            -dest_rect.h + (int)(dest_rect.h * progress) :
-            (int)(dest_rect.h * progress);
-            break;
-        case DIRECTION_UP:
-            dest_rect.y = transition_phase == 0 ?
-            dest_rect.h - (int)(dest_rect.h * progress) :
-            (int)(-dest_rect.h * progress);
-            break;
-        case DIRECTION_RIGHT:
-            dest_rect.x = transition_phase == 0 ?
-            -dest_rect.w + (int)(dest_rect.w * progress) :
-            (int)(dest_rect.w * progress);
-            break;
-        case DIRECTION_LEFT:
-            dest_rect.x = transition_phase == 0 ?
-            dest_rect.w - (int)(dest_rect.w * progress) :
-            (int)(-dest_rect.w * progress);
-            break;
-        case DIRECTION_NONE:
-            alpha = transition_phase == 0 ?
-            (int)(255 * progress) :
-            255 - (int)(255 * progress);
-            break;
-    }
+    // SDL_Rect dest_rect;
+    // SDL_RenderGetViewport(game->renderer, &dest_rect);
 
-    if (alpha != 255)
-    {
-        SDL_SetRenderDrawBlendMode(game->renderer, SDL_BLENDMODE_BLEND);
-    }
+    // switch (transition_direction)
+    // {
+    //     case DIRECTION_DOWN:
+    //         dest_rect.y = transition_phase == 0 ?
+    //         -dest_rect.h + (int)(dest_rect.h * progress) :
+    //         (int)(dest_rect.h * progress);
+    //         break;
+    //     case DIRECTION_UP:
+    //         dest_rect.y = transition_phase == 0 ?
+    //         dest_rect.h - (int)(dest_rect.h * progress) :
+    //         (int)(-dest_rect.h * progress);
+    //         break;
+    //     case DIRECTION_RIGHT:
+    //         dest_rect.x = transition_phase == 0 ?
+    //         -dest_rect.w + (int)(dest_rect.w * progress) :
+    //         (int)(dest_rect.w * progress);
+    //         break;
+    //     case DIRECTION_LEFT:
+    //         dest_rect.x = transition_phase == 0 ?
+    //         dest_rect.w - (int)(dest_rect.w * progress) :
+    //         (int)(-dest_rect.w * progress);
+    //         break;
+    //     case DIRECTION_NONE:
+    //         alpha = transition_phase == 0 ?
+    //         (int)(255 * progress) :
+    //         255 - (int)(255 * progress);
+    //         break;
+    // }
 
-    SDL_SetRenderDrawColor(game->renderer, 0, 0, 0, alpha);
-    SDL_RenderFillRect(game->renderer, &dest_rect);
+    // if (alpha != 255)
+    // {
+    //     SDL_SetRenderDrawBlendMode(game->renderer, SDL_BLENDMODE_BLEND);
+    // }
 
-    if (alpha != 255)
-    {
-        SDL_SetRenderDrawBlendMode(game->renderer, SDL_BLENDMODE_NONE);
-    }
+    // SDL_SetRenderDrawColor(game->renderer, 0, 0, 0, alpha);
+    // SDL_RenderFillRect(game->renderer, &dest_rect);
+
+    // if (alpha != 255)
+    // {
+    //     SDL_SetRenderDrawBlendMode(game->renderer, SDL_BLENDMODE_NONE);
+    // }
 }
 
 //  ---------------------------------------------------------------------------
@@ -196,11 +198,11 @@ void draw_transition_game_state(struct Game* game)
 {
     if (transition_phase == 0)
     {
-        draw_active_game_state(game, begin_game_state, 1);
+        draw_game_state(game, begin_game_state, 1);
     }
     else
     {
-        draw_active_game_state(game, end_game_state, 1);
+        draw_game_state(game, end_game_state, 1);
     }
 
     DrawTransitionEffect(game);
@@ -233,7 +235,6 @@ void update_transition_game_state(struct Game* game)
                     }
 
                     load_map(
-                        game,
                         transition_map_name,
                         &game->world->map,
                         game->world->actors);

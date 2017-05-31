@@ -19,9 +19,6 @@ void get_tileset_rect(
     const int index,
     SDL_Rect* rect);
 
-void load_tileset(
-    struct Game* game,
-    struct Tileset* tileset,
-    const char* asset_path);
+void load_tileset(struct Tileset* tileset, const char* asset_path);
 
 #endif

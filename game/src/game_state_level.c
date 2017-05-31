@@ -85,7 +85,7 @@ void draw_level_game_state(struct Game* game, int in_transition)
 {
     if (game->world->map != NULL)
     {
-        draw_map(game->renderer, game->world->map, game->world->actors);
+        draw_map(game->world->map, game->world->actors);
     }
 
     draw_gui(game);
@@ -171,9 +171,9 @@ void draw_level_game_state(struct Game* game, int in_transition)
 
     if (hover_actor_health_string != NULL)
     {
-        float progress = hover_fade_ticks / HOVER_FADE_DURATION;
+        //float progress = hover_fade_ticks / HOVER_FADE_DURATION;
 
-        int alpha = (int)(255 * progress);
+        //int alpha = (int)(255 * progress);
 
         int text_width, text_height;
         measure_text(hover_actor_health_string, &text_width, &text_height);
@@ -192,46 +192,43 @@ void draw_level_game_state(struct Game* game, int in_transition)
             dest_rect.y -= line_height;
         }
 
-        if (alpha != 255)
-        {
-            SDL_SetRenderDrawBlendMode(game->renderer, SDL_BLENDMODE_BLEND);
-        }
+        // if (alpha != 255)
+        // {
+        //     SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
+        // }
 
-        SDL_SetRenderDrawColor(game->renderer, 0, 0, 0, alpha);
-        SDL_RenderFillRect(game->renderer, &dest_rect);
-        SDL_SetRenderDrawColor(game->renderer, 255, 255, 255, alpha);
-        SDL_RenderDrawRect(game->renderer, &dest_rect);
+        // SDL_SetRenderDrawColor(renderer, 0, 0, 0, alpha);
+        // SDL_RenderFillRect(renderer, &dest_rect);
+        // SDL_SetRenderDrawColor(renderer, 255, 255, 255, alpha);
+        // SDL_RenderDrawRect(renderer, &dest_rect);
 
-        draw_alpha_text(
-            game->renderer,
-            hover_actor_name_string,
-            dest_rect.x + padding / 2,
-            dest_rect.y + padding / 2,
-            alpha);
+        // draw_alpha_text(
+        //     hover_actor_name_string,
+        //     dest_rect.x + padding / 2,
+        //     dest_rect.y + padding / 2,
+        //     alpha);
 
-        draw_alpha_text(
-            game->renderer,
-            hover_actor_health_string,
-            dest_rect.x + padding / 2,
-            dest_rect.y + line_height + padding / 2,
-            alpha);
+        // draw_alpha_text(
+        //     hover_actor_health_string,
+        //     dest_rect.x + padding / 2,
+        //     dest_rect.y + line_height + padding / 2,
+        //     alpha);
 
-        if (hover_actor_type == ACTOR_TYPE_PLAYER)
-        {
-            draw_alpha_text(
-                game->renderer,
-                hover_actor_cash_string,
-                dest_rect.x + padding / 2,
-                dest_rect.y + line_height + line_height + padding / 2,
-                alpha);
-        }
+        // if (hover_actor_type == ACTOR_TYPE_PLAYER)
+        // {
+        //     draw_alpha_text(
+        //         hover_actor_cash_string,
+        //         dest_rect.x + padding / 2,
+        //         dest_rect.y + line_height + line_height + padding / 2,
+        //         alpha);
+        // }
 
-        SDL_SetRenderDrawColor(game->renderer, 0, 0, 0, 255);
+        // SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 
-        if (alpha != 255)
-        {
-            SDL_SetRenderDrawBlendMode(game->renderer, SDL_BLENDMODE_NONE);
-        }
+        // if (alpha != 255)
+        // {
+        //     SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_NONE);
+        // }
     }
 }
 

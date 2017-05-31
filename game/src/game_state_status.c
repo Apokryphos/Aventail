@@ -43,7 +43,7 @@ static void process_status_game_state_input(struct Game* game)
 }
 
 //  ---------------------------------------------------------------------------
-static void init_status_gui_screen(SDL_Renderer* renderer)
+static void init_status_gui_screen()
 {
     status_gui_screen = create_gui_screen();
 
@@ -51,7 +51,7 @@ static void init_status_gui_screen(SDL_Renderer* renderer)
 
     //  Center status widget
     SDL_Rect viewport;
-    SDL_RenderGetViewport(renderer, &viewport);
+    get_viewport(&viewport);
     set_status_widget_position(
         status_widget,
         (viewport.w / 2) - (status_widget->panel->width / 2),
@@ -63,7 +63,7 @@ static void init_status_gui_screen(SDL_Renderer* renderer)
 //  ---------------------------------------------------------------------------
 void draw_status_game_state(struct Game* game, int in_transition)
 {
-    draw_map(game->renderer, game->world->map, game->world->actors);
+    draw_map(game->world->map, game->world->actors);
     draw_gui(game);
 }
 
@@ -72,7 +72,7 @@ void update_status_game_state(struct Game* game)
 {
     if (status_gui_screen == NULL)
     {
-        init_status_gui_screen(game->renderer);
+        init_status_gui_screen();
     }
 
     status_gui_screen->enabled = 1;
