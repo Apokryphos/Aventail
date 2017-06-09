@@ -1,3 +1,8 @@
+//  asprintf
+#ifndef _GNU_SOURCE
+#define _GNU_SOURCE
+#endif
+
 #include "game.h"
 #include "actor.h"
 #include "actor_list.h"
@@ -12,6 +17,7 @@
 #include <SDL2/SDL.h>
 #include <assert.h>
 #include <stdio.h>
+#include <strings.h>
 
 //  Mouse cursor position. Used by is_mouse_cursor_over_actor.
 static int mouse_cursor_x = 0;
