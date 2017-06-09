@@ -4,6 +4,6 @@
 struct Actor;
 struct Item;
 
-void use_heal_item(struct Item* item, struct Actor* target);
+int use_heal_item(struct Item* item, struct Actor* target);
 
 #endif
