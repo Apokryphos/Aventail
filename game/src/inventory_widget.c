@@ -1,3 +1,4 @@
+#include "audio.h"
 #include "gui_screen.h"
 #include "inventory.h"
 #include "inventory_widget.h"
@@ -85,10 +86,12 @@ void select_next_inventory_widget_item_slot(struct InventoryWidget* widget)
         if (widget->selected_item_index < widget->item_count - 1)
         {
             ++widget->selected_item_index;
+            play_sfx(SFX_MENU_NAV);
         }
         else
         {
             widget->selected_item_index = 0;
+            play_sfx(SFX_MENU_NAV);
         }
     }
 }
@@ -101,10 +104,12 @@ void select_previous_inventory_widget_item_slot(struct InventoryWidget* widget)
         if (widget->selected_item_index > 0)
         {
             --widget->selected_item_index;
+            play_sfx(SFX_MENU_NAV);
         }
         else
         {
             widget->selected_item_index = widget->item_count - 1;
+            play_sfx(SFX_MENU_NAV);
         }
     }
 }

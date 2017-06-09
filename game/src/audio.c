@@ -19,6 +19,9 @@ static int channel_queue[AUDIO_QUEUE_SIZE];
 static Mix_Chunk* attack_mix_chunk = NULL;
 static Mix_Chunk* cash_pickup_mix_chunk = NULL;
 static Mix_Chunk* door_mix_chunk = NULL;
+static Mix_Chunk* error_mix_chunk = NULL;
+static Mix_Chunk* heal_mix_chunk = NULL;
+static Mix_Chunk* menu_nav_mix_chunk = NULL;
 static Mix_Chunk* steps_enter_mix_chunk = NULL;
 static Mix_Chunk* steps_exit_mix_chunk = NULL;
 
@@ -57,6 +60,9 @@ int audio_init()
     load_sfx(&attack_mix_chunk, "attack01");
     load_sfx(&cash_pickup_mix_chunk, "cash_pickup_01");
     load_sfx(&door_mix_chunk, "door");
+    load_sfx(&error_mix_chunk, "error");
+    load_sfx(&heal_mix_chunk, "heal");
+    load_sfx(&menu_nav_mix_chunk, "menu_nav");
     load_sfx(&steps_enter_mix_chunk, "steps_enter");
     load_sfx(&steps_exit_mix_chunk, "steps_exit");
 
@@ -96,6 +102,9 @@ void shutdown_audio()
     free_mix_chunk(&attack_mix_chunk);
     free_mix_chunk(&cash_pickup_mix_chunk);
     free_mix_chunk(&door_mix_chunk);
+    free_mix_chunk(&error_mix_chunk);
+    free_mix_chunk(&heal_mix_chunk);
+    free_mix_chunk(&menu_nav_mix_chunk);
     free_mix_chunk(&steps_enter_mix_chunk);
     free_mix_chunk(&steps_exit_mix_chunk);
 
@@ -150,6 +159,15 @@ void play_sfx(const enum SfxId id)
             break;
         case SFX_DOOR:
             chunk = door_mix_chunk;
+            break;
+        case SFX_ERROR:
+            chunk = error_mix_chunk;
+            break;
+        case SFX_HEAL:
+            chunk = heal_mix_chunk;
+            break;
+        case SFX_MENU_NAV:
+            chunk = menu_nav_mix_chunk;
             break;
         case SFX_STEPS_ENTER:
             channel = STEPS_ENTER_SFX_CHANNEL;

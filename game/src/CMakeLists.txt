@@ -22,6 +22,7 @@ set(GAME_SOURCE
     input.c
     inventory_widget.c
     item_defs.c
+    item_funcs.c
     item_slot_widget.c
     main.c
     map_load_util.c

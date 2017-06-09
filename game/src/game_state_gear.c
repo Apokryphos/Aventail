@@ -1,4 +1,5 @@
 #include "actor.h"
+#include "audio.h"
 #include "game.h"
 #include "gui.h"
 #include "gui_screen.h"
@@ -84,6 +85,8 @@ static void process_select_gear_slot_state_input(struct Game* game)
     }
     else if (input_device->move_direction == DIRECTION_DOWN)
     {
+        play_sfx(SFX_MENU_NAV);
+
         ++selected_gear_slot;
         if (selected_gear_slot > GEAR_SLOT_COUNT - 1)
         {
@@ -92,6 +95,8 @@ static void process_select_gear_slot_state_input(struct Game* game)
     }
     else if (input_device->move_direction == DIRECTION_UP)
     {
+        play_sfx(SFX_MENU_NAV);
+
         --selected_gear_slot;
         if (selected_gear_slot < 0)
         {

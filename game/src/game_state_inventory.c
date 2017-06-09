@@ -1,4 +1,5 @@
 #include "actor.h"
+#include "audio.h"
 #include "game.h"
 #include "gui.h"
 #include "gui_screen.h"
@@ -38,10 +39,12 @@ static void select_next_item_type()
     if (t < ITEM_TYPE_COUNT - 1)
     {
         ++t;
+        play_sfx(SFX_MENU_NAV);
     }
     else
     {
         t = 0;
+        play_sfx(SFX_MENU_NAV);
     }
 
     selected_item_type = (enum ItemType)t;
@@ -55,10 +58,12 @@ static void select_previous_item_type()
     if (t > 0)
     {
         --t;
+        play_sfx(SFX_MENU_NAV);
     }
     else
     {
         t = ITEM_TYPE_COUNT - 1;
+        play_sfx(SFX_MENU_NAV);
     }
 
     selected_item_type = (enum ItemType)t;
@@ -109,14 +114,26 @@ static void process_select_inventory_item_slot_state_input(struct Game* game)
     {
         if (inventory_widget->item_count > 0)
         {
-            // struct Actor* actor = game->world->player.actor;
-            //struct Item* item = inventory_widget->Items[inventory_widget->selected_item_index];
-            // equip_item(actor, item);
-            // remove_item_from_inventory(actor->inventory, item);
-            // update_inventory_widget(inventory_widget, actor->inventory);
+            struct Actor* actor = game->world->player.actor;
+            struct Item* item = inventory_widget->items[inventory_widget->selected_item_index];
 
-            // inventory_widget->selected_item_index = 0;
-            // inventory_gui_state = GUI_STATE_SELECT_GEAR_SLOT;
+            if (item->type == ITEM_TYPE_CONSUMABLE &&
+                item->on_use != NULL)
+            {
+                if ((*item->on_use)(item, actor) == 0)
+                {
+                    inventory_widget->selected_item_index = 0;
+                    inventory_gui_state = GUI_STATE_SELECT_ITEM_TYPE;
+                }
+                else
+                {
+                    play_sfx(SFX_ERROR);
+                }
+            }
+            else
+            {
+                play_sfx(SFX_ERROR);
+            }
         }
     }
     else if (input_device->move_direction == DIRECTION_DOWN)
@@ -226,8 +243,6 @@ static void init_inventory_gui_screen()
     inventory_widget = create_inventory_widget(inventory_gui_screen);
     inventory_widget->panel->show_title = 0;
 
-    //SDL_Rect viewport;
-    //SDL_RenderGetViewport(renderer, &viewport);
     set_inventory_widget_position(inventory_widget, 16, 64);
 
     add_gui_screen(inventory_gui_screen);

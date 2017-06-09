@@ -14,6 +14,7 @@ struct Item* create_item(const char* name)
     item->stats.defend = 0;
     item->stats.vitality = 0;
     item->type = ITEM_TYPE_NONE;
+    item->on_use = NULL;
     return item;
 }
 

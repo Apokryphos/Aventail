@@ -8,6 +8,9 @@ enum SfxId
     SFX_ATTACK_01,
     SFX_CASH_PICKUP_01,
     SFX_DOOR,
+    SFX_ERROR,
+    SFX_HEAL,
+    SFX_MENU_NAV,
     SFX_STEPS_ENTER,
     SFX_STEPS_EXIT,
 };

@@ -1,4 +1,5 @@
 #include "item.h"
+#include "item_funcs.h"
 #include <assert.h>
 #include <string.h>
 
@@ -57,6 +58,7 @@ void load_item_definition(struct Item* item)
     {
         item->tileset_id = 97;
         item->heal_amount = 10;
+        item->on_use = &use_heal_item;
         item->type = ITEM_TYPE_CONSUMABLE;
     }
     else if (strcasecmp(item->name, "healing ring") == 0)
