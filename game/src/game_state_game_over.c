@@ -22,7 +22,9 @@ void deactivate_game_over_game_state(struct Game* game)
 //  ---------------------------------------------------------------------------
 void draw_game_over_game_state(struct Game* game, int in_transition)
 {
-    draw_text("GAME OVER", 32, 32);
+    int text_x, text_y;
+    get_viewport_center(&text_x, &text_y);
+    draw_text_centered("GAME OVER", text_x, text_y);
 }
 
 //  ---------------------------------------------------------------------------

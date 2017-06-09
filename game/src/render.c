@@ -7,6 +7,7 @@
 #include "paths.h"
 #include "tile.h"
 #include "tileset.h"
+#include "world.h"
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <assert.h>
@@ -25,6 +26,15 @@ static struct Tileset map_tileset;
 void get_viewport(SDL_Rect* rect)
 {
      SDL_RenderGetViewport(renderer, rect);
+}
+
+//  ---------------------------------------------------------------------------
+void get_viewport_center(int* x, int *y)
+{
+    SDL_Rect viewport;
+    SDL_RenderGetViewport(renderer, &viewport);
+    *x = (viewport.w / 2);
+    *y = (viewport.h / 2);
 }
 
 //  ---------------------------------------------------------------------------
@@ -109,9 +119,20 @@ void draw_text(
 }
 
 //  ---------------------------------------------------------------------------
+void draw_text_centered(
+    const char* text,
+    const int x,
+    const int y)
+{
+    int text_width, text_height;
+    measure_text(text, &text_width, &text_height);
+    draw_text(text, x - text_width / 2, y - text_height / 2);
+}
+
+//  ---------------------------------------------------------------------------
 void draw_map(
     const struct Map* map,
-    const struct ActorList* actors)
+    struct ActorList* actors)
 {
     assert(renderer != NULL);
     assert(map != NULL);
@@ -142,7 +163,9 @@ void draw_map(
         }
     }
 
-    struct ActorListNode* actor_node = actors->back;
+    sort_actor_list(actors);
+
+    struct ActorListNode* actor_node = actors->front;
     while (actor_node != NULL)
     {
         struct Actor* actor = actor_node->actor;
@@ -156,7 +179,7 @@ void draw_map(
             SDL_RenderCopy(renderer, map_tileset.texture, &src_rect, &dest_rect);
         }
 
-        actor_node = actor_node->previous;
+        actor_node = actor_node->next;
     }
 }
 

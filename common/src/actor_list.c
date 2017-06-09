@@ -174,3 +174,51 @@ void remove_actor_from_actor_list(
         node = node->next;
     }
 }
+
+//  ---------------------------------------------------------------------------
+static void swap_actor_node(
+    struct ActorListNode* node1,
+    struct ActorListNode* node2)
+{
+    struct Actor* tmp = node1->actor;
+    node1->actor = node2->actor;
+    node2->actor = tmp;
+}
+
+//  ---------------------------------------------------------------------------
+void sort_actor_list(struct ActorList* actors)
+{
+    if (actors->count == 0)
+    {
+        return;
+    }
+
+    //  Set initial draw order values
+    struct ActorListNode* node1 = actors->front;
+    while (node1 != NULL)
+    {
+        node1->actor->draw_order = get_actor_draw_order(node1->actor);
+        node1 = node1->next;
+    }
+
+    int swapped = 1;
+    struct ActorListNode* node2 = NULL;
+    while (swapped)
+    {
+        swapped = 0;
+        node1 = actors->front;
+
+        while (node1->next != node2)
+        {
+            assert(node1 != NULL);
+            assert(node1->next != NULL);
+            if (node1->actor->draw_order > node1->next->actor->draw_order)
+            {
+                swap_actor_node(node1, node1->next);
+                swapped = 1;
+            }
+            node1 = node1->next;
+        }
+        node2 = node1;
+    }
+}

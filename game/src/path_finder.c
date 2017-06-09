@@ -46,11 +46,16 @@ static void update_path_finder(
     struct ActorListNode* actor_node = actor_list->front;
     while (actor_node != NULL)
     {
-        struct Tile* tile = actor_node->actor->tile;
-        if (tile != NULL)
+        //  Ignore doors and dead actors
+        if (actor_node->actor->type != ACTOR_TYPE_DOOR &&
+            is_actor_dead(actor_node->actor) == 0)
         {
-            size_t index = tile->y * path_finder->map->width + tile->x;
-            path_finder->nodes[index].walkable = 0;
+            struct Tile* tile = actor_node->actor->tile;
+            if (tile != NULL)
+            {
+                size_t index = tile->y * path_finder->map->width + tile->x;
+                path_finder->nodes[index].walkable = 0;
+            }
         }
 
         actor_node = actor_node->next;

@@ -18,6 +18,7 @@ struct Actor
     enum Direction move_direction;
     enum ActorType type;
     int collision;
+    int draw_order;
     int tileset_id;
     int action_points;
     int max_action_points;
@@ -40,6 +41,7 @@ struct Actor* create_actor(
     const int tile_y,
     const int tileset_id);
 void destroy_actor(struct Actor** actor);
+int get_actor_draw_order(const struct Actor* actor);
 int is_actor_dead(const struct Actor* actor);
 int is_actor_foe(const struct Actor* actor, const struct Actor* other);
 

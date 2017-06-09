@@ -3,11 +3,13 @@
 
 #include "flip_flag.h"
 
+struct Actor;
 struct ActorList;
 struct Map;
 struct Panel;
 struct Tile;
 struct Tileset;
+struct World;
 typedef struct SDL_Rect SDL_Rect;
 typedef struct SDL_Renderer SDL_Renderer;
 typedef struct SDL_Texture SDL_Texture;
@@ -15,7 +17,7 @@ typedef struct SDL_Window SDL_Window;
 
 void draw_map(
     const struct Map* map,
-    const struct ActorList* actors);
+    struct ActorList* actors);
 
 void draw_tileset_tile(
     const int tilesetId,
@@ -32,6 +34,11 @@ void draw_text(
     const int x,
     const int y);
 
+void draw_text_centered(
+    const char* text,
+    const int x,
+    const int y);
+
 void draw_alpha_text(
     const char* text,
     const int x,
@@ -42,6 +49,8 @@ void draw_alpha_text(
     Gets an SDL_Rect of the bounds of the active renderer viewport.
 */
 void get_viewport(SDL_Rect* rect);
+
+void get_viewport_center(int* x, int *y);
 
 /*
     Gets the SDL_Rect of the specified Tile in pixels.

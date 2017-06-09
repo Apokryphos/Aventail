@@ -32,6 +32,7 @@ struct Actor* create_actor(
     actor->max_action_points = 1;
     actor->action_points = actor->max_action_points;
     actor->collision = 1;
+    actor->draw_order = 0;
     actor->on_touch = NULL;
     actor->move_direction = DIRECTION_NONE;
     actor->tileset_id = tileset_id;
@@ -60,6 +61,25 @@ void destroy_actor(struct Actor** actor)
         free((*actor)->name);
         free(*actor);
         *actor = NULL;
+    }
+}
+
+//  ---------------------------------------------------------------------------
+int get_actor_draw_order(const struct Actor* actor)
+{
+    switch (actor->type)
+    {
+        default:
+        case ACTOR_TYPE_NONE:
+        case ACTOR_TYPE_DOOR:
+        case ACTOR_TYPE_CONTAINER:
+            return 0;
+
+        case ACTOR_TYPE_VILLAIN:
+            return is_actor_dead(actor) ? 1 : 2;
+
+        case ACTOR_TYPE_PLAYER:
+            return is_actor_dead(actor) ? 1 : 3;
     }
 }
 

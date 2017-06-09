@@ -31,6 +31,9 @@ struct ActorList* create_actor_list();
 */
 void destroy_actor_list(struct ActorList** list);
 struct Actor* find_actor_in_actor_list(const struct ActorList* list, FindActorFunction* find);
+
+void sort_actor_list(struct ActorList* list);
+
 void remove_actor_from_actor_list(struct ActorList* list, const struct Actor* actor);
 
 #endif
