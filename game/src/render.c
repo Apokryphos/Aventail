@@ -197,24 +197,20 @@ void draw_map(struct World* world)
         {
             for (int x = 0; x < map->width; ++x)
             {
-                float light = map->tiles[y * map->width + x].light;
+                dest_rect.x = x * dest_rect.w;
+                dest_rect.y = y * dest_rect.h;
+
+                int light = map->tiles[y * map->width + x].light;
 
                 if (light >= 255)
                 {
                     continue;
                 }
-
-                dest_rect.x = x * dest_rect.w;
-                dest_rect.y = y * dest_rect.h;
-
-                int shadow_alpha = 255 - light;
-                shadow_alpha =
-                    shadow_alpha < 0 ? 0 :
-                    shadow_alpha > 255 ? 255 :
-                    shadow_alpha;
-
-                SDL_SetRenderDrawColor(renderer, 0, 0, 0, shadow_alpha);
-                SDL_RenderFillRect(renderer, &dest_rect);
+                else
+                {
+                    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255 - light);
+                    SDL_RenderFillRect(renderer, &dest_rect);
+                }
             }
         }
         SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_NONE);

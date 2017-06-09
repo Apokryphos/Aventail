@@ -43,9 +43,18 @@ static void light_neighbor(
                 //  Add light to neighbor tile
                 neighbor_tile->light = tile->light - light_decay;
 
-                //  Add neighbor to open list
-                open_cells[*open_count] = neighbor_index;
-                ++(*open_count);
+                //  If less than or equal to zero than don't add to open list
+                if (neighbor_tile->light <= 0)
+                {
+                    //  Clamp tile light to positive values
+                    neighbor_tile->light = 0;
+                }
+                else
+                {
+                    //  Add lit neighbor to open list
+                    open_cells[*open_count] = neighbor_index;
+                    ++(*open_count);
+                }
             }
         }
     }
@@ -116,7 +125,7 @@ void update_lighting(struct World* world)
             node = node->next;
         }
 
-        if (light_blocked == 0)
+        if (light_blocked == 0 && tile->light)
         {
             light_neighbor(map, tile, DIRECTION_RIGHT, open_cells, &open_count);
             light_neighbor(map, tile, DIRECTION_UP, open_cells, &open_count);
