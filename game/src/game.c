@@ -45,7 +45,7 @@ static void game_init(int width, int height)
     }
     game->quit = 0;
     game->elapsed_seconds = 0;
-    game->state = GAME_STATE_LEVEL;
+    game->state = GAME_STATE_NONE;
     game->input_device = NULL;
     game->world = NULL;
 
@@ -116,7 +116,7 @@ int game_main()
 
     create_player_actor(game->world);
 
-    begin_map_load_transition(game, "map01");
+    begin_game_state_transition(game, GAME_STATE_MAIN_MENU);
 
     struct InputDevice input_device = {0};
     game->input_device = &input_device;

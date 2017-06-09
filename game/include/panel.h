@@ -39,8 +39,8 @@ struct Panel
     int width;
     int height;
     int show_title;
-    int X;
-    int Y;
+    int x;
+    int y;
     struct PanelIcon icon;
     enum PanelBorderStyle border_style;
     enum PanelTextAlign text_align;
@@ -54,5 +54,6 @@ void get_panel_border_tileset_ids(
     enum PanelBorderStyle style,
     int* corner_tileset_id,
     int* side_tileset_id);
+void stack_panels(struct Panel* panels[], const int count);
 
 #endif

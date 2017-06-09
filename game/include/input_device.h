@@ -10,6 +10,7 @@ struct InputDevice
     int cancel;
     int mouse_cursor_x;
     int mouse_cursor_y;
+    int help;
     int inventory;
     int gear;
     int remove;

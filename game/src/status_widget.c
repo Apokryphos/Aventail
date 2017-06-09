@@ -67,28 +67,28 @@ void set_status_widget_position(struct StatusWidget* widget, int x, int y)
 {
     assert(widget != NULL);
 
-    widget->panel->X = 100;
-    widget->panel->Y = 100;
+    widget->panel->x = 100;
+    widget->panel->y = 100;
 
-    int left = widget->panel->X + 16;
+    int left = widget->panel->x + 16;
 
-    widget->name_panel->X = left;
-    widget->name_panel->Y = widget->panel->Y + 16;
+    widget->name_panel->x = left;
+    widget->name_panel->y = widget->panel->y + 16;
 
-    widget->health_gauge_panel->X = left;
-    widget->health_gauge_panel->Y = widget->name_panel->Y + widget->name_panel->height * 2;
+    widget->health_gauge_panel->x = left;
+    widget->health_gauge_panel->y = widget->name_panel->y + widget->name_panel->height * 2;
 
-    widget->attack_panel->X = left;
-    widget->attack_panel->Y = widget->health_gauge_panel->Y + widget->health_gauge_panel->height * 2;
+    widget->attack_panel->x = left;
+    widget->attack_panel->y = widget->health_gauge_panel->y + widget->health_gauge_panel->height * 2;
 
-    widget->defend_panel->X = left;
-    widget->defend_panel->Y = widget->attack_panel->Y + widget->attack_panel->height;
+    widget->defend_panel->x = left;
+    widget->defend_panel->y = widget->attack_panel->y + widget->attack_panel->height;
 
-    widget->vitality_panel->X = left;
-    widget->vitality_panel->Y = widget->defend_panel->Y + widget->defend_panel->height;
+    widget->vitality_panel->x = left;
+    widget->vitality_panel->y = widget->defend_panel->y + widget->defend_panel->height;
 
-    widget->cash_panel->X = left;
-    widget->cash_panel->Y = widget->vitality_panel->Y + widget->vitality_panel->height * 2;
+    widget->cash_panel->x = left;
+    widget->cash_panel->y = widget->vitality_panel->y + widget->vitality_panel->height * 2;
 }
 
 //  ---------------------------------------------------------------------------

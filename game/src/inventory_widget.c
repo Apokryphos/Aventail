@@ -112,26 +112,26 @@ void select_previous_inventory_widget_item_slot(struct InventoryWidget* widget)
 //  ---------------------------------------------------------------------------
 void set_inventory_widget_position(struct InventoryWidget* widget, int x, int y)
 {
-    widget->panel->X = x;
-    widget->panel->Y = y;
+    widget->panel->x = x;
+    widget->panel->y = y;
 
-    widget->bottom_scroll_arrow_panel->X =
-        widget->panel->X +
+    widget->bottom_scroll_arrow_panel->x =
+        widget->panel->x +
         widget->panel->width / 2 -
         widget->bottom_scroll_arrow_panel->width / 2;
 
-    widget->bottom_scroll_arrow_panel->Y =
-        widget->panel->Y +
+    widget->bottom_scroll_arrow_panel->y =
+        widget->panel->y +
         widget->panel->height -
         widget->bottom_scroll_arrow_panel->height * 2 + 2;
 
-    widget->top_scroll_arrow_panel->X =
-        widget->panel->X +
+    widget->top_scroll_arrow_panel->x =
+        widget->panel->x +
         widget->panel->width / 2 -
         widget->top_scroll_arrow_panel->width / 2;
 
-    widget->top_scroll_arrow_panel->Y =
-        widget->panel->Y +
+    widget->top_scroll_arrow_panel->y =
+        widget->panel->y +
         widget->top_scroll_arrow_panel->height - 2;
 
     const int itemPanelHeight = 32;

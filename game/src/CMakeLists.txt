@@ -5,8 +5,10 @@ set(GAME_SOURCE
     blink_state_data.c
     game_state_game_over.c
     game_state_gear.c
+    game_state_help.c
     game_state_inventory.c
     game_state_level.c
+    game_state_main_menu.c
     game_state_status.c
     game_state_transition.c
     game_state.c

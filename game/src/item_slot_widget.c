@@ -120,24 +120,24 @@ void destroy_item_slot_widget(struct ItemSlotWidget** widget)
 //  ---------------------------------------------------------------------------
 void set_item_slot_widget_position(struct ItemSlotWidget* widget, int x, int y)
 {
-    widget->item_icon_panel->X = x + 16;
-    widget->item_icon_panel->Y = y + 16;
+    widget->item_icon_panel->x = x + 16;
+    widget->item_icon_panel->y = y + 16;
 
-    widget->item_name_panel->X = widget->item_icon_panel->X + widget->item_icon_panel->width + 4;
-    widget->item_name_panel->Y = widget->item_icon_panel->Y;
+    widget->item_name_panel->x = widget->item_icon_panel->x + widget->item_icon_panel->width + 4;
+    widget->item_name_panel->y = widget->item_icon_panel->y;
 
-    int prev_x = widget->item_name_panel->X;
+    int prev_x = widget->item_name_panel->x;
     for (int s = 0; s < STAT_TYPE_COUNT; ++s)
     {
         struct Panel* icon_panel = widget->stat_icon_panels[s];
-        icon_panel->X = prev_x;
-        icon_panel->Y = widget->item_name_panel->Y + widget->item_name_panel->height;
+        icon_panel->x = prev_x;
+        icon_panel->y = widget->item_name_panel->y + widget->item_name_panel->height;
 
         struct Panel* value_panel = widget->stat_value_panels[s];
-        value_panel->X = icon_panel->X + icon_panel->width + STAT_VALUE_PANEL_PADDING;
-        value_panel->Y = icon_panel->Y;
+        value_panel->x = icon_panel->x + icon_panel->width + STAT_VALUE_PANEL_PADDING;
+        value_panel->y = icon_panel->y;
 
-        prev_x = value_panel->X + value_panel->width;
+        prev_x = value_panel->x + value_panel->width;
     }
 }
 

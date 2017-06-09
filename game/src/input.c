@@ -8,6 +8,7 @@ void update_input(struct InputDevice* input_device)
     input_device->move_direction = DIRECTION_NONE;
     input_device->cancel = 0;
     input_device->gear = 0;
+    input_device->help = 0;
     input_device->inventory = 0;
     input_device->debug_kill_player = 0;
     input_device->accept = 0;
@@ -40,6 +41,13 @@ void update_input(struct InputDevice* input_device)
                         case SDLK_r:
                             input_device->remove = 1;
                             break;
+
+                        case SDLK_SLASH:
+                        case SDLK_QUESTION:
+                        case SDLK_h:
+                            input_device->help = 1;
+                            break;
+
                         case SDLK_g:
                             input_device->gear = 1;
                             break;

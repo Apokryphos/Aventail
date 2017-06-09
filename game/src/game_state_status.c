@@ -14,31 +14,25 @@ struct GuiScreen* status_gui_screen = NULL;
 struct StatusWidget* status_widget = NULL;
 
 //  ---------------------------------------------------------------------------
-static void exit_status_game_state(
-    struct Game* game,
-    enum GameState game_state)
-{
-    game->state = game_state;
-    deactivate_gui();
-    status_gui_screen->enabled = 0;
-}
-
-//  ---------------------------------------------------------------------------
 static void process_status_game_state_input(struct Game* game)
 {
     struct InputDevice* input_device = game->input_device;
 
     if (input_device->cancel || input_device->status)
     {
-        exit_status_game_state(game, GAME_STATE_LEVEL);
+        enter_game_state(game, GAME_STATE_LEVEL);
     }
     else if (input_device->inventory)
     {
-        exit_status_game_state(game, GAME_STATE_INVENTORY);
+        enter_game_state(game, GAME_STATE_INVENTORY);
     }
     else if (input_device->gear)
     {
-        exit_status_game_state(game, GAME_STATE_GEAR);
+        enter_game_state(game, GAME_STATE_GEAR);
+    }
+    else if (input_device->help)
+    {
+        enter_game_state(game, GAME_STATE_HELP);
     }
 }
 
@@ -61,6 +55,26 @@ static void init_status_gui_screen()
 }
 
 //  ---------------------------------------------------------------------------
+void activate_status_game_state(struct Game* game)
+{
+    if (status_gui_screen == NULL)
+    {
+        init_status_gui_screen();
+    }
+
+    activate_gui();
+    enable_gui_cursor(0);
+    status_gui_screen->enabled = 1;
+}
+
+//  ---------------------------------------------------------------------------
+void deactivate_status_game_state(struct Game* game)
+{
+    deactivate_gui();
+    status_gui_screen->enabled = 0;
+}
+
+//  ---------------------------------------------------------------------------
 void draw_status_game_state(struct Game* game, int in_transition)
 {
     draw_map(game->world->map, game->world->actors);
@@ -70,17 +84,6 @@ void draw_status_game_state(struct Game* game, int in_transition)
 //  ---------------------------------------------------------------------------
 void update_status_game_state(struct Game* game)
 {
-    if (status_gui_screen == NULL)
-    {
-        init_status_gui_screen();
-    }
-
-    status_gui_screen->enabled = 1;
-
-    activate_gui();
-    enable_gui_cursor(0);
-
     process_status_game_state_input(game);
-
     update_status_widget(status_widget, game->world->player.actor);
 }

@@ -31,6 +31,16 @@ static char* hover_actor_health_string = NULL;
 static char* hover_actor_name_string = NULL;
 
 //  ---------------------------------------------------------------------------
+void activate_level_game_state(struct Game* game)
+{
+}
+
+//  ---------------------------------------------------------------------------
+void deactivate_level_game_state(struct Game* game)
+{
+}
+
+//  ---------------------------------------------------------------------------
 static void process_level_game_state_input(struct Game* game)
 {
     struct InputDevice* input_device = game->input_device;
@@ -40,15 +50,19 @@ static void process_level_game_state_input(struct Game* game)
 
     if (input_device->gear)
     {
-        game->state = GAME_STATE_GEAR;
+        enter_game_state(game, GAME_STATE_GEAR);
     }
     else if (input_device->inventory)
     {
-        game->state = GAME_STATE_INVENTORY;
+        enter_game_state(game, GAME_STATE_INVENTORY);
     }
     else if (input_device->status)
     {
-        game->state = GAME_STATE_STATUS;
+        enter_game_state(game, GAME_STATE_STATUS);
+    }
+    else if (input_device->help)
+    {
+        enter_game_state(game, GAME_STATE_HELP);
     }
 
     if (input_device->debug_kill_player)

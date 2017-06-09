@@ -235,13 +235,13 @@ static void draw_panel_text(const struct Panel* panel)
     measure_text(panel->text, &text_width, &text_height);
     if (panel->text_align == PANEL_TEXT_ALIGN_LEFT)
     {
-        text_x = panel->X;
-        text_y = panel->Y;
+        text_x = panel->x;
+        text_y = panel->y;
     }
     else
     {
-        text_x = panel->X + (panel->width / 2) - (text_width / 2);
-        text_y = panel->Y + (panel->height / 2) - (text_height / 2);
+        text_x = panel->x + (panel->width / 2) - (text_width / 2);
+        text_y = panel->y + (panel->height / 2) - (text_height / 2);
     }
     draw_text(panel->text, text_x, text_y);
 }
@@ -255,8 +255,8 @@ static void draw_panel_title(const struct Panel* panel, const char* text)
 
     int text_width, text_height;
     measure_text(text, &text_width, &text_height);
-    int text_x = panel->X + (panel->width / 2) - (text_width / 2);
-    int text_y = panel->Y - text_height;
+    int text_x = panel->x + (panel->width / 2) - (text_width / 2);
+    int text_y = panel->y - text_height;
     draw_text(text, text_x, text_y);
 }
 
@@ -271,8 +271,8 @@ void draw_panel_border(const struct Panel* panel)
     SDL_Rect src_rect;
 
     SDL_Rect dest_rect;
-    dest_rect.x = panel->X;
-    dest_rect.y = panel->Y;
+    dest_rect.x = panel->x;
+    dest_rect.y = panel->y;
     dest_rect.w = gui_tileset.tile_width;
     dest_rect.h = gui_tileset.tile_height;
 
@@ -283,13 +283,13 @@ void draw_panel_border(const struct Panel* panel)
         &side_tileset_id);
 
     get_tileset_rect(&gui_tileset, side_tileset_id, &src_rect);
-    int start_x = panel->X + dest_rect.w;
-    int end_x = panel->X + panel->width - dest_rect.w;
+    int start_x = panel->x + dest_rect.w;
+    int end_x = panel->x + panel->width - dest_rect.w;
     for (int x = start_x; x < end_x; x += dest_rect.w)
     {
         dest_rect.x = x;
 
-        dest_rect.y = panel->Y;
+        dest_rect.y = panel->y;
         SDL_RenderCopyEx(
             renderer,
             gui_tileset.texture,
@@ -299,7 +299,7 @@ void draw_panel_border(const struct Panel* panel)
             NULL,
             SDL_FLIP_NONE);
 
-        dest_rect.y = panel->Y + panel->height - gui_tileset.tile_height;
+        dest_rect.y = panel->y + panel->height - gui_tileset.tile_height;
         SDL_RenderCopyEx(
             renderer,
             gui_tileset.texture,
@@ -310,16 +310,16 @@ void draw_panel_border(const struct Panel* panel)
             SDL_FLIP_NONE);
     }
 
-    int start_y = panel->Y + dest_rect.h;
-    int end_y = panel->Y + panel->height - dest_rect.h;
+    int start_y = panel->y + dest_rect.h;
+    int end_y = panel->y + panel->height - dest_rect.h;
     for (int y = start_y; y < end_y; y += dest_rect.h)
     {
         dest_rect.y = y;
 
-        dest_rect.x = panel->X;
+        dest_rect.x = panel->x;
         SDL_RenderCopy(renderer, gui_tileset.texture, &src_rect, &dest_rect);
 
-        dest_rect.x = panel->X + panel->width - gui_tileset.tile_width;
+        dest_rect.x = panel->x + panel->width - gui_tileset.tile_width;
         SDL_RenderCopyEx(
             renderer,
             gui_tileset.texture,
@@ -333,13 +333,13 @@ void draw_panel_border(const struct Panel* panel)
     get_tileset_rect(&gui_tileset, corner_tileset_id, &src_rect);
 
     //  Upper-left corner
-    dest_rect.x = panel->X;
-    dest_rect.y = panel->Y;
+    dest_rect.x = panel->x;
+    dest_rect.y = panel->y;
     SDL_RenderCopy(renderer, gui_tileset.texture, &src_rect, &dest_rect);
 
     //  Lower-left corner
-    dest_rect.x = panel->X;
-    dest_rect.y = panel->Y + panel->height - gui_tileset.tile_height;
+    dest_rect.x = panel->x;
+    dest_rect.y = panel->y + panel->height - gui_tileset.tile_height;
     SDL_RenderCopyEx(
             renderer,
             gui_tileset.texture,
@@ -350,8 +350,8 @@ void draw_panel_border(const struct Panel* panel)
             SDL_FLIP_VERTICAL);
 
     //  Lower-right corner
-    dest_rect.x = panel->X + panel->width - gui_tileset.tile_width;
-    dest_rect.y = panel->Y + panel->height - gui_tileset.tile_height;
+    dest_rect.x = panel->x + panel->width - gui_tileset.tile_width;
+    dest_rect.y = panel->y + panel->height - gui_tileset.tile_height;
     SDL_RenderCopyEx(
             renderer,
             gui_tileset.texture,
@@ -362,8 +362,8 @@ void draw_panel_border(const struct Panel* panel)
             SDL_FLIP_HORIZONTAL | SDL_FLIP_VERTICAL);
 
     //  Upper-right corner
-    dest_rect.x = panel->X + panel->width - gui_tileset.tile_width;
-    dest_rect.y = panel->Y;
+    dest_rect.x = panel->x + panel->width - gui_tileset.tile_width;
+    dest_rect.y = panel->y;
     SDL_RenderCopyEx(
             renderer,
             gui_tileset.texture,
@@ -395,7 +395,7 @@ void draw_panel(const struct Panel* panel)
     {
         SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
 
-        SDL_Rect panelRect = { panel->X, panel->Y, panel->width, panel->height };
+        SDL_Rect panelRect = { panel->x, panel->y, panel->width, panel->height };
         SDL_SetRenderDrawColor(renderer, 42, 5, 3, panel->alpha);
         SDL_RenderFillRect(renderer, &panelRect);
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
@@ -417,16 +417,16 @@ void draw_panel(const struct Panel* panel)
         {
             draw_tileset_tile(
                 panel->icon.tileset_id,
-                panel->X + (panel->width / 2) - (map_tileset.tile_width / 2),
-                panel->Y + (panel->height / 2) - (map_tileset.tile_height / 2),
+                panel->x + (panel->width / 2) - (map_tileset.tile_width / 2),
+                panel->y + (panel->height / 2) - (map_tileset.tile_height / 2),
                 panel->icon.flip);
         }
         else if (panel->icon.style == PANEL_ICON_STYLE_SMALL)
         {
             draw_gui_tileset_tile(
                 panel->icon.tileset_id,
-                panel->X + (panel->width / 2) - (gui_tileset.tile_width / 2),
-                panel->Y + (panel->height / 2) - (gui_tileset.tile_height / 2),
+                panel->x + (panel->width / 2) - (gui_tileset.tile_width / 2),
+                panel->y + (panel->height / 2) - (gui_tileset.tile_height / 2),
                 panel->icon.flip);
         }
     }

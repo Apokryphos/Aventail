@@ -4,6 +4,7 @@
 #include "actor_list.h"
 #include "path_finder.h"
 #include "audio.h"
+#include "game_state_load_map.h"
 #include "game_state_transition.h"
 #include "gear.h"
 #include "inventory.h"
@@ -272,7 +273,8 @@ static void MoveActor(
                 if (actor == world->player.actor)
                 {
                     active_actor = NULL;
-                    begin_map_link_transition(game, dest_tile->link, DIRECTION_NONE);
+                    queue_map_link_load(dest_tile->link);
+                    begin_game_state_transition(game, GAME_STATE_LOAD_MAP);
                     return;
                 }
             }

@@ -1,7 +1,6 @@
 #ifndef INVENTORY_WIDGET_HEADER_INCLUDED
 #define INVENTORY_WIDGET_HEADER_INCLUDED
 
-#include "blink_state_data.h"
 #include "item_type.h"
 #include <stddef.h>
 
