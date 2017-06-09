@@ -14,6 +14,7 @@ struct Map
     int height;
     int tile_width;
     int tile_height;
+    int sunlight;
     struct Tile* tiles;
 };
 
@@ -31,5 +32,6 @@ struct Tile* get_map_tile(const struct Map* map, const int x, const int y);
 int get_map_tile_count(const struct Map* map);
 size_t get_map_tile_index(const struct Map* map, struct Tile* tile);
 int in_map_bounds(const struct Map* map, const int x, const int y);
+int index_in_map_bounds(const struct Map* map, const int index);
 
 #endif

@@ -15,9 +15,7 @@ typedef struct SDL_Renderer SDL_Renderer;
 typedef struct SDL_Texture SDL_Texture;
 typedef struct SDL_Window SDL_Window;
 
-void draw_map(
-    const struct Map* map,
-    struct ActorList* actors);
+void draw_map(struct World* world);
 
 void draw_tileset_tile(
     const int tilesetId,

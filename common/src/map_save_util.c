@@ -84,6 +84,7 @@ void save_map_to_file(FILE* file, const struct Map* map)
     fwrite(&map->height, sizeof(int), 1, file);
     fwrite(&map->tile_height, sizeof(int), 1, file);
     fwrite(&map->tile_height, sizeof(int), 1, file);
+    fwrite(&map->sunlight, sizeof(int), 1, file);
 
     int map_link_count = 0;
     int tile_count = get_map_tile_count(map);

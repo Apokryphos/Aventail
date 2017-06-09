@@ -3,6 +3,7 @@
 #include "flip_flag.h"
 #include "game.h"
 #include "map.h"
+#include "light.h"
 #include "panel.h"
 #include "paths.h"
 #include "tile.h"
@@ -130,13 +131,17 @@ void draw_text_centered(
 }
 
 //  ---------------------------------------------------------------------------
-void draw_map(
-    const struct Map* map,
-    struct ActorList* actors)
+void draw_map(struct World* world)
 {
+    struct Map* map = world->map;
+    struct ActorList* actors = world->actors;
+    struct Actor* player_actor = world->player.actor;
+
     assert(renderer != NULL);
+    assert(actors != NULL);
     assert(map != NULL);
     assert(map_tileset.texture != NULL);
+    assert(player_actor != NULL);
 
     SDL_Rect src_rect;
 
@@ -150,7 +155,7 @@ void draw_map(
         {
             int tileset_id = map->tiles[y * map->width + x].tileset_id;
 
-            if (tileset_id == 0)
+            if (tileset_id < 0)
             {
                 continue;
             }
@@ -180,6 +185,39 @@ void draw_map(
         }
 
         actor_node = actor_node->next;
+    }
+
+    //  Draw lighting
+    if (map->sunlight == 0)
+    {
+        update_lighting(world);
+
+        SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
+        for (int y = 0; y < map->height; ++y)
+        {
+            for (int x = 0; x < map->width; ++x)
+            {
+                float light = map->tiles[y * map->width + x].light;
+
+                if (light >= 255)
+                {
+                    continue;
+                }
+
+                dest_rect.x = x * dest_rect.w;
+                dest_rect.y = y * dest_rect.h;
+
+                int shadow_alpha = 255 - light;
+                shadow_alpha =
+                    shadow_alpha < 0 ? 0 :
+                    shadow_alpha > 255 ? 255 :
+                    shadow_alpha;
+
+                SDL_SetRenderDrawColor(renderer, 0, 0, 0, shadow_alpha);
+                SDL_RenderFillRect(renderer, &dest_rect);
+            }
+        }
+        SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_NONE);
     }
 }
 

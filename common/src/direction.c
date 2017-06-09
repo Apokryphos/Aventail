@@ -26,6 +26,26 @@ void get_direction_delta(const enum Direction direction, int* dx, int* dy)
             *dy = 1;
             return;
 
+        case DIRECTION_LEFT_DOWN:
+            *dx = -1;
+            *dy = 1;
+            return;
+
+        case DIRECTION_LEFT_UP:
+            *dx = -1;
+            *dy = -1;
+            return;
+
+        case DIRECTION_RIGHT_DOWN:
+            *dx = 1;
+            *dy = 1;
+            return;
+
+        case DIRECTION_RIGHT_UP:
+            *dx = 1;
+            *dy = -1;
+            return;
+
         case DIRECTION_NONE:
         default:
             *dx = 0;
@@ -107,4 +127,25 @@ enum Direction get_random_direction()
 {
     //  Random direction excluding DIRECTION_NONE
     return (enum Direction)(rand() % 4 + 1);
+}
+
+//  ---------------------------------------------------------------------------
+int is_diagonal_direction(const enum Direction direction)
+{
+    switch (direction)
+    {
+        default:
+        case DIRECTION_NONE:
+        case DIRECTION_RIGHT:
+        case DIRECTION_UP:
+        case DIRECTION_LEFT:
+        case DIRECTION_DOWN:
+            return 0;
+
+        case DIRECTION_LEFT_DOWN:
+        case DIRECTION_LEFT_UP:
+        case DIRECTION_RIGHT_DOWN:
+        case DIRECTION_RIGHT_UP:
+            return 1;
+    }
 }

@@ -156,11 +156,12 @@ int load_map_from_file(
     struct Map** map,
     struct ActorList** actors)
 {
-    int width, height, tile_width, tile_height;
+    int width, height, tile_width, tile_height, sunlight;
     fread(&width, sizeof(int), 1, file);
     fread(&height, sizeof(int), 1, file);
     fread(&tile_width, sizeof(int), 1, file);
     fread(&tile_height, sizeof(int), 1, file);
+    fread(&sunlight, sizeof(int), 1, file);
 
     *map = create_map(width, height, tile_width, tile_height);
     if (*map == NULL)
@@ -168,6 +169,8 @@ int load_map_from_file(
         fprintf(stderr, "Failed to create map.\n");
         return ERROR_MAP_FILE_LOAD;
     }
+
+    (*map)->sunlight = sunlight;
 
     int tile_count = get_map_tile_count(*map);
     for (int t = 0; t < tile_count; ++t)

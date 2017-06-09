@@ -184,7 +184,7 @@ static void process_inventory_game_state_input(struct Game* game)
 //  ---------------------------------------------------------------------------
 void draw_inventory_game_state(struct Game* game, int in_transition)
 {
-    draw_map(game->world->map, game->world->actors);
+    draw_map(game->world);
     draw_gui(game);
 }
 

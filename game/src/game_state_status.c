@@ -77,7 +77,7 @@ void deactivate_status_game_state(struct Game* game)
 //  ---------------------------------------------------------------------------
 void draw_status_game_state(struct Game* game, int in_transition)
 {
-    draw_map(game->world->map, game->world->actors);
+    draw_map(game->world);
     draw_gui(game);
 }
 

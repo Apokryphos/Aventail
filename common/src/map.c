@@ -54,6 +54,7 @@ struct Map* create_map(
     map->height = height;
     map->tile_width = tile_width;
     map->tile_height = tile_height;
+    map->sunlight = 0;
 
     map->tiles = malloc(sizeof(struct Tile) * width * height);
     if (map->tiles == NULL)
@@ -70,6 +71,7 @@ struct Map* create_map(
         {
             struct Tile* tile = &map->tiles[y * width + x];
             tile->collision = 0;
+            tile->light = 0;
             tile->tileset_id = 0;
             tile->x = x;
             tile->y = y;
@@ -146,4 +148,11 @@ int in_map_bounds(const struct Map* map, const int x, const int y)
 {
     assert(map != NULL);
     return x >= 0 && y >= 0 && x < map->width && y < map->height;
+}
+
+//  ---------------------------------------------------------------------------
+int index_in_map_bounds(const struct Map* map, const int index)
+{
+    assert(map != NULL);
+    return index >= 0 && index < map->width * map->height;
 }

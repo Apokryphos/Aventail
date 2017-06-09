@@ -6,6 +6,7 @@ struct MapLink;
 struct Tile
 {
     int collision;
+    int light;
     int tileset_id;
     int x;
     int y;

@@ -89,6 +89,19 @@ static xmlNode* get_property_node(
 }
 
 //  ---------------------------------------------------------------------------
+static void read_bool_property(
+    xmlNode* properties_node,
+    char* property_name,
+    int* value)
+{
+    xmlNode* property_node = get_property_node(properties_node, property_name);
+    if (property_node != NULL)
+    {
+        read_bool_attribute(property_node, "value", value);
+    }
+}
+
+//  ---------------------------------------------------------------------------
 static void read_int_property(
     xmlNode* properties_node,
     char* property_name,
@@ -151,12 +164,16 @@ void load_tmx(const xmlDoc* doc, struct Map** map, struct ActorList** actors)
     read_int_attribute(root, "tilewidth", &tile_width);
     read_int_attribute(root, "tileheight", &tile_height);
 
+    xmlNode* map_properties_node = get_properties_node(root);
+
     printf("Parsing TMX...\n");
     printf("Map Size: %d x %d\n", map_width, map_height);
     printf("Tile Size: %d x %d\n", tile_width, tile_height);
 
     *map = create_map(map_width, map_height, tile_width, tile_height);
     *actors = create_actor_list();
+
+    read_bool_property(map_properties_node, "Sunlight", &(*map)->sunlight);
 
     xmlNode* node = root->xmlChildrenNode;
     while (node != NULL)

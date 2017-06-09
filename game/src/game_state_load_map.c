@@ -113,7 +113,7 @@ void draw_load_map_game_state(struct Game* game, int in_transition)
 {
     if (game->world->map != NULL)
     {
-        draw_map(game->world->map, game->world->actors);
+        draw_map(game->world);
     }
 }
 
