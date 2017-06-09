@@ -22,6 +22,7 @@ void activate_help_game_state(struct Game* game)
     assert(game->state != GAME_STATE_NONE);
 
     activate_gui();
+    enable_gui_cursor(0);
     caller_state = game->state;
     game->state = GAME_STATE_HELP;
 }

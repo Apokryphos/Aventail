@@ -257,8 +257,6 @@ static struct Panel* get_selected_item_type_panel()
 //  ---------------------------------------------------------------------------
 static void update_cursor()
 {
-    enable_gui_cursor(1);
-
     if (inventory_gui_state == GUI_STATE_SELECT_ITEM_TYPE)
     {
         struct Panel* selected_panel = get_selected_item_type_panel();
@@ -288,6 +286,7 @@ void activate_inventory_game_state(struct Game* game)
     }
 
     activate_gui();
+    enable_gui_cursor(1);
     inventory_gui_screen->enabled = 1;
 }
 
@@ -298,6 +297,7 @@ void deactivate_inventory_game_state(struct Game* game)
     inventory_widget->selected_item_index = 0;
 
     deactivate_gui();
+    enable_gui_cursor(0);
     inventory_gui_screen->enabled = 0;
 }
 
