@@ -26,6 +26,7 @@ int load_actors_from_file(FILE* file, struct Map* map, struct ActorList* actors)
     for (int a = 0; a < actor_count; ++a)
     {
         int tileset_id = 0;
+        int flip_flags = 0;
         int tile_x = 0;
         int tile_y = 0;
         int collision = 0;
@@ -38,6 +39,7 @@ int load_actors_from_file(FILE* file, struct Map* map, struct ActorList* actors)
         fread(&tile_x, sizeof(int), 1, file);
         fread(&tile_y, sizeof(int), 1, file);
         fread(&collision, sizeof(int), 1, file);
+        fread(&flip_flags, sizeof(int), 1, file);
         fread(&type, sizeof(int), 1, file);
         fread(&cash, sizeof(int), 1, file);
 
@@ -51,7 +53,7 @@ int load_actors_from_file(FILE* file, struct Map* map, struct ActorList* actors)
         fread(name, sizeof(char), name_len, file);
         name[name_len] = '\0';
 
-        struct Actor* actor = create_actor(map, name, tile_x, tile_y, tileset_id);
+        struct Actor* actor = create_actor(map, name, tile_x, tile_y, tileset_id, flip_flags);
 
         size_t itemCount = 0;
         fread(&itemCount, sizeof(int), 1, file);
@@ -178,6 +180,7 @@ int load_map_from_file(
         struct Tile* tile = &(*map)->tiles[t];
         fread(&tile->tileset_id, sizeof(int), 1, file);
         fread(&tile->collision, sizeof(int), 1, file);
+        fread(&tile->flip_flags, sizeof(int), 1, file);
     }
 
     if (load_map_links_from_file(file, *map) != 0)

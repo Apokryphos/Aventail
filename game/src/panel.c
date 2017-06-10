@@ -72,7 +72,7 @@ void get_panel_border_tileset_ids(
             break;
         case PANEL_BORDER_STYLE_3:
             *corner_tileset_id = PANEL_BORDER_STYLE_3_CORNER_TILESET_ID;
-            *side_tileset_id = PANEL_BORDER_STYLE_2_SIDE_TILESET_ID;
+            *side_tileset_id = PANEL_BORDER_STYLE_1_SIDE_TILESET_ID;
             break;
     }
 }

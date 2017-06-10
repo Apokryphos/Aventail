@@ -13,7 +13,8 @@ struct Actor* create_actor(
     const char* name,
     const int tile_x,
     const int tile_y,
-    const int tileset_id)
+    const int tileset_id,
+    const int flip_flags)
 {
     struct Actor* actor = malloc(sizeof(struct Actor));
 
@@ -33,6 +34,7 @@ struct Actor* create_actor(
     actor->action_points = actor->max_action_points;
     actor->collision = 1;
     actor->draw_order = 0;
+    actor->flip_flags = flip_flags;
     actor->on_touch = NULL;
     actor->move_direction = DIRECTION_NONE;
     actor->tileset_id = tileset_id;

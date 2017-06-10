@@ -33,6 +33,7 @@ void save_actors_to_file(FILE* file, const struct ActorList* actors)
             fwrite(&actor->tile->x, sizeof(int), 1, file);
             fwrite(&actor->tile->y, sizeof(int), 1, file);
             fwrite(&actor->collision, sizeof(int), 1, file);
+            fwrite(&actor->flip_flags, sizeof(int), 1, file);
             fwrite(&type, sizeof(int), 1, file);
             fwrite(&actor->cash, sizeof(int), 1, file);
 
@@ -94,6 +95,7 @@ void save_map_to_file(FILE* file, const struct Map* map)
         struct Tile* tile = &map->tiles[t];
         fwrite(&tile->tileset_id, sizeof(int), 1, file);
         fwrite(&tile->collision, sizeof(int), 1, file);
+        fwrite(&tile->flip_flags, sizeof(int), 1, file);
 
         if (tile->link != NULL)
         {

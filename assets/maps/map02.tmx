@@ -369,9 +369,9 @@
    <tile gid="26"/>
    <tile gid="26"/>
    <tile gid="33"/>
-   <tile gid="22"/>
-   <tile gid="22"/>
-   <tile gid="43"/>
+   <tile gid="1073741846"/>
+   <tile gid="1073741846"/>
+   <tile gid="1073741847"/>
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
@@ -404,21 +404,21 @@
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
-   <tile gid="41"/>
-   <tile gid="22"/>
-   <tile gid="22"/>
-   <tile gid="22"/>
-   <tile gid="22"/>
-   <tile gid="22"/>
-   <tile gid="22"/>
-   <tile gid="22"/>
-   <tile gid="22"/>
-   <tile gid="22"/>
-   <tile gid="22"/>
-   <tile gid="22"/>
-   <tile gid="22"/>
-   <tile gid="22"/>
-   <tile gid="43"/>
+   <tile gid="1073741845"/>
+   <tile gid="1073741846"/>
+   <tile gid="1073741846"/>
+   <tile gid="1073741846"/>
+   <tile gid="1073741846"/>
+   <tile gid="1073741846"/>
+   <tile gid="1073741846"/>
+   <tile gid="1073741846"/>
+   <tile gid="1073741846"/>
+   <tile gid="1073741846"/>
+   <tile gid="1073741846"/>
+   <tile gid="1073741846"/>
+   <tile gid="1073741846"/>
+   <tile gid="1073741846"/>
+   <tile gid="1073741847"/>
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
@@ -519,8 +519,8 @@
    <tile gid="33"/>
    <tile gid="31"/>
    <tile gid="26"/>
-   <tile gid="24"/>
-   <tile gid="43"/>
+   <tile gid="1073741858"/>
+   <tile gid="1073741847"/>
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
@@ -611,15 +611,15 @@
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
-   <tile gid="41"/>
+   <tile gid="1073741845"/>
    <tile gid="26"/>
-   <tile gid="22"/>
-   <tile gid="22"/>
-   <tile gid="22"/>
-   <tile gid="22"/>
-   <tile gid="22"/>
-   <tile gid="22"/>
-   <tile gid="43"/>
+   <tile gid="1073741846"/>
+   <tile gid="1073741846"/>
+   <tile gid="1073741846"/>
+   <tile gid="1073741846"/>
+   <tile gid="1073741846"/>
+   <tile gid="1073741846"/>
+   <tile gid="1073741847"/>
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
@@ -663,7 +663,7 @@
     <property name="DestY" type="int" value="19"/>
    </properties>
   </object>
-  <object id="23" name="Door" type="Door" gid="42" x="144" y="400" width="16" height="16"/>
+  <object id="23" name="Door" type="Door" gid="1073741866" x="144" y="400" width="16" height="16"/>
   <object id="24" name="to_map03" type="MapLink" x="144" y="384" width="16" height="16">
    <properties>
     <property name="DestMap" value="map03"/>

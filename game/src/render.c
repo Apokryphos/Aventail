@@ -160,11 +160,30 @@ void draw_map(struct World* world)
                 continue;
             }
 
+            int flip_flags = map->tiles[y * map->width + x].flip_flags;
+
+            SDL_RendererFlip sdl_flip_flags =
+                ((flip_flags & FLIP_FLAG_HORZ) ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE) |
+                ((flip_flags & FLIP_FLAG_VERT) ? SDL_FLIP_VERTICAL : SDL_FLIP_NONE);
+
+            double rotation =
+                (flip_flags & FLIP_FLAG_ROTATE_RIGHT) ? 90 :
+                (flip_flags & FLIP_FLAG_ROTATE_LEFT) ? 270 :
+                0;
+
             get_tileset_rect(&map_tileset, tileset_id, &src_rect);
 
             dest_rect.x = x * dest_rect.w;
             dest_rect.y = y * dest_rect.h;
-            SDL_RenderCopy(renderer, map_tileset.texture, &src_rect, &dest_rect);
+
+            SDL_RenderCopyEx(
+                renderer,
+                map_tileset.texture,
+                &src_rect,
+                &dest_rect,
+                rotation,
+                NULL,
+                sdl_flip_flags);
         }
     }
 
@@ -177,11 +196,30 @@ void draw_map(struct World* world)
 
         if (actor->tile != NULL)
         {
+            int flip_flags = actor->flip_flags;
+
+            SDL_RendererFlip sdl_flip_flags =
+                ((flip_flags & FLIP_FLAG_HORZ) ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE) |
+                ((flip_flags & FLIP_FLAG_VERT) ? SDL_FLIP_VERTICAL : SDL_FLIP_NONE);
+
+            double rotation =
+                (flip_flags & FLIP_FLAG_ROTATE_RIGHT) ? 90 :
+                (flip_flags & FLIP_FLAG_ROTATE_LEFT) ? 270 :
+                0;
+
             get_tileset_rect(&map_tileset, actor->tileset_id, &src_rect);
 
             dest_rect.x = actor->tile->x * dest_rect.w;
             dest_rect.y = actor->tile->y * dest_rect.h;
-            SDL_RenderCopy(renderer, map_tileset.texture, &src_rect, &dest_rect);
+
+            SDL_RenderCopyEx(
+                renderer,
+                map_tileset.texture,
+                &src_rect,
+                &dest_rect,
+                rotation,
+                NULL,
+                sdl_flip_flags);
         }
 
         actor_node = actor_node->next;
@@ -235,7 +273,7 @@ void draw_tileset_tile(
     dest_rect.x = x;
     dest_rect.y = y;
 
-    SDL_RendererFlip flipFlags =
+    SDL_RendererFlip flip_flags =
         (flip & FLIP_FLAG_HORZ ? SDL_FLIP_HORIZONTAL : 0) |
         (flip & FLIP_FLAG_VERT ? SDL_FLIP_VERTICAL : 0);
 
@@ -246,7 +284,7 @@ void draw_tileset_tile(
         &dest_rect,
         0,
         NULL,
-        flipFlags);
+        flip_flags);
 }
 
 //  ---------------------------------------------------------------------------

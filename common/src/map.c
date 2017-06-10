@@ -71,6 +71,7 @@ struct Map* create_map(
         {
             struct Tile* tile = &map->tiles[y * width + x];
             tile->collision = 0;
+            tile->flip_flags = 0;
             tile->light = 0;
             tile->tileset_id = 0;
             tile->x = x;

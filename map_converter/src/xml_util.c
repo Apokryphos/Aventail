@@ -61,3 +61,14 @@ void read_int_attribute(const xmlNode* node, const char* name, int* value)
         xmlFree(str_value);
     }
 }
+
+//  ---------------------------------------------------------------------------
+void read_unsigned_int_attribute(const xmlNode* node, const char* name, unsigned int* value)
+{
+    if (xmlHasProp(node, (const xmlChar*)name) != NULL)
+    {
+        xmlChar* str_value = xmlGetProp(node, (const xmlChar*)name);
+        *value = strtoul((char*)str_value, NULL, 10);
+        xmlFree(str_value);
+    }
+}

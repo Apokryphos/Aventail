@@ -80,7 +80,7 @@ static struct Actor* create_loot_container(
     assert(world->map != NULL);
     assert(inventory != NULL);
 
-    struct Actor* actor = create_actor(world->map, "Loot", x, y, 91);
+    struct Actor* actor = create_actor(world->map, "Loot", x, y, 91, 0);
     actor->type = ACTOR_TYPE_CONTAINER;
     add_actor_to_actor_list_front(world->actors, actor);
 
@@ -94,7 +94,7 @@ struct Actor* create_player_actor(struct World* world)
 {
     assert(world->player.actor == NULL);
 
-    struct Actor* actor = create_actor(NULL, "Player", -1, -1, 190);
+    struct Actor* actor = create_actor(NULL, "Player", -1, -1, 190, 0);
     actor->type = ACTOR_TYPE_PLAYER;
     load_player_definition(actor);
     add_actor_to_actor_list_front(world->actors, actor);

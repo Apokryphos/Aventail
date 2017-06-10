@@ -1,5 +1,6 @@
 #include "actor.h"
 #include "actor_list.h"
+#include "flip_flag.h"
 #include "inventory.h"
 #include "item.h"
 #include "map.h"
@@ -128,7 +129,7 @@ static void read_property(
 }
 
 //  ---------------------------------------------------------------------------
-void LoadActorItems(struct Actor* actor, xmlNode* properties_node)
+static void load_actor_items(struct Actor* actor, xmlNode* properties_node)
 {
     size_t itemCount = 0;
     char** itemNames = NULL;
@@ -143,6 +144,79 @@ void LoadActorItems(struct Actor* actor, xmlNode* properties_node)
         free(itemNames[n]);
     }
     free(itemNames);
+}
+
+//  ---------------------------------------------------------------------------
+void load_gid(unsigned int raw_gid, int* gid, int* flip_flags)
+{
+    const unsigned FLIPPED_HORIZONTALLY_FLAG = 0x80000000;
+    const unsigned FLIPPED_VERTICALLY_FLAG   = 0x40000000;
+    const unsigned FLIPPED_DIAGONALLY_FLAG   = 0x20000000;
+
+    const int flip_flags_mask = (
+        FLIPPED_HORIZONTALLY_FLAG |
+        FLIPPED_VERTICALLY_FLAG |
+        FLIPPED_DIAGONALLY_FLAG);
+
+    //  Remove flip flags and adjust so void tiles are -1
+    (*gid) = (raw_gid & ~flip_flags_mask) - 1;
+
+    //  Normal
+    //  X&Y-Flip 180
+    (*flip_flags) = 0;
+
+    if (raw_gid & FLIPPED_DIAGONALLY_FLAG)
+    {
+        if ((raw_gid & FLIPPED_HORIZONTALLY_FLAG) &&
+            (raw_gid & FLIPPED_VERTICALLY_FLAG))
+        {
+            //  X-Flip 90  HVD
+            //  Y-Flip 270 HVD
+            (*flip_flags) |= FLIP_FLAG_ROTATE_RIGHT;
+            (*flip_flags) |= FLIP_FLAG_HORZ;
+        }
+        else if (raw_gid & FLIPPED_HORIZONTALLY_FLAG)
+        {
+            //            90 H D
+            //  X&Y-Flip 270 H D
+            (*flip_flags) |= FLIP_FLAG_ROTATE_RIGHT;
+        }
+        else if (raw_gid & FLIPPED_VERTICALLY_FLAG)
+        {
+            //          270  VD
+            //  X&Y-Flip 90  VD
+            (*flip_flags) |= FLIP_FLAG_ROTATE_LEFT;
+        }
+        else
+        {
+            //  X-Flip 270   D
+            //   Y-Flip 90   D
+            (*flip_flags) |= FLIP_FLAG_ROTATE_LEFT;
+            (*flip_flags) |= FLIP_FLAG_HORZ;
+        }
+    }
+    else
+    {
+        if ((raw_gid & FLIPPED_HORIZONTALLY_FLAG) &&
+            (raw_gid & FLIPPED_VERTICALLY_FLAG))
+        {
+            //              180 HV
+            //  X&Y-Flip Normal HV
+            (*flip_flags) |= FLIP_FLAG_HORZ | FLIP_FLAG_VERT;
+        }
+        else if (raw_gid & FLIPPED_HORIZONTALLY_FLAG)
+        {
+            //  X-Flip Normal H
+            //     Y-Flip 180 H
+            (*flip_flags) |= FLIP_FLAG_HORZ;
+        }
+        else if (raw_gid & FLIPPED_VERTICALLY_FLAG)
+        {
+            //     X-Flip 180  V
+            //  Y-Flip Normal  V
+            (*flip_flags) |= FLIP_FLAG_VERT;
+        }
+    }
 }
 
 //  ---------------------------------------------------------------------------
@@ -194,11 +268,11 @@ void load_tmx(const xmlDoc* doc, struct Map** map, struct ActorList** actors)
                     {
                         if (is_node(tile_node, "tile"))
                         {
-                            int gid;
-                            read_int_attribute(tile_node, "gid", &gid);
-
                             struct Tile* tile = get_map_tile(*map, tile_x, tile_y);
-                            tile->tileset_id = gid - 1;
+
+                            unsigned int raw_gid;
+                            read_unsigned_int_attribute(tile_node, "gid", &raw_gid);
+                            load_gid(raw_gid, &tile->tileset_id, &tile->flip_flags);
 
                             tile->collision = is_collision_tile(tile->tileset_id);
 
@@ -224,6 +298,7 @@ void load_tmx(const xmlDoc* doc, struct Map** map, struct ActorList** actors)
                 if (is_node(object_node, "object"))
                 {
                     int gid = 0;
+                    int flip_flags = 0;
                     int tile_x = 0;
                     int tile_y = 0;
                     char* name = NULL;
@@ -237,10 +312,9 @@ void load_tmx(const xmlDoc* doc, struct Map** map, struct ActorList** actors)
 
                     if (has_attribute(object_node, "gid"))
                     {
-                        read_int_attribute(object_node, "gid", &gid);
-
-                        //  Adjust GID
-                        --gid;
+                        unsigned int raw_gid;
+                        read_unsigned_int_attribute(object_node, "gid", &raw_gid);
+                        load_gid(raw_gid, &gid, &flip_flags);
 
                         //  Adjust Y component of Tile objects
                         --tile_y;
@@ -255,28 +329,28 @@ void load_tmx(const xmlDoc* doc, struct Map** map, struct ActorList** actors)
                     read_attribute(object_node, "type", &type);
                     if (strcmp(type, "Actor") == 0)
                     {
-                        struct Actor* actor = create_actor(*map, name, tile_x, tile_y, gid);
+                        struct Actor* actor = create_actor(*map, name, tile_x, tile_y, gid, flip_flags);
                         add_actor_to_actor_list_back(*actors, actor);
                     }
                     else if (strcmp(type, "Villain") == 0)
                     {
-                        struct Actor* actor = create_actor(*map, name, tile_x, tile_y, gid);
+                        struct Actor* actor = create_actor(*map, name, tile_x, tile_y, gid, flip_flags);
                         actor->type = ACTOR_TYPE_VILLAIN;
                         actor->cash = cash;
-                        LoadActorItems(actor, properties_node);
+                        load_actor_items(actor, properties_node);
                         add_actor_to_actor_list_back(*actors, actor);
                     }
                     else if (strcmp(type, "Container") == 0)
                     {
-                        struct Actor* actor = create_actor(*map, name, tile_x, tile_y, gid);
+                        struct Actor* actor = create_actor(*map, name, tile_x, tile_y, gid, flip_flags);
                         actor->type = ACTOR_TYPE_CONTAINER;
                         actor->cash = cash;
-                        LoadActorItems(actor, properties_node);
+                        load_actor_items(actor, properties_node);
                         add_actor_to_actor_list_back(*actors, actor);
                     }
                     else if (strcmp(type, "Door") == 0)
                     {
-                        struct Actor* actor = create_actor(*map, name, tile_x, tile_y, gid);
+                        struct Actor* actor = create_actor(*map, name, tile_x, tile_y, gid, flip_flags);
                         actor->type = ACTOR_TYPE_DOOR;
                         add_actor_to_actor_list_back(*actors, actor);
                     }

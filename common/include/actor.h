@@ -19,6 +19,7 @@ struct Actor
     enum ActorType type;
     int collision;
     int draw_order;
+    int flip_flags;
     int tileset_id;
     int action_points;
     int max_action_points;
@@ -39,7 +40,8 @@ struct Actor* create_actor(
     const char *name,
     const int tile_x,
     const int tile_y,
-    const int tileset_id);
+    const int tileset_id,
+    const int flip_flags);
 void destroy_actor(struct Actor** actor);
 int get_actor_draw_order(const struct Actor* actor);
 int is_actor_dead(const struct Actor* actor);
