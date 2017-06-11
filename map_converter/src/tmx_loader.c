@@ -1,4 +1,5 @@
 #include "actor.h"
+#include "actor_ai.h"
 #include "actor_list.h"
 #include "flip_flag.h"
 #include "inventory.h"
@@ -336,6 +337,7 @@ void load_tmx(const xmlDoc* doc, struct Map** map, struct ActorList** actors)
                     {
                         struct Actor* actor = create_actor(*map, name, tile_x, tile_y, gid, flip_flags);
                         actor->type = ACTOR_TYPE_VILLAIN;
+                        actor->ai = create_actor_ai();
                         actor->cash = cash;
                         load_actor_items(actor, properties_node);
                         add_actor_to_actor_list_back(*actors, actor);

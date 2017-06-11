@@ -7,6 +7,7 @@
 #include "stats.h"
 
 struct Actor;
+struct ActorAi;
 struct Map;
 struct Tile;
 struct World;
@@ -28,6 +29,7 @@ struct Actor
     int cash;
     char* name;
     ActorOnTouchFunction* on_touch;
+    struct ActorAi* ai;
     struct Inventory* inventory;
     struct Map* map;
     struct Tile* tile;

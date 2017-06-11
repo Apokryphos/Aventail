@@ -1,4 +1,5 @@
 #include "actor.h"
+#include "actor_ai.h"
 #include "actor_defs.h"
 #include "actor_funcs.h"
 #include "actor_list.h"
@@ -80,6 +81,11 @@ int load_actors_from_file(FILE* file, struct Map* map, struct ActorList* actors)
 
         actor->collision = collision;
         actor->type = (enum ActorType)type;
+
+        if (actor->type == ACTOR_TYPE_VILLAIN)
+        {
+            actor->ai = create_actor_ai();
+        }
 
         if (actor->type == ACTOR_TYPE_DOOR)
         {

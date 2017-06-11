@@ -1,6 +1,7 @@
 #include "world.h"
 #include "actor.h"
 #include "actor_defs.h"
+#include "actor_ai.h"
 #include "actor_list.h"
 #include "path_finder.h"
 #include "audio.h"
@@ -12,6 +13,7 @@
 #include "map.h"
 #include "point.h"
 #include "tile.h"
+#include "vision.h"
 #include <assert.h>
 #include <stdlib.h>
 
@@ -196,7 +198,7 @@ static void loot_actor(
 }
 
 //  ---------------------------------------------------------------------------
-static void MoveActor(
+static void move_actor(
     struct Actor* actor,
     struct Game* game,
     struct World* world)
@@ -345,38 +347,53 @@ void simulate_world(struct Game* game, struct World* world)
     {
         if (active_actor->type == ACTOR_TYPE_VILLAIN)
         {
-            struct Path* path = build_path(
-                path_finder,
-                active_actor->tile,
-                world->player.actor->tile,
-                world->map,
-                world->actors);
-
-            if (path == NULL)
+            if (active_actor->ai != NULL)
             {
-                active_actor->move_direction = get_random_direction();
-            }
-            else
-            {
-                struct Point* next_point =
-                    get_next_path_point(path, active_actor->tile);
-
-                if (next_point != NULL)
+                if (active_actor->ai->target == NULL)
                 {
-                    active_actor->move_direction = get_direction_by_delta(
-                        active_actor->tile->x,
-                        active_actor->tile->y,
-                        next_point->x,
-                        next_point->y);
+                    if (can_see_actor(world, active_actor, world->player.actor))
+                    {
+                        active_actor->ai->target = world->player.actor;
+                    }
                 }
 
-                destroy_path(&path);
+                if (active_actor->ai->target != NULL)
+                {
+                    struct Path* path = build_path(
+                        path_finder,
+                        active_actor->tile,
+                        active_actor->ai->target->tile,
+                        world->map,
+                        world->actors);
+
+                    if (path == NULL)
+                    {
+                        active_actor->move_direction = get_random_direction();
+                    }
+                    else
+                    {
+                        struct Point* next_point =
+                            get_next_path_point(path, active_actor->tile);
+
+                        if (next_point != NULL)
+                        {
+                            active_actor->move_direction = get_direction_by_delta(
+                                active_actor->tile->x,
+                                active_actor->tile->y,
+                                next_point->x,
+                                next_point->y);
+                        }
+
+                        destroy_path(&path);
+                    }
+                }
             }
+
         }
 
         if (active_actor->action_points > 0)
         {
-            MoveActor(active_actor, game, world);
+            move_actor(active_actor, game, world);
 
             if (active_actor != NULL &&
                 active_actor->type == ACTOR_TYPE_VILLAIN &&

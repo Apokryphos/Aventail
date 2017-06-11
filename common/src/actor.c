@@ -1,4 +1,5 @@
 #include "actor.h"
+#include "actor_ai.h"
 #include "direction.h"
 #include "inventory.h"
 #include "map.h"
@@ -35,6 +36,7 @@ struct Actor* create_actor(
     actor->collision = 1;
     actor->draw_order = 0;
     actor->flip_flags = flip_flags;
+    actor->ai = NULL;
     actor->on_touch = NULL;
     actor->move_direction = DIRECTION_NONE;
     actor->tileset_id = tileset_id;
@@ -58,6 +60,11 @@ void destroy_actor(struct Actor** actor)
 
     if (*actor != NULL)
     {
+        if ((*actor)->ai != NULL)
+        {
+            destroy_actor_ai(&(*actor)->ai);
+        }
+
         remove_all_items_from_gear(*actor);
         destroy_inventory(&(*actor)->inventory);
         free((*actor)->name);

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.0" orientation="orthogonal" renderorder="right-down" width="25" height="25" tilewidth="16" tileheight="16" nextobjectid="25">
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="25" height="25" tilewidth="16" tileheight="16" nextobjectid="27">
  <tileset firstgid="1" source="tileset.tsx"/>
  <layer name="Tile Layer 1" width="25" height="25">
   <data>
@@ -423,6 +423,11 @@
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
+   <tile gid="21"/>
+   <tile gid="22"/>
+   <tile gid="22"/>
+   <tile gid="22"/>
+   <tile gid="23"/>
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
@@ -443,16 +448,11 @@
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
+   <tile gid="31"/>
+   <tile gid="26"/>
+   <tile gid="26"/>
+   <tile gid="26"/>
+   <tile gid="2147483679"/>
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
@@ -473,11 +473,11 @@
    <tile gid="23"/>
    <tile gid="0"/>
    <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
+   <tile gid="31"/>
+   <tile gid="26"/>
+   <tile gid="26"/>
+   <tile gid="26"/>
+   <tile gid="2147483679"/>
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
@@ -498,11 +498,11 @@
    <tile gid="33"/>
    <tile gid="0"/>
    <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
+   <tile gid="31"/>
+   <tile gid="26"/>
+   <tile gid="26"/>
+   <tile gid="26"/>
+   <tile gid="2147483679"/>
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
@@ -523,11 +523,11 @@
    <tile gid="1073741847"/>
    <tile gid="0"/>
    <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
+   <tile gid="31"/>
+   <tile gid="26"/>
+   <tile gid="26"/>
+   <tile gid="26"/>
+   <tile gid="2147483679"/>
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
@@ -546,13 +546,13 @@
    <tile gid="26"/>
    <tile gid="33"/>
    <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
+   <tile gid="21"/>
+   <tile gid="22"/>
+   <tile gid="35"/>
+   <tile gid="26"/>
+   <tile gid="26"/>
+   <tile gid="26"/>
+   <tile gid="2147483679"/>
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
@@ -571,13 +571,13 @@
    <tile gid="26"/>
    <tile gid="33"/>
    <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
+   <tile gid="31"/>
+   <tile gid="26"/>
+   <tile gid="26"/>
+   <tile gid="26"/>
+   <tile gid="26"/>
+   <tile gid="26"/>
+   <tile gid="2147483679"/>
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
@@ -596,13 +596,13 @@
    <tile gid="26"/>
    <tile gid="33"/>
    <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
+   <tile gid="31"/>
+   <tile gid="26"/>
+   <tile gid="26"/>
+   <tile gid="26"/>
+   <tile gid="26"/>
+   <tile gid="26"/>
+   <tile gid="2147483679"/>
    <tile gid="0"/>
    <tile gid="0"/>
    <tile gid="0"/>
@@ -621,13 +621,13 @@
    <tile gid="1073741846"/>
    <tile gid="1073741847"/>
    <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
-   <tile gid="0"/>
+   <tile gid="1073741845"/>
+   <tile gid="1073741846"/>
+   <tile gid="1073741846"/>
+   <tile gid="26"/>
+   <tile gid="1073741846"/>
+   <tile gid="1073741846"/>
+   <tile gid="1073741847"/>
   </data>
  </layer>
  <objectgroup name="Object Layer 1">
@@ -668,6 +668,14 @@
    <properties>
     <property name="DestMap" value="map03"/>
     <property name="DestX" type="int" value="9"/>
+    <property name="DestY" type="int" value="1"/>
+   </properties>
+  </object>
+  <object id="25" name="Door" type="Door" gid="1073741866" x="336" y="400" width="16" height="16"/>
+  <object id="26" name="to_map03" type="MapLink" x="336" y="384" width="16" height="16">
+   <properties>
+    <property name="DestMap" value="map03"/>
+    <property name="DestX" type="int" value="21"/>
     <property name="DestY" type="int" value="1"/>
    </properties>
   </object>
