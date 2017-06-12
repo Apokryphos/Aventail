@@ -36,6 +36,7 @@ struct Actor* create_actor(
     actor->collision = 1;
     actor->draw_order = 0;
     actor->flip_flags = flip_flags;
+    actor->rotation = 0;
     actor->ai = NULL;
     actor->on_touch = NULL;
     actor->move_direction = DIRECTION_NONE;

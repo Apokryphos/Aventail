@@ -12,6 +12,7 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <assert.h>
+#include <math.h>
 #include <string.h>
 
 //  SDL_RenderSetScale scale amount
@@ -193,7 +194,6 @@ void draw_map(struct World* world)
     while (actor_node != NULL)
     {
         struct Actor* actor = actor_node->actor;
-
         if (actor->tile != NULL)
         {
             int flip_flags = actor->flip_flags;
@@ -205,7 +205,7 @@ void draw_map(struct World* world)
             double rotation =
                 (flip_flags & FLIP_FLAG_ROTATE_RIGHT) ? 90 :
                 (flip_flags & FLIP_FLAG_ROTATE_LEFT) ? 270 :
-                0;
+                actor->rotation;
 
             get_tileset_rect(&map_tileset, actor->tileset_id, &src_rect);
 

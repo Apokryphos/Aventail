@@ -13,7 +13,50 @@
 #include <libxml/parser.h>
 #include <libxml/xmlmemory.h>
 #include <assert.h>
+#include <errno.h>
+#include <math.h>
 #include <string.h>
+#include <stdio.h>
+
+//  ---------------------------------------------------------------------------
+int parse_gid_csv(const char* str, unsigned int raw_gids[], int count)
+{
+    char* endptr;
+    char* saveptr;
+    char* token;
+
+    char* copy = strdup(str);
+
+    int g = 0;
+    unsigned long value;
+    token = strtok_r(copy, ",", &saveptr);
+    while (token != NULL)
+    {
+        if (g < count)
+        {
+            errno = 0;
+            value = strtoul(token, &endptr, 10);
+
+            if (value == ULONG_MAX || errno != 0)
+            {
+                perror("parse_gid_csv");
+                return 1;
+
+            }
+
+            raw_gids[g] = strtoul(token, &endptr, 10);
+            token = strtok_r(NULL, ",", &saveptr);
+            ++g;
+        }
+        else
+        {
+            break;
+        }
+    }
+    free(copy);
+
+    return g == count ? 0 : 1;
+}
 
 //  ---------------------------------------------------------------------------
 static int is_collision_tile(const int tileset_id)
@@ -257,38 +300,79 @@ void load_tmx(const xmlDoc* doc, struct Map** map, struct ActorList** actors)
         if (is_node(node, "layer"))
         {
             xmlNode* data_node = node->xmlChildrenNode;
+
             while (data_node != NULL)
             {
                 if (is_node(data_node, "data"))
                 {
-                    int tile_x = 0;
-                    int tile_y = 0;
+                    char* encoding = NULL;
+                    read_attribute(data_node, "encoding", &encoding);
 
-                    xmlNode* tile_node = data_node->xmlChildrenNode;
-                    while (tile_node != NULL)
+                    if (encoding == NULL)
                     {
-                        if (is_node(tile_node, "tile"))
-                        {
-                            struct Tile* tile = get_map_tile(*map, tile_x, tile_y);
+                        int tile_x = 0;
+                        int tile_y = 0;
 
-                            unsigned int raw_gid;
-                            read_unsigned_int_attribute(tile_node, "gid", &raw_gid);
+                        xmlNode* tile_node = data_node->xmlChildrenNode;
+                        while (tile_node != NULL)
+                        {
+                            if (is_node(tile_node, "tile"))
+                            {
+                                struct Tile* tile = get_map_tile(*map, tile_x, tile_y);
+
+                                unsigned int raw_gid;
+                                read_unsigned_int_attribute(tile_node, "gid", &raw_gid);
+                                load_gid(raw_gid, &tile->tileset_id, &tile->flip_flags);
+
+                                tile->collision = is_collision_tile(tile->tileset_id);
+
+                                ++tile_x;
+                                if (tile_x > map_width - 1)
+                                {
+                                    tile_x = 0;
+                                    ++tile_y;
+                                }
+                            }
+
+                            tile_node = tile_node->next;
+                        }
+                    }
+                    else if (strcmp(encoding, "csv") == 0)
+                    {
+                        int tile_count = map_width * map_height;
+
+                        unsigned int* raw_gids =
+                            malloc(sizeof(unsigned int) * tile_count);
+
+                        xmlChar* data_text = xmlNodeGetContent(data_node);
+
+                        if (parse_gid_csv((const char*)data_text, raw_gids, tile_count))
+                        {
+                            fprintf(stderr, "Error parsing tile CSV.\n");
+                            exit(-1);
+                        }
+
+                        for (int g = 0; g < tile_count; ++g)
+                        {
+                            struct Tile* tile = &((*map)->tiles[g]);
+
+                            unsigned int raw_gid = raw_gids[g];
+
                             load_gid(raw_gid, &tile->tileset_id, &tile->flip_flags);
 
                             tile->collision = is_collision_tile(tile->tileset_id);
-
-                            ++tile_x;
-                            if (tile_x > map_width - 1)
-                            {
-                                tile_x = 0;
-                                ++tile_y;
-                            }
                         }
-
-                        tile_node = tile_node->next;
+                    }
+                    else
+                    {
+                        fprintf(stderr, "Tile data encoding not supported.\n");
+                        exit(-1);
                     }
                 }
+
                 data_node = data_node->next;
+
+
             }
         }
         else if (is_node(node, "objectgroup"))
@@ -302,11 +386,13 @@ void load_tmx(const xmlDoc* doc, struct Map** map, struct ActorList** actors)
                     int flip_flags = 0;
                     int tile_x = 0;
                     int tile_y = 0;
+                    double rotation = 0;
                     char* name = NULL;
 
                     read_attribute(object_node, "name", &name);
                     read_int_attribute(object_node, "x", &tile_x);
                     read_int_attribute(object_node, "y", &tile_y);
+                    read_double_attribute(object_node, "rotation", &rotation);
 
                     tile_x /= (*map)->tile_width;
                     tile_y /= (*map)->tile_height;
@@ -319,6 +405,22 @@ void load_tmx(const xmlDoc* doc, struct Map** map, struct ActorList** actors)
 
                         //  Adjust Y component of Tile objects
                         --tile_y;
+
+                        //  Tiled rotates tile objects using the bottom-left as the
+                        //  pivot. Adjust the position to compensate.
+                        if (rotation == 90)
+                        {
+                            ++tile_y;
+                        }
+                        else if (rotation == 180)
+                        {
+                            --tile_x;
+                            ++tile_y;
+                        }
+                        else if (rotation == -90 || rotation == 270)
+                        {
+                            --tile_x;
+                        }
                     }
 
                     xmlNode* properties_node = get_properties_node(object_node);
@@ -331,6 +433,7 @@ void load_tmx(const xmlDoc* doc, struct Map** map, struct ActorList** actors)
                     if (strcmp(type, "Actor") == 0)
                     {
                         struct Actor* actor = create_actor(*map, name, tile_x, tile_y, gid, flip_flags);
+                        actor->rotation = rotation;
                         add_actor_to_actor_list_back(*actors, actor);
                     }
                     else if (strcmp(type, "Villain") == 0)
@@ -339,6 +442,7 @@ void load_tmx(const xmlDoc* doc, struct Map** map, struct ActorList** actors)
                         actor->type = ACTOR_TYPE_VILLAIN;
                         actor->ai = create_actor_ai();
                         actor->cash = cash;
+                        actor->rotation = rotation;
                         load_actor_items(actor, properties_node);
                         add_actor_to_actor_list_back(*actors, actor);
                     }
@@ -347,6 +451,7 @@ void load_tmx(const xmlDoc* doc, struct Map** map, struct ActorList** actors)
                         struct Actor* actor = create_actor(*map, name, tile_x, tile_y, gid, flip_flags);
                         actor->type = ACTOR_TYPE_CONTAINER;
                         actor->cash = cash;
+                        actor->rotation = rotation;
                         load_actor_items(actor, properties_node);
                         add_actor_to_actor_list_back(*actors, actor);
                     }
@@ -354,6 +459,7 @@ void load_tmx(const xmlDoc* doc, struct Map** map, struct ActorList** actors)
                     {
                         struct Actor* actor = create_actor(*map, name, tile_x, tile_y, gid, flip_flags);
                         actor->type = ACTOR_TYPE_DOOR;
+                        actor->rotation = rotation;
                         add_actor_to_actor_list_back(*actors, actor);
                     }
                     else if (strcmp(type, "MapLink") == 0)

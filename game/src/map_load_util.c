@@ -35,12 +35,14 @@ int load_actors_from_file(FILE* file, struct Map* map, struct ActorList* actors)
         int name_len = 0;
         char* name = NULL;
         int cash = 0;
+        double rotation = 0;
 
         fread(&tileset_id, sizeof(int), 1, file);
         fread(&tile_x, sizeof(int), 1, file);
         fread(&tile_y, sizeof(int), 1, file);
         fread(&collision, sizeof(int), 1, file);
         fread(&flip_flags, sizeof(int), 1, file);
+        fread(&rotation, sizeof(double), 1, file);
         fread(&type, sizeof(int), 1, file);
         fread(&cash, sizeof(int), 1, file);
 
@@ -55,6 +57,7 @@ int load_actors_from_file(FILE* file, struct Map* map, struct ActorList* actors)
         name[name_len] = '\0';
 
         struct Actor* actor = create_actor(map, name, tile_x, tile_y, tileset_id, flip_flags);
+        actor->rotation = rotation;
 
         size_t itemCount = 0;
         fread(&itemCount, sizeof(int), 1, file);

@@ -19,6 +19,20 @@ void load_actor_definition(struct Actor* actor)
         actor->stats.attack = 3;
         actor->stats.defend = 4;
     }
+    else if (strcasecmp(actor->name, "bat") == 0)
+    {
+        actor->max_health = 3;
+        actor->health = actor->max_health;
+        actor->stats.attack = 2;
+        actor->stats.defend = 2;
+    }
+    else if (strcasecmp(actor->name, "gremlin") == 0)
+    {
+        actor->max_health = 8;
+        actor->health = actor->max_health;
+        actor->stats.attack = 4;
+        actor->stats.defend = 4;
+    }
 }
 
 //  ---------------------------------------------------------------------------

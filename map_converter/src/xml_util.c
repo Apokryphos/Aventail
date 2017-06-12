@@ -52,6 +52,17 @@ void read_bool_attribute(const xmlNode* node, const char* name, int* value)
 }
 
 //  ---------------------------------------------------------------------------
+void read_double_attribute(const xmlNode* node, const char* name, double* value)
+{
+    if (xmlHasProp(node, (const xmlChar*)name) != NULL)
+    {
+        xmlChar* str_value = xmlGetProp(node, (const xmlChar*)name);
+        *value = strtod((char*)str_value, NULL);
+        xmlFree(str_value);
+    }
+}
+
+//  ---------------------------------------------------------------------------
 void read_int_attribute(const xmlNode* node, const char* name, int* value)
 {
     if (xmlHasProp(node, (const xmlChar*)name) != NULL)

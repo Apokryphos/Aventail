@@ -34,6 +34,7 @@ void save_actors_to_file(FILE* file, const struct ActorList* actors)
             fwrite(&actor->tile->y, sizeof(int), 1, file);
             fwrite(&actor->collision, sizeof(int), 1, file);
             fwrite(&actor->flip_flags, sizeof(int), 1, file);
+            fwrite(&actor->rotation, sizeof(double), 1, file);
             fwrite(&type, sizeof(int), 1, file);
             fwrite(&actor->cash, sizeof(int), 1, file);
 
