@@ -11,6 +11,7 @@
 #include "input_device.h"
 #include "item.h"
 #include "map.h"
+#include "player_hud.h"
 #include "tile.h"
 #include "render.h"
 #include "world.h"
@@ -39,11 +40,13 @@ static char* hover_actor_name_string = NULL;
 //  ---------------------------------------------------------------------------
 void activate_level_game_state(struct Game* game)
 {
+    activate_player_hud(game);
 }
 
 //  ---------------------------------------------------------------------------
 void deactivate_level_game_state(struct Game* game)
 {
+    deactivate_player_hud(game);
 }
 
 //  ---------------------------------------------------------------------------
@@ -257,4 +260,5 @@ void update_level_game_state(struct Game* game)
 {
     process_level_game_state_input(game);
     simulate_world(game, game->world);
+    update_player_hud(game);
 }

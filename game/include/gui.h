@@ -6,6 +6,7 @@ struct GuiScreen;
 
 void activate_gui();
 void add_gui_screen(struct GuiScreen* screen);
+void add_overlay(struct GuiScreen* screen);
 void deactivate_gui();
 void enable_gui_cursor(int enabled);
 void draw_gui(struct Game* game);

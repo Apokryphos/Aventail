@@ -60,23 +60,23 @@ void add_actor_to_actor_list_front(struct ActorList* list, struct Actor* actor)
     }
 }
 
-//  ---------------------------------------------------------------------------
-void ClearActorList(struct ActorList* list)
-{
-    assert(list != NULL);
+// //  ---------------------------------------------------------------------------
+// void ClearActorList(struct ActorList* list)
+// {
+//     assert(list != NULL);
 
-    struct ActorListNode* node = list->front;
-    while (node != NULL)
-    {
-        struct ActorListNode* next = node->next;
-        free(node);
-        node = next;
-    }
+//     struct ActorListNode* node = list->front;
+//     while (node != NULL)
+//     {
+//         struct ActorListNode* next = node->next;
+//         free(node);
+//         node = next;
+//     }
 
-    list->count = 0;
-    list->front = NULL;
-    list->back = NULL;
-}
+//     list->count = 0;
+//     list->front = NULL;
+//     list->back = NULL;
+// }
 
 //  ---------------------------------------------------------------------------
 struct ActorList* create_actor_list()

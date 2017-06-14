@@ -31,6 +31,9 @@ static int cursor_y = 0;
 static int gui_screen_count = 0;
 static struct GuiScreen* gui_screens[GUI_MAX_GUI_SCREENS];
 
+static int overlay_count = 0;
+static struct GuiScreen* overlays[GUI_MAX_GUI_SCREENS];
+
 //  ---------------------------------------------------------------------------
 void activate_gui()
 {
@@ -45,6 +48,17 @@ void add_gui_screen(struct GuiScreen* screen)
     if (gui_screen_count < GUI_MAX_GUI_SCREENS)
     {
         gui_screens[gui_screen_count++] = screen;
+    }
+}
+
+//  ---------------------------------------------------------------------------
+void add_overlay(struct GuiScreen* screen)
+{
+    assert(overlay_count < GUI_MAX_GUI_SCREENS);
+
+    if (overlay_count < GUI_MAX_GUI_SCREENS)
+    {
+        overlays[overlay_count++] = screen;
     }
 }
 
@@ -89,6 +103,11 @@ void enable_gui_cursor(int enable)
 //  ---------------------------------------------------------------------------
 void draw_gui(struct Game* game)
 {
+    for (int s = 0; s < overlay_count; ++s)
+    {
+        draw_gui_screen(overlays[s]);
+    }
+
     if (fade_progress > 0)
     {
         draw_screen_fade(0.9f * fade_progress);
