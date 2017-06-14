@@ -82,7 +82,7 @@ static void draw_gui_cursor()
 }
 
 //  ---------------------------------------------------------------------------
-static void draw_gui_screen(struct GuiScreen* screen)
+static void draw_gui_screen(const struct GuiScreen* screen)
 {
     if (screen->enabled)
     {
@@ -101,7 +101,7 @@ void enable_gui_cursor(const int enable)
 }
 
 //  ---------------------------------------------------------------------------
-void draw_gui(struct Game* game)
+void draw_gui()
 {
     for (int s = 0; s < overlay_count; ++s)
     {
@@ -125,23 +125,23 @@ void draw_gui(struct Game* game)
 }
 
 //  ---------------------------------------------------------------------------
-void update_gui(struct Game* game)
+void update_gui(const float elapsed_seconds)
 {
     static float fade_ticks = 0;
 
     if (gui_active)
     {
-        fade_ticks += game->elapsed_seconds;
+        fade_ticks += elapsed_seconds;
         if (fade_ticks > FADE_DURATION)
         {
             fade_ticks = FADE_DURATION;
         }
 
-        add_blink_state_data_time(&cursor_blink, game->elapsed_seconds);
+        add_blink_state_data_time(&cursor_blink, elapsed_seconds);
     }
     else
     {
-        fade_ticks -= game->elapsed_seconds;
+        fade_ticks -= elapsed_seconds;
         if (fade_ticks < 0)
         {
             fade_ticks = 0;

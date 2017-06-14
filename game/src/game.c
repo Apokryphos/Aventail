@@ -134,7 +134,7 @@ int game_main()
 
         update_active_game_state(game);
 
-        update_gui(game);
+        update_gui(game->elapsed_seconds);
 
         update_audio();
 

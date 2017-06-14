@@ -111,7 +111,7 @@ void draw_level_game_state(struct Game* game, int in_transition)
         draw_map(game->world);
     }
 
-    draw_gui(game);
+    draw_gui();
 
     if (in_transition)
     {

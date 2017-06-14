@@ -212,7 +212,7 @@ static struct GearSlotWidget create_gear_slot_widget(
 void draw_gear_game_state(struct Game* game, int in_transition)
 {
     draw_map(game->world);
-    draw_gui(game);
+    draw_gui();
 }
 
 //  ---------------------------------------------------------------------------

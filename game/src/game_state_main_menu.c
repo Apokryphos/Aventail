@@ -107,7 +107,7 @@ void deactivate_main_menu_game_state(struct Game* game)
 //  ---------------------------------------------------------------------------
 void draw_main_menu_game_state(struct Game* game, int in_transition)
 {
-    draw_gui(game);
+    draw_gui();
 }
 
 //  ---------------------------------------------------------------------------
