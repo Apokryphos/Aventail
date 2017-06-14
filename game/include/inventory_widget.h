@@ -62,10 +62,13 @@ void select_next_inventory_widget_item_slot(struct InventoryWidget* widget);
 
 void select_previous_inventory_widget_item_slot(struct InventoryWidget* widget);
 
-void set_inventory_widget_position(struct InventoryWidget* widget, int x, int y);
+void set_inventory_widget_position(
+    struct InventoryWidget* widget,
+    const int x,
+    const int y);
 
 void update_inventory_widget(
     struct InventoryWidget* widget,
-    struct Inventory* inventory);
+    const struct Inventory* inventory);
 
 #endif

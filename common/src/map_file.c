@@ -43,7 +43,7 @@ void dump_map_link_info(const struct Tile* tile)
 }
 
 //  ---------------------------------------------------------------------------
-int validate_map_file_map_link_count(int count)
+int validate_map_file_map_link_count(const int count)
 {
     if (count < 0)
     {
@@ -65,7 +65,7 @@ int validate_map_file_map_link_count(int count)
 }
 
 //  ---------------------------------------------------------------------------
-int validate_map_file_string_len(int len)
+int validate_map_file_string_len(const int len)
 {
     if (len == 0 || len > MAP_FILE_STRING_MAX_LENGTH)
     {

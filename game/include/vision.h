@@ -5,7 +5,7 @@ struct Actor;
 struct World;
 
 int can_see_actor(
-    struct World* world,
+    const struct World* world,
     const struct Actor* source,
     const struct Actor* target);
 

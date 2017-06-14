@@ -10,9 +10,5 @@ struct ActorAi
 
 struct ActorAi* create_actor_ai();
 void destroy_actor_ai(struct ActorAi** actor_ai);
-int can_see_actor(
-    struct World* world,
-    const struct Actor* source,
-    const struct Actor* target);
 
 #endif

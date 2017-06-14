@@ -11,7 +11,7 @@ static const int PANEL_BORDER_STYLE_2_SIDE_TILESET_ID = 1073;
 static const int PANEL_BORDER_STYLE_3_CORNER_TILESET_ID = 1070;
 
 //  ---------------------------------------------------------------------------
-struct Panel* create_panel(const char* title, enum PanelBorderStyle style)
+struct Panel* create_panel(const char* title, const enum PanelBorderStyle style)
 {
     struct Panel* panel = malloc(sizeof(struct Panel));
 
@@ -52,7 +52,7 @@ void destroy_panel(struct Panel** panel)
 
 //  ---------------------------------------------------------------------------
 void get_panel_border_tileset_ids(
-    enum PanelBorderStyle style,
+    const enum PanelBorderStyle style,
     int* corner_tileset_id,
     int* side_tileset_id)
 {

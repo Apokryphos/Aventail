@@ -3,8 +3,8 @@
 
 struct Game;
 
-void activate_player_hud(struct Game* game);
-void deactivate_player_hud(struct Game* game);
-void update_player_hud(struct Game* game);
+void activate_player_hud();
+void deactivate_player_hud();
+void update_player_hud(const struct Game* game);
 
 #endif

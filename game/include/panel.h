@@ -48,10 +48,10 @@ struct Panel
     const char* text;
 };
 
-struct Panel* create_panel(const char* title, enum PanelBorderStyle style);
+struct Panel* create_panel(const char* title, const enum PanelBorderStyle style);
 void destroy_panel(struct Panel** panel);
 void get_panel_border_tileset_ids(
-    enum PanelBorderStyle style,
+    const enum PanelBorderStyle style,
     int* corner_tileset_id,
     int* side_tileset_id);
 void stack_panels(struct Panel* panels[], const int count);

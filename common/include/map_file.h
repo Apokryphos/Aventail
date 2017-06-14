@@ -12,8 +12,8 @@ void dump_actor_info(const struct Actor* actor);
 
 void dump_map_link_info(const struct Tile* tile);
 
-int validate_map_file_map_link_count(int count);
+int validate_map_file_map_link_count(const int count);
 
-int validate_map_file_string_len(int len);
+int validate_map_file_string_len(const int len);
 
 #endif

@@ -21,10 +21,10 @@ struct ItemSlotWidget* create_item_slot_widget(struct GuiScreen* gui_screen);
 
 void destroy_item_slot_widget(struct ItemSlotWidget** widget);
 
-void set_item_slot_widget_position(struct ItemSlotWidget* widget, int x, int y);
+void set_item_slot_widget_position(struct ItemSlotWidget* widget, const int x, const int y);
 
-void set_item_slot_widget_visible(struct ItemSlotWidget* widget, int visible);
+void set_item_slot_widget_visible(struct ItemSlotWidget* widget, const int visible);
 
-void update_item_slot_widget(struct ItemSlotWidget* widget, struct Item* item);
+void update_item_slot_widget(struct ItemSlotWidget* widget, const struct Item* item);
 
 #endif

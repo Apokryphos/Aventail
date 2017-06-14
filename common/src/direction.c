@@ -56,10 +56,10 @@ void get_direction_delta(const enum Direction direction, int* dx, int* dy)
 
 //  ---------------------------------------------------------------------------
 const enum Direction get_direction_by_delta(
-    int start_x,
-    int start_y,
-    int dest_x,
-    int dest_y)
+    const int start_x,
+    const int start_y,
+    const int dest_x,
+    const int dest_y)
 {
     int dx = dest_x - start_x;
     int dy = dest_y - start_y;

@@ -137,7 +137,7 @@ int get_map_tile_count(const struct Map* map)
 }
 
 //  ---------------------------------------------------------------------------
-size_t get_map_tile_index(const struct Map* map, struct Tile* tile)
+size_t get_map_tile_index(const struct Map* map, const struct Tile* tile)
 {
     assert(map != NULL);
     assert(tile != NULL);

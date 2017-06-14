@@ -35,22 +35,22 @@ static void reset_path_finder(struct PathFinder* path_finder)
 //  ---------------------------------------------------------------------------
 static void update_path_finder(
     struct PathFinder* path_finder,
-    struct Map* map,
-    struct ActorList* actor_list)
+    const struct Map* map,
+    const struct ActorList* actor_list)
 {
     assert(path_finder->map == map);
 
     reset_path_finder(path_finder);
 
     //  Mark tiles occupied by actors as unwalkable
-    struct ActorListNode* actor_node = actor_list->front;
+    const struct ActorListNode* actor_node = actor_list->front;
     while (actor_node != NULL)
     {
         //  Ignore doors and dead actors
         if (actor_node->actor->type != ACTOR_TYPE_DOOR &&
             is_actor_dead(actor_node->actor) == 0)
         {
-            struct Tile* tile = actor_node->actor->tile;
+            const struct Tile* tile = actor_node->actor->tile;
             if (tile != NULL)
             {
                 size_t index = tile->y * path_finder->map->width + tile->x;
@@ -93,8 +93,8 @@ void destroy_path_finder(struct PathFinder** path_finder)
 
 //  ---------------------------------------------------------------------------
 static int closed_list_contains_node_index(
-    struct PathFinder* path_finder,
-    size_t node_index)
+    const struct PathFinder* path_finder,
+    const size_t node_index)
 {
     assert(node_index < path_finder->node_count);
 
@@ -111,8 +111,8 @@ static int closed_list_contains_node_index(
 
 //  ---------------------------------------------------------------------------
 static int open_list_contains_node_index(
-    struct PathFinder* path_finder,
-    size_t node_index)
+    const struct PathFinder* path_finder,
+    const size_t node_index)
 {
     assert(node_index < path_finder->node_count);
 
@@ -131,13 +131,13 @@ static int open_list_contains_node_index(
 /*
     Returns the node index into PathFinder->nodes of the lowest F cost node.
 */
-static size_t get_lowest_cost_node_index(struct PathFinder* path_finder)
+static size_t get_lowest_cost_node_index(const struct PathFinder* path_finder)
 {
     int cost = INT_MAX;
     size_t index = (size_t) - 1;
     for (size_t n = 0; n < path_finder->open_count; ++n)
     {
-        struct PathFinderNode* node = &path_finder->nodes[path_finder->open[n]];
+        const struct PathFinderNode* node = &path_finder->nodes[path_finder->open[n]];
         if (node->f_cost < cost)
         {
             //  Node index is the index stored in the open list
@@ -182,8 +182,8 @@ static void removed_node_index_from_open_list(
 
 //  ---------------------------------------------------------------------------
 static int calculate_h_cost(
-    struct PathFinderNode* node1,
-    struct PathFinderNode* node2)
+    const struct PathFinderNode* node1,
+    const struct PathFinderNode* node2)
 {
     //  Manhattan distance
     return 10 * abs(node1->x - node2->x) + abs(node1->y - node2->y);
@@ -191,8 +191,8 @@ static int calculate_h_cost(
 
 //  ---------------------------------------------------------------------------
 static int calculate_g_cost(
-    struct PathFinderNode* node,
-    struct PathFinderNode* parentNode)
+    const struct PathFinderNode* node,
+    const struct PathFinderNode* parentNode)
 {
     assert(parentNode != NULL);
 
@@ -206,10 +206,10 @@ static int calculate_g_cost(
 //  ---------------------------------------------------------------------------
 struct Path* build_path(
     struct PathFinder* path_finder,
-    struct Tile* start,
-    struct Tile* goal,
-    struct Map* map,
-    struct ActorList* actor_list)
+    const struct Tile* start,
+    const struct Tile* goal,
+    const struct Map* map,
+    const struct ActorList* actor_list)
 {
     assert(path_finder != NULL);
     assert(start != NULL);
@@ -250,7 +250,7 @@ struct Path* build_path(
 
         struct PathFinderNode* current_node = &path_finder->nodes[current_index];
 
-        struct Tile* current_tile = &path_finder->map->tiles[current_index];
+        const struct Tile* current_tile = &path_finder->map->tiles[current_index];
 
         for (int d = 1; d < 5; ++d)
         {
@@ -259,7 +259,7 @@ struct Path* build_path(
             int dx, dy;
             get_direction_delta(direction, &dx, &dy);
 
-            struct Tile* neighbor_tile = get_map_tile(
+            const struct Tile* neighbor_tile = get_map_tile(
                 path_finder->map,
                 current_tile->x + dx,
                 current_tile->y + dy);
@@ -361,7 +361,9 @@ void destroy_path(struct Path** path)
 }
 
 //  ---------------------------------------------------------------------------
-struct Point* get_next_path_point(struct Path* path, struct Tile* tile)
+struct Point* get_next_path_point(
+    const struct Path* path,
+    const struct Tile* tile)
 {
     for (int p = 0; p < path->count - 1; ++p)
     {

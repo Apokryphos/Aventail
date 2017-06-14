@@ -95,7 +95,7 @@ static void draw_gui_screen(struct GuiScreen* screen)
 }
 
 //  ---------------------------------------------------------------------------
-void enable_gui_cursor(int enable)
+void enable_gui_cursor(const int enable)
 {
     cursor_enabled = enable == 0 ? 0 : 1;
 }
@@ -152,7 +152,7 @@ void update_gui(struct Game* game)
 }
 
 //  ---------------------------------------------------------------------------
-void set_gui_cursor_position(int x, int y)
+void set_gui_cursor_position(const int x, const int y)
 {
     cursor_x = x;
     cursor_y = y;

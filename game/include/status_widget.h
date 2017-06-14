@@ -24,7 +24,12 @@ struct StatusWidget
 };
 
 struct StatusWidget* create_status_widget(struct GuiScreen* gui_screen);
-void set_status_widget_position(struct StatusWidget* widget, int x, int y);
-void update_status_widget(struct StatusWidget* widget, struct Actor* actor);
+void set_status_widget_position(
+    struct StatusWidget* widget,
+    const int x,
+    const int y);
+void update_status_widget(
+    struct StatusWidget* widget,
+    const struct Actor* actor);
 
 #endif

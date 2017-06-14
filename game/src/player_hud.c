@@ -27,7 +27,7 @@ static void init_player_hud_gui_screen()
 }
 
 //  ---------------------------------------------------------------------------
-void activate_player_hud(struct Game* game)
+void activate_player_hud()
 {
     if (player_hud_gui_screen == NULL)
     {
@@ -38,7 +38,7 @@ void activate_player_hud(struct Game* game)
 }
 
 //  ---------------------------------------------------------------------------
-void deactivate_player_hud(struct Game* game)
+void deactivate_player_hud()
 {
     if (player_hud_gui_screen == NULL)
     {
@@ -49,14 +49,14 @@ void deactivate_player_hud(struct Game* game)
 }
 
 //  ---------------------------------------------------------------------------
-void update_player_hud(struct Game* game)
+void update_player_hud(const struct Game* game)
 {
     if (player_hud_gui_screen == NULL)
     {
         init_player_hud_gui_screen();
     }
 
-    struct Actor* player_actor = game->world->player.actor;
+    const struct Actor* player_actor = game->world->player.actor;
 
     set_gui_gauge_string(
         health_gauge_string,

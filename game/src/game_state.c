@@ -101,8 +101,8 @@ void deactivate_game_state(struct Game* game, const enum GameState game_state)
 //  ---------------------------------------------------------------------------
 void draw_game_state(
     struct Game* game,
-    enum GameState game_state,
-    int in_transition)
+    const enum GameState game_state,
+    const int in_transition)
 {
     switch (game_state)
     {

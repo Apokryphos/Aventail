@@ -46,8 +46,8 @@ void enter_game_state(struct Game* game, const enum GameState dest_state);
 */
 void draw_game_state(
     struct Game* game,
-    enum GameState game_state,
-    int in_transition);
+    const enum GameState game_state,
+    const int in_transition);
 
 /*
 *   Updates the state specified by the game argument's state member.

@@ -40,10 +40,10 @@ struct PathFinder
 struct PathFinder* create_path_finder(struct Map* map);
 struct Path* build_path(
     struct PathFinder* path_finder,
-    struct Tile* start,
-    struct Tile* goal,
-    struct Map* map,
-    struct ActorList* actor_list);
+    const struct Tile* start,
+    const struct Tile* goal,
+    const struct Map* map,
+    const struct ActorList* actor_list);
 void destroy_path_finder(struct PathFinder** path_finder);
 void destroy_path(struct Path** path);
 /*
@@ -52,6 +52,8 @@ void destroy_path(struct Path** path);
     of path points or if the specified tile's coordinates match the
     last point in the path.
 */
-struct Point* get_next_path_point(struct Path* path, struct Tile* tile);
+struct Point* get_next_path_point(
+    const struct Path* path,
+    const struct Tile* tile);
 
 #endif

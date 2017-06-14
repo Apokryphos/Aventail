@@ -18,10 +18,10 @@ enum Direction
 
 void get_direction_delta(const enum Direction direction, int* dx, int* dy);
 const enum Direction get_direction_by_delta(
-    int start_x,
-    int start_y,
-    int dest_x,
-    int dest_y);
+    const int start_x,
+    const int start_y,
+    const int dest_x,
+    const int dest_y);
 enum Direction get_opposite_direction(const enum Direction direction);
 enum Direction get_random_direction();
 int is_diagonal_direction(const enum Direction direction);

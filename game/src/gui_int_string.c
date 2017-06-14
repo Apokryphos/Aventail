@@ -49,7 +49,7 @@ void destroy_gui_int_string(struct GuiIntString** int_string)
 void set_gui_int_string(
     struct GuiIntString* int_string,
     const char* label,
-    int value)
+    const int value)
 {
     assert(int_string != NULL);
 

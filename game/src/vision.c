@@ -20,10 +20,17 @@ struct VisionMap
 };
 
 //  ---------------------------------------------------------------------------
-static int in_vision_map_bounds(struct VisionMap* vision_map, int x, int y)
+static int in_vision_map_bounds(
+    const struct VisionMap* vision_map,
+    const int x,
+    const int y)
 {
     assert(vision_map != NULL);
-    return x >= 0 && y >= 0 && x < vision_map->width && y < vision_map->height;
+    return
+        x >= 0 &&
+        y >= 0 &&
+        x < vision_map->width &&
+        y < vision_map->height;
 }
 
 //  ---------------------------------------------------------------------------
@@ -114,7 +121,7 @@ static void fire_line(
 }
 
 //  ---------------------------------------------------------------------------
-static struct VisionMap* create_vision_map(int width, int height)
+static struct VisionMap* create_vision_map(const int width, const int height)
 {
     struct VisionMap* vision_map = malloc(sizeof(struct ActorAi));
 
@@ -139,10 +146,10 @@ static void destroy_vision_map(struct VisionMap** vision_map)
 
 //  ---------------------------------------------------------------------------
 static void update_vision_map(
-    struct World* world,
+    const struct World* world,
     struct VisionMap* vision_map,
-    int pos_x,
-    int pos_y)
+    const int pos_x,
+    const int pos_y)
 {
     struct Map* map = world->map;
 
@@ -195,7 +202,7 @@ static void update_vision_map(
 
 //  ---------------------------------------------------------------------------
 int can_see_actor(
-    struct World* world,
+    const struct World* world,
     const struct Actor* source,
     const struct Actor* target)
 {

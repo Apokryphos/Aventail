@@ -22,7 +22,7 @@ static const int STAT_VALUE_PANEL_PADDING = 4;
 static const int STAT_VALUE_PANEL_WIDTH = 24;
 
 //  ---------------------------------------------------------------------------
-static int get_stat_icon_tileset_id(enum StatType stat_type)
+static int get_stat_icon_tileset_id(const enum StatType stat_type)
 {
     switch (stat_type)
     {
@@ -118,7 +118,10 @@ void destroy_item_slot_widget(struct ItemSlotWidget** widget)
 }
 
 //  ---------------------------------------------------------------------------
-void set_item_slot_widget_position(struct ItemSlotWidget* widget, int x, int y)
+void set_item_slot_widget_position(
+    struct ItemSlotWidget* widget,
+    const int x,
+    const int y)
 {
     widget->item_icon_panel->x = x + 16;
     widget->item_icon_panel->y = y + 16;
@@ -142,7 +145,7 @@ void set_item_slot_widget_position(struct ItemSlotWidget* widget, int x, int y)
 }
 
 //  ---------------------------------------------------------------------------
-void set_item_slot_widget_visible(struct ItemSlotWidget* widget, int visible)
+void set_item_slot_widget_visible(struct ItemSlotWidget* widget, const int visible)
 {
     widget->item_icon_panel->visible = visible;
     widget->item_name_panel->visible = visible;
@@ -155,7 +158,7 @@ void set_item_slot_widget_visible(struct ItemSlotWidget* widget, int visible)
 }
 
 //  ---------------------------------------------------------------------------
-void update_item_slot_widget(struct ItemSlotWidget* widget, struct Item* item)
+void update_item_slot_widget(struct ItemSlotWidget* widget, const struct Item* item)
 {
     if (item != NULL)
     {

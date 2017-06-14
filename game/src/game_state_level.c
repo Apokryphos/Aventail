@@ -40,13 +40,13 @@ static char* hover_actor_name_string = NULL;
 //  ---------------------------------------------------------------------------
 void activate_level_game_state(struct Game* game)
 {
-    activate_player_hud(game);
+    activate_player_hud();
 }
 
 //  ---------------------------------------------------------------------------
 void deactivate_level_game_state(struct Game* game)
 {
-    deactivate_player_hud(game);
+    deactivate_player_hud();
 }
 
 //  ---------------------------------------------------------------------------
@@ -81,7 +81,7 @@ static void process_level_game_state_input(struct Game* game)
 }
 
 //  ---------------------------------------------------------------------------
-int is_mouse_cursor_over_actor(struct Actor* actor)
+int is_mouse_cursor_over_actor(const struct Actor* actor)
 {
     assert(actor != NULL);
 

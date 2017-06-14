@@ -15,6 +15,6 @@ void destroy_gui_int_string(struct GuiIntString** gui_string);
 void set_gui_int_string(
     struct GuiIntString* gui_string,
     const char* label,
-    int value);
+    const int value);
 
 #endif

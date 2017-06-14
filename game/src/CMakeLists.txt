@@ -30,6 +30,7 @@ set(GAME_SOURCE
     panel.c
     path_finder.c
     paths.c
+    player_hud.c
     render.c
     status_widget.c
     tileset.c

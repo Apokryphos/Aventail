@@ -3,7 +3,7 @@
 
 struct Actor;
 
-typedef int FindActorFunction(struct Actor* source);
+typedef int FindActorFunction(const struct Actor* source);
 
 struct ActorListNode
 {
