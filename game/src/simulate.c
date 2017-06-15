@@ -2,6 +2,7 @@
 #include "actor_ai.h"
 #include "actor_list.h"
 #include "audio.h"
+#include "game.h"
 #include "game_state_load_map.h"
 #include "game_state_transition.h"
 #include "inventory.h"
@@ -226,6 +227,25 @@ static void reset_action_points(struct World* world)
 
         actor_node = actor_node->next;
     }
+}
+
+//  ---------------------------------------------------------------------------
+void respawn_player_actor(struct Game* game)
+{
+    struct Actor* player_actor = game->world->player.actor;
+
+    //  Only reset health for now
+    player_actor->health = player_actor->max_health;
+
+    //  Inventory and gear are not currently being reset
+
+    //  Reset turn
+    reset_action_points(game->world);
+    active_actor = player_actor;
+
+    //  Return to first map
+    queue_map_load("map01");
+    begin_game_state_transition(game, GAME_STATE_LOAD_MAP);
 }
 
 //  ---------------------------------------------------------------------------

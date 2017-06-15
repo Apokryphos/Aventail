@@ -1,9 +1,8 @@
 #include "actor.h"
 #include "actor_list.h"
 #include "game.h"
-#include "game_state_load_map.h"
-#include "game_state_transition.h"
 #include "render.h"
+#include "simulate.h"
 #include "world.h"
 #include "zone.h"
 #include <stdlib.h>
@@ -38,13 +37,6 @@ void update_game_over_game_state(struct Game* game)
     {
         ticks = 0;
 
-        //  TODO: Player is destroyed and recreated here...hacky.
-        remove_actor_from_actor_list(game->world->zone->actors, game->world->player.actor);
-        destroy_actor(&game->world->player.actor);
-        game->world->player.actor = NULL;
-        create_player_actor(game->world);
-
-        queue_map_load("map01");
-        begin_game_state_transition(game, GAME_STATE_LOAD_MAP);
+        respawn_player_actor(game);
     }
 }
