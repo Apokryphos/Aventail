@@ -1,5 +1,6 @@
 #include "audio.h"
 #include "gui_screen.h"
+#include "input_device.h"
 #include "inventory.h"
 #include "inventory_widget.h"
 #include "item_slot_widget.h"
@@ -8,6 +9,42 @@
 #include <stdlib.h>
 
 static const int ARROW_ICON_TILESET_ID = 1085;
+
+//  ---------------------------------------------------------------------------
+static void select_next_inventory_widget_item_slot(struct InventoryWidget* widget)
+{
+    if (widget->item_count > 0)
+    {
+        if (widget->selected_item_index < widget->item_count - 1)
+        {
+            ++widget->selected_item_index;
+            play_sfx(SFX_MENU_NAV);
+        }
+        else
+        {
+            widget->selected_item_index = 0;
+            play_sfx(SFX_MENU_NAV);
+        }
+    }
+}
+
+//  ---------------------------------------------------------------------------
+static void select_previous_inventory_widget_item_slot(struct InventoryWidget* widget)
+{
+    if (widget->item_count > 0)
+    {
+        if (widget->selected_item_index > 0)
+        {
+            --widget->selected_item_index;
+            play_sfx(SFX_MENU_NAV);
+        }
+        else
+        {
+            widget->selected_item_index = widget->item_count - 1;
+            play_sfx(SFX_MENU_NAV);
+        }
+    }
+}
 
 //  ---------------------------------------------------------------------------
 struct InventoryWidget* create_inventory_widget(struct GuiScreen* gui_screen)
@@ -79,39 +116,25 @@ void destroy_inventory_widget(struct InventoryWidget** widget)
 }
 
 //  ---------------------------------------------------------------------------
-void select_next_inventory_widget_item_slot(struct InventoryWidget* widget)
+void process_inventory_widget_input(
+    struct InventoryWidget* widget,
+    struct InputDevice* input_device)
 {
-    if (widget->item_count > 0)
+    if (input_device->move_direction == DIRECTION_DOWN)
     {
-        if (widget->selected_item_index < widget->item_count - 1)
-        {
-            ++widget->selected_item_index;
-            play_sfx(SFX_MENU_NAV);
-        }
-        else
-        {
-            widget->selected_item_index = 0;
-            play_sfx(SFX_MENU_NAV);
-        }
+        select_next_inventory_widget_item_slot(widget);
+    }
+
+    if (input_device->move_direction == DIRECTION_UP)
+    {
+        select_previous_inventory_widget_item_slot(widget);
     }
 }
 
 //  ---------------------------------------------------------------------------
-void select_previous_inventory_widget_item_slot(struct InventoryWidget* widget)
+void reset_inventory_widget(struct InventoryWidget* widget)
 {
-    if (widget->item_count > 0)
-    {
-        if (widget->selected_item_index > 0)
-        {
-            --widget->selected_item_index;
-            play_sfx(SFX_MENU_NAV);
-        }
-        else
-        {
-            widget->selected_item_index = widget->item_count - 1;
-            play_sfx(SFX_MENU_NAV);
-        }
-    }
+    widget->selected_item_index = 0;
 }
 
 //  ---------------------------------------------------------------------------

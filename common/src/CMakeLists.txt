@@ -1,4 +1,5 @@
 set(COMMON_SOURCE
+    actor_ai.c
     actor_list.c
     actor.c
     args.c

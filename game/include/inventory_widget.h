@@ -5,6 +5,7 @@
 #include <stddef.h>
 
 struct GuiScreen;
+struct InputDevice;
 struct Inventory;
 struct Item;
 struct ItemSlotWidget;
@@ -58,9 +59,11 @@ struct InventoryWidget* create_inventory_widget(struct GuiScreen* guiScreen);
 
 void destroy_inventory_widget(struct InventoryWidget** widget);
 
-void select_next_inventory_widget_item_slot(struct InventoryWidget* widget);
+void process_inventory_widget_input(
+    struct InventoryWidget* widget,
+    struct InputDevice* input_device);
 
-void select_previous_inventory_widget_item_slot(struct InventoryWidget* widget);
+void reset_inventory_widget(struct InventoryWidget* widget);
 
 void set_inventory_widget_position(
     struct InventoryWidget* widget,

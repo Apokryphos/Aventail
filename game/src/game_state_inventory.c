@@ -136,14 +136,8 @@ static void process_select_inventory_item_slot_state_input(struct Game* game)
             }
         }
     }
-    else if (input_device->move_direction == DIRECTION_DOWN)
-    {
-        select_next_inventory_widget_item_slot(inventory_widget);
-    }
-    else if (input_device->move_direction == DIRECTION_UP)
-    {
-        select_previous_inventory_widget_item_slot(inventory_widget);
-    }
+
+    process_inventory_widget_input(inventory_widget, game->input_device);
 }
 
 //  ---------------------------------------------------------------------------

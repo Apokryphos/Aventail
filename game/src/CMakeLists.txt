@@ -14,6 +14,8 @@ set(GAME_SOURCE
     game_state_transition.c
     game_state.c
     game.c
+    gear_slot_widget.c
+    gear_widget.c
     gui_gauge_string.c
     gui_int_string.c
     gui_screen.c
@@ -35,6 +37,7 @@ set(GAME_SOURCE
     status_widget.c
     tileset.c
     world.c
+    vision.c
 )
 
 include_directories(${Aventail_SOURCE_DIR}/game/include)
