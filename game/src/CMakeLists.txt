@@ -35,6 +35,7 @@ set(GAME_SOURCE
     paths.c
     player_hud.c
     render.c
+    simulate.c
     status_widget.c
     tileset.c
     world.c

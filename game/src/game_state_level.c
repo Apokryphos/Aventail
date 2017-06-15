@@ -14,6 +14,7 @@
 #include "player_hud.h"
 #include "tile.h"
 #include "render.h"
+#include "simulate.h"
 #include "world.h"
 #include <SDL2/SDL.h>
 #include <assert.h>

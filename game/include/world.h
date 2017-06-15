@@ -26,6 +26,5 @@ struct World* create_world();
     specified pointer will be set to NULL.
 */
 void destroy_world(struct World** world);
-void simulate_world(struct Game* game, struct World* world);
 
 #endif
