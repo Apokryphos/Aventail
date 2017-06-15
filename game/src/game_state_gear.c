@@ -276,14 +276,6 @@ static void update_cursor()
 }
 
 //  ---------------------------------------------------------------------------
-static void update_gear_slot_widget(
-    struct GearSlotWidget* gear_slot_widget,
-    struct Item* item)
-{
-    update_item_slot_widget(gear_slot_widget->item_slot_widget, item);
-}
-
-//  ---------------------------------------------------------------------------
 void activate_gear_game_state(struct Game* game)
 {
     if (gear_gui_screen == NULL)
