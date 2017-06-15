@@ -9,6 +9,7 @@
 #include "tile.h"
 #include "tileset.h"
 #include "world.h"
+#include "zone.h"
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <assert.h>
@@ -134,8 +135,8 @@ void draw_text_centered(
 //  ---------------------------------------------------------------------------
 void draw_map(struct World* world)
 {
-    struct Map* map = world->map;
-    struct ActorList* actors = world->actors;
+    struct Map* map = world->zone->map;
+    struct ActorList* actors = world->zone->actors;
     struct Actor* player_actor = world->player.actor;
 
     assert(renderer != NULL);

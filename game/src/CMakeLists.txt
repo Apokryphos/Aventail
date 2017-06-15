@@ -40,6 +40,7 @@ set(GAME_SOURCE
     tileset.c
     world.c
     vision.c
+    zone.c
 )
 
 include_directories(${Aventail_SOURCE_DIR}/game/include)

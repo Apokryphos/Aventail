@@ -16,6 +16,7 @@
 #include "render.h"
 #include "simulate.h"
 #include "world.h"
+#include "zone.h"
 #include <SDL2/SDL.h>
 #include <assert.h>
 #include <stdio.h>
@@ -107,7 +108,7 @@ int is_mouse_cursor_over_actor(const struct Actor* actor)
 //  ---------------------------------------------------------------------------
 void draw_level_game_state(struct Game* game, int in_transition)
 {
-    if (game->world->map != NULL)
+    if (game->world->zone->map != NULL)
     {
         draw_map(game->world);
     }
@@ -123,7 +124,7 @@ void draw_level_game_state(struct Game* game, int in_transition)
     mouse_cursor_y = game->input_device->mouse_cursor_y;
 
     struct Actor* hoverActor = find_actor_in_actor_list(
-        game->world->actors,
+        game->world->zone->actors,
         &is_mouse_cursor_over_actor);
 
     if (hoverActor != NULL)

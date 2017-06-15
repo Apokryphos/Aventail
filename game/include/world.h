@@ -4,23 +4,23 @@
 #include "player.h"
 
 struct Actor;
-struct ActorList;
 struct Game;
 struct Inventory;
-struct Map;
+struct Zone;
 
 struct World
 {
-    struct Map* map;
-    struct ActorList* actors;
     struct Player player;
+    struct Zone* zone;
 };
 
 struct Actor* create_player_actor(struct World* world);
+
 /*
     Allocates a World. Free with destroy_world.
 */
 struct World* create_world();
+
 /**
     Frees the specified World and its ActorList and Map. Afterwards the
     specified pointer will be set to NULL.

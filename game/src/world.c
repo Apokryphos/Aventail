@@ -4,8 +4,8 @@
 #include "gear.h"
 #include "inventory.h"
 #include "item_defs.h"
-#include "map.h"
 #include "world.h"
+#include "zone.h"
 #include <assert.h>
 #include <stdlib.h>
 
@@ -17,7 +17,7 @@ struct Actor* create_player_actor(struct World* world)
     struct Actor* actor = create_actor(NULL, "Player", -1, -1, 190, 0);
     actor->type = ACTOR_TYPE_PLAYER;
     load_player_definition(actor);
-    add_actor_to_actor_list_front(world->actors, actor);
+    add_actor_to_actor_list_front(world->zone->actors, actor);
     world->player.actor = actor;
 
     //  Some starting inventory to test with
@@ -67,9 +67,8 @@ struct Actor* create_player_actor(struct World* world)
 struct World* create_world()
 {
     struct World* world = malloc(sizeof(struct World));
-    world->actors = create_actor_list();
     world->player.actor = NULL;
-    world->map = NULL;
+    world->zone = create_zone();
     return world;
 }
 
@@ -81,12 +80,7 @@ void destroy_world(struct World** world)
         return;
     }
 
-    destroy_actor_list(&(*world)->actors);
-
-    if ((*world)->map != NULL)
-    {
-        destroy_map(&(*world)->map);
-    }
+    destroy_zone(&(*world)->zone);
 
     free(*world);
     *world = NULL;

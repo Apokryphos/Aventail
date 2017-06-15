@@ -5,6 +5,7 @@
 #include "game_state_transition.h"
 #include "render.h"
 #include "world.h"
+#include "zone.h"
 #include <stdlib.h>
 
 static const float GAME_OVER_DURATION = 1;
@@ -38,7 +39,7 @@ void update_game_over_game_state(struct Game* game)
         ticks = 0;
 
         //  TODO: Player is destroyed and recreated here...hacky.
-        remove_actor_from_actor_list(game->world->actors, game->world->player.actor);
+        remove_actor_from_actor_list(game->world->zone->actors, game->world->player.actor);
         destroy_actor(&game->world->player.actor);
         game->world->player.actor = NULL;
         create_player_actor(game->world);

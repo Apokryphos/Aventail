@@ -11,6 +11,7 @@
 #include "tile.h"
 #include "world.h"
 #include "vision.h"
+#include "zone.h"
 #include <assert.h>
 
 static const int BONES_TILESET_ID = 95;
@@ -24,12 +25,12 @@ static struct Actor* create_loot_container(
     const int y,
     struct Inventory* inventory)
 {
-    assert(world->map != NULL);
+    assert(world->zone->map != NULL);
     assert(inventory != NULL);
 
-    struct Actor* actor = create_actor(world->map, "Loot", x, y, 91, 0);
+    struct Actor* actor = create_actor(world->zone->map, "Loot", x, y, 91, 0);
     actor->type = ACTOR_TYPE_CONTAINER;
-    add_actor_to_actor_list_front(world->actors, actor);
+    add_actor_to_actor_list_front(world->zone->actors, actor);
 
     move_inventory_items(inventory, actor->inventory);
 
@@ -134,7 +135,7 @@ static void move_actor(
     {
         int can_move = 1;
 
-        struct ActorListNode* other_actor_node = world->actors->front;
+        struct ActorListNode* other_actor_node = world->zone->actors->front;
         while (other_actor_node != NULL)
         {
             struct Actor* other_actor = other_actor_node->actor;
@@ -198,7 +199,7 @@ static void next_active_actor(struct World* world)
 {
     active_actor = NULL;
 
-    struct ActorListNode* actor_node = world->actors->front;
+    struct ActorListNode* actor_node = world->zone->actors->front;
     while (actor_node != NULL)
     {
         struct Actor* actor = actor_node->actor;
@@ -216,7 +217,7 @@ static void next_active_actor(struct World* world)
 //  ---------------------------------------------------------------------------
 static void reset_action_points(struct World* world)
 {
-    struct ActorListNode* actor_node = world->actors->front;
+    struct ActorListNode* actor_node = world->zone->actors->front;
     while (actor_node != NULL)
     {
         struct Actor* actor = actor_node->actor;
@@ -233,9 +234,9 @@ void simulate_world(struct Game* game, struct World* world)
     static struct Map* last_map = NULL;
     static struct PathFinder* path_finder = NULL;
 
-    if (last_map != world->map && world != NULL)
+    if (last_map != world->zone->map && world != NULL)
     {
-        last_map = world->map;
+        last_map = world->zone->map;
 
         if (path_finder != NULL)
         {
@@ -243,7 +244,7 @@ void simulate_world(struct Game* game, struct World* world)
             path_finder = NULL;
         }
 
-        path_finder = create_path_finder(world->map);
+        path_finder = create_path_finder(world->zone->map);
     }
 
     if (active_actor == NULL)
@@ -261,10 +262,10 @@ void simulate_world(struct Game* game, struct World* world)
                 if (active_actor->ai->target == NULL)
                 {
                     if (can_see_actor(
-                            world->map,
+                            world->zone->map,
                             active_actor,
                             world->player.actor,
-                            world->actors))
+                            world->zone->actors))
                     {
                         active_actor->ai->target = world->player.actor;
                     }
@@ -276,8 +277,8 @@ void simulate_world(struct Game* game, struct World* world)
                         path_finder,
                         active_actor->tile,
                         active_actor->ai->target->tile,
-                        world->map,
-                        world->actors);
+                        world->zone->map,
+                        world->zone->actors);
 
                     if (path == NULL)
                     {

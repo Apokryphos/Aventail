@@ -7,6 +7,7 @@
 #include "panel.h"
 #include "render.h"
 #include "world.h"
+#include "zone.h"
 #include <SDL2/SDL.h>
 #include <assert.h>
 #include <stdlib.h>
@@ -114,7 +115,7 @@ static void init_help_gui_screen()
 //  ---------------------------------------------------------------------------
 void draw_help_game_state(struct Game* game, int in_transition)
 {
-    if (game->world->map != NULL)
+    if (game->world->zone->map != NULL)
     {
         draw_map(game->world);
     }

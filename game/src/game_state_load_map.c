@@ -8,6 +8,7 @@
 #include "paths.h"
 #include "render.h"
 #include "world.h"
+#include "zone.h"
 #include <assert.h>
 #include <stdlib.h>
 #include <string.h>
@@ -22,10 +23,10 @@ static void load_map(const char* asset_filename, struct World* world)
     assert(world != NULL);
 
     //  Remove player from actors so it doesn't get freed
-    remove_actor_from_actor_list(world->actors, world->player.actor);
+    remove_actor_from_actor_list(world->zone->actors, world->player.actor);
 
-    destroy_actor_list(&world->actors);
-    destroy_map(&world->map);
+    destroy_zone(&world->zone);
+    world->zone = create_zone(world);
 
     char *full_path = create_map_file_path(asset_filename);
     FILE *file = fopen(full_path, "rb");
@@ -38,7 +39,7 @@ static void load_map(const char* asset_filename, struct World* world)
         exit(EXIT_FAILURE);
     }
 
-    if (load_map_from_file(file, &world->map, &world->actors) != 0)
+    if (load_map_from_file(file, &world->zone->map, &world->zone->actors) != 0)
     {
         fprintf(stderr, "Failed to load map file '%s'.\n", full_path);
         fclose(file);
@@ -47,7 +48,7 @@ static void load_map(const char* asset_filename, struct World* world)
     }
 
     //  Add player actor back in
-    add_actor_to_actor_list_back(world->actors, world->player.actor);
+    add_actor_to_actor_list_back(world->zone->actors, world->player.actor);
 
     free(full_path);
     fclose(file);
@@ -72,11 +73,11 @@ static void load_map_link(struct Game* game)
 
     free(dest_map);
 
-    struct Tile* dest_tile = get_map_tile(world->map, dest_x, dest_y);
+    struct Tile* dest_tile = get_map_tile(world->zone->map, dest_x, dest_y);
     assert(dest_tile != NULL);
-    assert(in_map_bounds(world->map, dest_x, dest_y));
+    assert(in_map_bounds(world->zone->map, dest_x, dest_y));
 
-    world->player.actor->map = world->map;
+    world->player.actor->map = world->zone->map;
     world->player.actor->tile = dest_tile;
 
     play_sfx(SFX_STEPS_ENTER);
@@ -96,10 +97,10 @@ void activate_load_map_game_state(struct Game* game)
         free(dest_map_name);
         dest_map_name = NULL;
 
-        game->world->player.actor->map = game->world->map;
+        game->world->player.actor->map = game->world->zone->map;
 
         game->world->player.actor->tile =
-            get_map_tile(game->world->map, 12, 10);
+            get_map_tile(game->world->zone->map, 12, 10);
     }
 }
 
@@ -111,7 +112,7 @@ void deactivate_load_map_game_state(struct Game* game)
 //  ---------------------------------------------------------------------------
 void draw_load_map_game_state(struct Game* game, int in_transition)
 {
-    if (game->world->map != NULL)
+    if (game->world->zone->map != NULL)
     {
         draw_map(game->world);
     }
