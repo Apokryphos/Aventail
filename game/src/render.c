@@ -228,7 +228,7 @@ void draw_map(struct World* world)
     //  Draw lighting
     if (map->sunlight == 0)
     {
-        update_lighting(world);
+        update_lighting(map, player_actor, actors);
 
         SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
         for (int y = 0; y < map->height; ++y)

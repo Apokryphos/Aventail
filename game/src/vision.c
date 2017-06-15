@@ -146,13 +146,12 @@ static void destroy_vision_map(struct VisionMap** vision_map)
 
 //  ---------------------------------------------------------------------------
 static void update_vision_map(
-    const struct World* world,
     struct VisionMap* vision_map,
+    const struct Map* map,
+    const struct ActorList* actors,
     const int pos_x,
     const int pos_y)
 {
-    struct Map* map = world->map;
-
     assert(map->width == vision_map->width);
     assert(map->height == vision_map->height);
 
@@ -166,7 +165,7 @@ static void update_vision_map(
     }
 
     //  Mark all door actor tiles as solid vision cells
-    struct ActorListNode* node = world->actors->front;
+    struct ActorListNode* node = actors->front;
     while (node != NULL)
     {
         struct Actor* actor = node->actor;
@@ -202,23 +201,34 @@ static void update_vision_map(
 
 //  ---------------------------------------------------------------------------
 int can_see_actor(
-    const struct World* world,
+    const struct Map* map,
     const struct Actor* source,
-    const struct Actor* target)
+    const struct Actor* target,
+    const struct ActorList* actors)
 {
+    assert(map != NULL);
+    assert(source != NULL);
+    assert(target != NULL);
+    assert(actors != NULL);
+
     static struct VisionMap* vision_map = NULL;
     if (vision_map == NULL ||
-        vision_map->width != world->map->width ||
-        vision_map->height != world->map->height)
+        vision_map->width != map->width ||
+        vision_map->height != map->height)
     {
         destroy_vision_map(&vision_map);
-        vision_map = create_vision_map(world->map->width, world->map->height);
+        vision_map = create_vision_map(map->width, map->height);
     }
 
     if (source->tile != NULL &&
         target->tile != NULL)
     {
-        update_vision_map(world, vision_map, source->tile->x, source->tile->y);
+        update_vision_map(
+            vision_map,
+            map,
+            actors,
+            source->tile->x,
+            source->tile->y);
 
         if (vision_map->cells[target->tile->y * vision_map->width + target->tile->x] == VISIBLE_VISION_CELL)
         {

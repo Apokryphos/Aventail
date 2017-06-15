@@ -3,6 +3,9 @@
 
 struct World;
 
-void update_lighting(struct World* world);
+void update_lighting(
+    struct Map* map,
+    struct Actor* actor,
+    struct ActorList* actors);
 
 #endif

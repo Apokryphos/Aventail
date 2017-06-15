@@ -2,7 +2,6 @@
 #include "actor_list.h"
 #include "map.h"
 #include "tile.h"
-#include "world.h"
 #include <assert.h>
 #include <stdlib.h>
 
@@ -61,11 +60,14 @@ static void light_neighbor(
 }
 
 //  ---------------------------------------------------------------------------
-void update_lighting(struct World* world)
+void update_lighting(
+    struct Map* map,
+    struct Actor* actor,
+    struct ActorList* actors)
 {
-    struct Map* map = world->map;
-    struct Actor* actor = world->player.actor;
-    struct ActorList* actors = world->actors;
+    assert(map != NULL);
+    assert(actor != NULL);
+    assert(actors != NULL);
 
     //  Clear existing light levels
     for (int t = 0; t < map->width * map->height; ++t)

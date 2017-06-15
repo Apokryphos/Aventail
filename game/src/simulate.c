@@ -260,7 +260,11 @@ void simulate_world(struct Game* game, struct World* world)
             {
                 if (active_actor->ai->target == NULL)
                 {
-                    if (can_see_actor(world, active_actor, world->player.actor))
+                    if (can_see_actor(
+                            world->map,
+                            active_actor,
+                            world->player.actor,
+                            world->actors))
                     {
                         active_actor->ai->target = world->player.actor;
                     }

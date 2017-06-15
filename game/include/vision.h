@@ -2,11 +2,13 @@
 #define VISION_HEADER_INCLUDED
 
 struct Actor;
-struct World;
+struct ActorList;
+struct Map;
 
 int can_see_actor(
-    const struct World* world,
+    const struct Map* map,
     const struct Actor* source,
-    const struct Actor* target);
+    const struct Actor* target,
+    const struct ActorList* actors);
 
 #endif
