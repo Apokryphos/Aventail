@@ -26,6 +26,7 @@ set(GAME_SOURCE
     item_defs.c
     item_funcs.c
     item_slot_widget.c
+    item_type_widget.c
     light.c
     main.c
     map_load_util.c
