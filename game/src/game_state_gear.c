@@ -1,6 +1,7 @@
 #include "actor.h"
 #include "audio.h"
 #include "game.h"
+#include "gear_slot_widget.h"
 #include "gui.h"
 #include "gui_screen.h"
 #include "input_device.h"
@@ -19,13 +20,6 @@ enum GuiState
 {
     GUI_STATE_SELECT_GEAR_SLOT,
     GUI_STATE_SELECT_INVENTORY_ITEM_SLOT
-};
-
-struct GearSlotWidget
-{
-    int index;
-    struct ItemSlotWidget* item_slot_widget;
-    struct Panel* slot_panel;
 };
 
 static const int GEAR_SLOT_COUNT = 4;
