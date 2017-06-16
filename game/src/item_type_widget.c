@@ -136,7 +136,9 @@ void process_item_type_widget_input(
 //  ---------------------------------------------------------------------------
 void reset_item_type_widget(struct ItemTypeWidget* widget)
 {
+    get_selected_item_type_panel(widget)->show_title = 0;
     widget->selected_item_type = ITEM_TYPE_NONE;
+    widget->item_type_panels[0]->show_title = 1;
 }
 
 //  ---------------------------------------------------------------------------
