@@ -167,11 +167,13 @@ int load_map_from_file(
     struct Map** map,
     struct ActorList** actors)
 {
-    int width, height, tile_width, tile_height, sunlight;
+    int width, height, tile_width, tile_height, player_start_x, player_start_y, sunlight;
     fread(&width, sizeof(int), 1, file);
     fread(&height, sizeof(int), 1, file);
     fread(&tile_width, sizeof(int), 1, file);
     fread(&tile_height, sizeof(int), 1, file);
+    fread(&player_start_x, sizeof(int), 1, file);
+    fread(&player_start_y, sizeof(int), 1, file);
     fread(&sunlight, sizeof(int), 1, file);
 
     *map = create_map(width, height, tile_width, tile_height);
@@ -181,6 +183,8 @@ int load_map_from_file(
         return ERROR_MAP_FILE_LOAD;
     }
 
+    (*map)->player_start_x = player_start_x;
+    (*map)->player_start_y = player_start_y;
     (*map)->sunlight = sunlight;
 
     int tile_count = get_map_tile_count(*map);

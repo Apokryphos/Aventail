@@ -14,6 +14,8 @@ struct Map
     int height;
     int tile_width;
     int tile_height;
+    int player_start_x;
+    int player_start_y;
     int sunlight;
     struct Tile* tiles;
 };

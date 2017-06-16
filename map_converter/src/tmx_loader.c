@@ -478,6 +478,11 @@ void load_tmx(const xmlDoc* doc, struct Map** map, struct ActorList** actors)
 
                         free(dest_map);
                     }
+                    if (strcmp(type, "PlayerStart") == 0)
+                    {
+                        (*map)->player_start_x = tile_x;
+                        (*map)->player_start_y = tile_y;
+                    }
 
                     if (name != NULL)
                     {

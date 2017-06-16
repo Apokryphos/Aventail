@@ -1,6 +1,7 @@
 #ifndef WORLD_HEADER_INCLUDED
 #define WORLD_HEADER_INCLUDED
 
+#include "camera.h"
 #include "player.h"
 
 struct Actor;
@@ -10,8 +11,9 @@ struct Zone;
 
 struct World
 {
-    struct Player player;
     struct Zone* zone;
+    struct Player player;
+    struct Camera camera;
 };
 
 struct Actor* create_player_actor(struct World* world);

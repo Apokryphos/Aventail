@@ -6,7 +6,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-const int MAX_MAP_SIZE = 25;
+const int MAX_MAP_SIZE = 256;
 
 //  ---------------------------------------------------------------------------
 struct Map* create_map(
@@ -54,6 +54,8 @@ struct Map* create_map(
     map->height = height;
     map->tile_width = tile_width;
     map->tile_height = tile_height;
+    map->player_start_x = 0;
+    map->player_start_y = 0;
     map->sunlight = 0;
 
     map->tiles = malloc(sizeof(struct Tile) * width * height);

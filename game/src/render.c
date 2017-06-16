@@ -139,11 +139,60 @@ void draw_map(struct World* world)
     struct ActorList* actors = world->zone->actors;
     struct Actor* player_actor = world->player.actor;
 
+    struct Camera* camera = &world->camera;
+
     assert(renderer != NULL);
     assert(actors != NULL);
     assert(map != NULL);
     assert(map_tileset.texture != NULL);
     assert(player_actor != NULL);
+
+    SDL_Rect viewport;
+    get_viewport(&viewport);
+
+    int center_x = camera->tile_x;
+    int center_y = camera->tile_y;
+
+    int tiles_per_row = viewport.w / map->tile_width;
+    int tiles_per_col = viewport.h / map->tile_height;
+
+    int left = center_x - (tiles_per_row / 2);
+    int top = center_y - (tiles_per_col / 2);
+
+    if (left < 0)
+    {
+        left = 0;
+    }
+
+    if (top < 0)
+    {
+        top = 0;
+    }
+
+    int start_x = left - 1;
+    if (start_x < 0)
+    {
+        start_x = 0;
+    }
+
+    int start_y = top - 1;
+    if (start_y < 0)
+    {
+        start_y = 0;
+    }
+
+    int right = start_x + tiles_per_row + 2;
+    int bottom = start_y + tiles_per_col + 2;
+
+    if (right > map->width)
+    {
+        right = map->width;
+    }
+
+    if (bottom > map->height)
+    {
+        bottom = map->height;
+    }
 
     SDL_Rect src_rect;
 
@@ -151,9 +200,9 @@ void draw_map(struct World* world)
     dest_rect.w = map->tile_width;
     dest_rect.h = map->tile_height;
 
-    for (int y = 0; y < map->height; ++y)
+    for (int y = start_y; y < bottom; ++y)
     {
-        for (int x = 0; x < map->width; ++x)
+        for (int x = start_x; x < right; ++x)
         {
             int tileset_id = map->tiles[y * map->width + x].tileset_id;
 
@@ -175,8 +224,8 @@ void draw_map(struct World* world)
 
             get_tileset_rect(&map_tileset, tileset_id, &src_rect);
 
-            dest_rect.x = x * dest_rect.w;
-            dest_rect.y = y * dest_rect.h;
+            dest_rect.x = (x - left) * dest_rect.w - (int)camera->offset_x;
+            dest_rect.y = (y - top) * dest_rect.h - (int)camera->offset_y;
 
             SDL_RenderCopyEx(
                 renderer,
@@ -197,30 +246,35 @@ void draw_map(struct World* world)
         struct Actor* actor = actor_node->actor;
         if (actor->tile != NULL)
         {
-            int flip_flags = actor->flip_flags;
+            int light = map->tiles[actor->tile->y * map->width + actor->tile->x].light;
 
-            SDL_RendererFlip sdl_flip_flags =
-                ((flip_flags & FLIP_FLAG_HORZ) ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE) |
-                ((flip_flags & FLIP_FLAG_VERT) ? SDL_FLIP_VERTICAL : SDL_FLIP_NONE);
+            if (light <= 255)
+            {
+                int flip_flags = actor->flip_flags;
 
-            double rotation =
-                (flip_flags & FLIP_FLAG_ROTATE_RIGHT) ? 90 :
-                (flip_flags & FLIP_FLAG_ROTATE_LEFT) ? 270 :
-                actor->rotation;
+                SDL_RendererFlip sdl_flip_flags =
+                    ((flip_flags & FLIP_FLAG_HORZ) ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE) |
+                    ((flip_flags & FLIP_FLAG_VERT) ? SDL_FLIP_VERTICAL : SDL_FLIP_NONE);
 
-            get_tileset_rect(&map_tileset, actor->tileset_id, &src_rect);
+                double rotation =
+                    (flip_flags & FLIP_FLAG_ROTATE_RIGHT) ? 90 :
+                    (flip_flags & FLIP_FLAG_ROTATE_LEFT) ? 270 :
+                    actor->rotation;
 
-            dest_rect.x = actor->tile->x * dest_rect.w;
-            dest_rect.y = actor->tile->y * dest_rect.h;
+                get_tileset_rect(&map_tileset, actor->tileset_id, &src_rect);
 
-            SDL_RenderCopyEx(
-                renderer,
-                map_tileset.texture,
-                &src_rect,
-                &dest_rect,
-                rotation,
-                NULL,
+                dest_rect.x = (actor->tile->x - left) * dest_rect.w - (int)camera->offset_x;
+                dest_rect.y = (actor->tile->y - top) * dest_rect.h - (int)camera->offset_y;
+
+                SDL_RenderCopyEx(
+                    renderer,
+                    map_tileset.texture,
+                    &src_rect,
+                    &dest_rect,
+                    rotation,
+                    NULL,
                 sdl_flip_flags);
+            }
         }
 
         actor_node = actor_node->next;
@@ -232,12 +286,12 @@ void draw_map(struct World* world)
         update_lighting(map, player_actor, actors);
 
         SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
-        for (int y = 0; y < map->height; ++y)
+        for (int y = start_y; y < bottom; ++y)
         {
-            for (int x = 0; x < map->width; ++x)
+            for (int x = start_x; x < right; ++x)
             {
-                dest_rect.x = x * dest_rect.w;
-                dest_rect.y = y * dest_rect.h;
+                dest_rect.x = (x - left) * dest_rect.w - (int)camera->offset_x;
+                dest_rect.y = (y - top) * dest_rect.h - (int)camera->offset_y;
 
                 int light = map->tiles[y * map->width + x].light;
 

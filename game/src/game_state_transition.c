@@ -1,4 +1,5 @@
 #include "direction.h"
+#include "camera.h"
 #include "game.h"
 #include "render.h"
 #include <assert.h>
@@ -117,4 +118,6 @@ void update_transition_game_state(struct Game* game)
             game->state = end_game_state;
         }
     }
+
+    update_player_camera(game);
 }

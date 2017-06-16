@@ -1,11 +1,13 @@
 #include "actor.h"
 #include "actor_list.h"
 #include "audio.h"
+#include "camera.h"
 #include "game.h"
 #include "map.h"
 #include "map_link.h"
 #include "map_load_util.h"
 #include "paths.h"
+#include "tile.h"
 #include "render.h"
 #include "world.h"
 #include "zone.h"
@@ -50,6 +52,17 @@ static void load_map(const char* asset_filename, struct World* world)
     //  Add player actor back in
     add_actor_to_actor_list_back(world->zone->actors, world->player.actor);
 
+    world->player.actor->tile =
+        get_map_tile(
+            world->zone->map,
+            world->zone->map->player_start_x,
+            world->zone->map->player_start_y);
+
+    set_camera_position(
+        &world->camera,
+        world->zone->map->player_start_x,
+        world->zone->map->player_start_y);
+
     free(full_path);
     fclose(file);
 }
@@ -80,6 +93,8 @@ static void load_map_link(struct Game* game)
     world->player.actor->map = world->zone->map;
     world->player.actor->tile = dest_tile;
 
+    set_camera_position(&game->world->camera, dest_tile->x, dest_tile->y);
+
     play_sfx(SFX_STEPS_ENTER);
 }
 
@@ -98,9 +113,6 @@ void activate_load_map_game_state(struct Game* game)
         dest_map_name = NULL;
 
         game->world->player.actor->map = game->world->zone->map;
-
-        game->world->player.actor->tile =
-            get_map_tile(game->world->zone->map, 12, 10);
     }
 }
 

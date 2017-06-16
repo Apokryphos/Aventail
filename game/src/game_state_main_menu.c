@@ -21,7 +21,7 @@ static void process_menu_game_state_input(struct Game* game)
 
     if (input_device->accept)
     {
-        queue_map_load("map01");
+        queue_map_load("surface01");
         begin_game_state_transition(game, GAME_STATE_LOAD_MAP);
     }
     else if (input_device->help)

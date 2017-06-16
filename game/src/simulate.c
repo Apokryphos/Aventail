@@ -234,8 +234,8 @@ void respawn_player_actor(struct Game* game)
 {
     struct Actor* player_actor = game->world->player.actor;
 
-    //  Only reset health for now
     player_actor->health = player_actor->max_health;
+    player_actor->tileset_id = 190;
 
     //  Inventory and gear are not currently being reset
 
@@ -244,7 +244,7 @@ void respawn_player_actor(struct Game* game)
     active_actor = player_actor;
 
     //  Return to first map
-    queue_map_load("map01");
+    queue_map_load("surface01");
     begin_game_state_transition(game, GAME_STATE_LOAD_MAP);
 }
 

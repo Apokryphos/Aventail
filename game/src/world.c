@@ -69,6 +69,8 @@ struct World* create_world()
     struct World* world = malloc(sizeof(struct World));
     world->player.actor = NULL;
     world->zone = create_zone();
+    world->camera = (struct Camera) { 0 };
+    world->camera.speed = 64.0f;
     return world;
 }
 
