@@ -9,6 +9,12 @@
 #include <string.h>
 
 //  ---------------------------------------------------------------------------
+void actor_wait(struct Actor* actor)
+{
+    actor->action_points = 0;
+}
+
+//  ---------------------------------------------------------------------------
 struct Actor* create_actor(
     struct Map* map,
     const char* name,

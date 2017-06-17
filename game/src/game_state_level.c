@@ -60,7 +60,11 @@ static void process_level_game_state_input(struct Game* game)
     game->world->player.actor->move_direction = input_device->move_direction;
     input_device->move_direction = DIRECTION_NONE;
 
-    if (input_device->gear)
+    if (input_device->wait)
+    {
+        actor_wait(game->world->player.actor);
+    }
+    else if (input_device->gear)
     {
         enter_game_state(game, GAME_STATE_GEAR);
     }

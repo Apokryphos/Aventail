@@ -41,6 +41,8 @@ struct Actor
     struct Gear gear;
 };
 
+void actor_wait(struct Actor* actor);
+
 struct Actor* create_actor(
     struct Map* map,
     const char *name,

@@ -16,6 +16,7 @@ struct InputDevice
     int remove;
     int status;
     int quit;
+    int wait;
     int debug_kill_player;
 };
 

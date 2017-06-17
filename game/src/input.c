@@ -14,6 +14,7 @@ void update_input(struct InputDevice* input_device)
     input_device->accept = 0;
     input_device->remove = 0;
     input_device->status = 0;
+    input_device->wait = 0;
 
     SDL_Event event;
     while(SDL_PollEvent(&event))
@@ -60,6 +61,10 @@ void update_input(struct InputDevice* input_device)
                         case SDLK_s:
                             input_device->status = 1;
                             break;
+                        case SDLK_w:
+                            input_device->wait = 1;
+                            break;
+
                         case SDLK_UP:
                             input_device->move_direction = DIRECTION_UP;
                             break;

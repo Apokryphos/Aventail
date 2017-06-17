@@ -83,6 +83,7 @@ static void init_help_gui_screen()
 
     struct Panel* accept_panel = create_help_panel      ("[ENTER] Accept       ");
     struct Panel* cancel_panel = create_help_panel      ("  [ESC] Back / Cancel");
+    struct Panel* wait_panel = create_help_panel        ("    [W] Wait         ");
     struct Panel* gear_panel = create_help_panel        ("    [G] Gear         ");
     struct Panel* inventory_panel = create_help_panel   ("    [I] Inventory    ");
     struct Panel* status_panel = create_help_panel      ("    [S] Status       ");
@@ -91,6 +92,7 @@ static void init_help_gui_screen()
 
     //  Add vertical space between sections
     cancel_panel->height *= 2;
+    wait_panel->height *= 2;
     status_panel->height *= 2;
     quit_panel->height *= 2;
 
@@ -98,6 +100,7 @@ static void init_help_gui_screen()
     {
         accept_panel,
         cancel_panel,
+        wait_panel,
         gear_panel,
         inventory_panel,
         status_panel,
