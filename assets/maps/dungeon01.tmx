@@ -150,7 +150,11 @@
   </object>
   <object id="50" name="Door" type="Door" gid="42" x="784" y="1008" width="16" height="16"/>
   <object id="53" name="Door" type="Door" gid="42" x="928" y="1008" width="16" height="16"/>
-  <object id="55" name="Door" type="Door" gid="1073741866" x="928" y="1280" width="16" height="16"/>
+  <object id="55" name="Door" type="Door" gid="1073741866" x="928" y="1280" width="16" height="16">
+   <properties>
+    <property name="Locked" type="bool" value="true"/>
+   </properties>
+  </object>
   <object id="56" name="Gremlin" type="Villain" gid="201" x="976" y="1136" width="16" height="16"/>
   <object id="57" name="Gremlin" type="Villain" gid="201" x="976" y="1200" width="16" height="16"/>
   <object id="59" name="Gremlin" type="Villain" gid="201" x="1072" y="1232" width="16" height="16"/>

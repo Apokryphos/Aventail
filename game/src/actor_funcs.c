@@ -6,6 +6,12 @@
 //  ---------------------------------------------------------------------------
 void activate_container(struct Actor* source, struct Actor* target)
 {
+    if (target->locked)
+    {
+        play_sfx(SFX_ERROR);
+        return;
+    }
+
     int play_cash_sfx = 0;
 
     if (target->cash > 0)
@@ -42,15 +48,22 @@ void activate_door(struct Actor* source, struct Actor* target)
 {
     if (target->collision)
     {
-        target->collision = 0;
-
-        play_sfx(SFX_DOOR);
-
-        switch (target->tileset_id)
+        if (target->locked)
         {
-            case 41:
-                target->tileset_id = 31;
-                break;
+            play_sfx(SFX_ERROR);
+        }
+        else
+        {
+            target->collision = 0;
+
+            play_sfx(SFX_DOOR);
+
+            switch (target->tileset_id)
+            {
+                case 41:
+                    target->tileset_id = 31;
+                    break;
+            }
         }
     }
 }

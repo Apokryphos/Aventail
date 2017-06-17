@@ -28,6 +28,7 @@ struct Actor
     int health;
     int max_health;
     int cash;
+    int locked;
     double rotation;
     char* name;
     ActorOnTouchFunction* on_touch;

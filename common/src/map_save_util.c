@@ -37,6 +37,7 @@ void save_actors_to_file(FILE* file, const struct ActorList* actors)
             fwrite(&actor->rotation, sizeof(double), 1, file);
             fwrite(&type, sizeof(int), 1, file);
             fwrite(&actor->cash, sizeof(int), 1, file);
+            fwrite(&actor->locked, sizeof(int), 1, file);
 
             size_t name_len = strlen(actor->name);
             if (validate_map_file_string_len(name_len))

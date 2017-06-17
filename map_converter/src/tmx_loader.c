@@ -428,6 +428,9 @@ void load_tmx(const xmlDoc* doc, struct Map** map, struct ActorList** actors)
                     int cash = 0;
                     read_int_property(properties_node, "Cash", &cash);
 
+                    int locked = 0;
+                    read_bool_property(properties_node, "Locked", &locked);
+
                     char* type = NULL;
                     read_attribute(object_node, "type", &type);
                     if (strcmp(type, "Actor") == 0)
@@ -452,6 +455,7 @@ void load_tmx(const xmlDoc* doc, struct Map** map, struct ActorList** actors)
                         actor->type = ACTOR_TYPE_CONTAINER;
                         actor->cash = cash;
                         actor->rotation = rotation;
+                        actor->locked = locked;
                         load_actor_items(actor, properties_node);
                         add_actor_to_actor_list_back(*actors, actor);
                     }
@@ -460,6 +464,7 @@ void load_tmx(const xmlDoc* doc, struct Map** map, struct ActorList** actors)
                         struct Actor* actor = create_actor(*map, name, tile_x, tile_y, gid, flip_flags);
                         actor->type = ACTOR_TYPE_DOOR;
                         actor->rotation = rotation;
+                        actor->locked = locked;
                         add_actor_to_actor_list_back(*actors, actor);
                     }
                     else if (strcmp(type, "MapLink") == 0)

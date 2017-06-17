@@ -35,6 +35,7 @@ int load_actors_from_file(FILE* file, struct Map* map, struct ActorList* actors)
         int name_len = 0;
         char* name = NULL;
         int cash = 0;
+        int locked = 0;
         double rotation = 0;
 
         fread(&tileset_id, sizeof(int), 1, file);
@@ -45,6 +46,7 @@ int load_actors_from_file(FILE* file, struct Map* map, struct ActorList* actors)
         fread(&rotation, sizeof(double), 1, file);
         fread(&type, sizeof(int), 1, file);
         fread(&cash, sizeof(int), 1, file);
+        fread(&locked, sizeof(int), 1, file);
 
         fread(&name_len, sizeof(int), 1, file);
         if (validate_map_file_string_len(name_len))
@@ -101,6 +103,7 @@ int load_actors_from_file(FILE* file, struct Map* map, struct ActorList* actors)
         }
 
         actor->cash = cash;
+        actor->locked = locked;
 
         load_actor_definition(actor);
 

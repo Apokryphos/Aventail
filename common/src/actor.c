@@ -45,6 +45,7 @@ struct Actor* create_actor(
     actor->max_health = 100;
     actor->health = actor->max_health;
     actor->cash = 0;
+    actor->locked = 0;
     actor->stats.attack = 0;
     actor->stats.defend = 0;
     actor->stats.vitality = 0;
