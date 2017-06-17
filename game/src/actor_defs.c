@@ -33,6 +33,13 @@ void load_actor_definition(struct Actor* actor)
         actor->stats.attack = 4;
         actor->stats.defend = 4;
     }
+    if (strcasecmp(actor->name, "giant slime") == 0)
+    {
+        actor->max_health = 10;
+        actor->health = actor->max_health;
+        actor->stats.attack = 4;
+        actor->stats.defend = 4;
+    }
 }
 
 //  ---------------------------------------------------------------------------
