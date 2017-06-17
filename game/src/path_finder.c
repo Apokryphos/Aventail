@@ -9,6 +9,32 @@
 #include <limits.h>
 #include <stdlib.h>
 
+
+/*
+*   A solid tile (collision == 1).
+*   Value is zero so conditionals can read "if (node->walkable)"
+*/
+static const int BLOCKED = 0;
+/*
+*   An empty tile (collision == 0).
+*/
+static const int EMPTY = 1;
+/*
+*   An empty tile with an actor on it.
+*/
+static const int OCCUPIED = 2;
+
+struct PathFinderNode
+{
+    int f_cost;
+    int g_cost;
+    int h_cost;
+    int walkable;
+    int x;
+    int y;
+    struct PathFinderNode* parent;
+};
+
 //  ---------------------------------------------------------------------------
 static void reset_path_finder(struct PathFinder* path_finder)
 {
@@ -22,7 +48,7 @@ static void reset_path_finder(struct PathFinder* path_finder)
         path_finder->nodes[n].f_cost = 0;
         path_finder->nodes[n].g_cost = 0;
         path_finder->nodes[n].h_cost = 0;
-        path_finder->nodes[n].walkable = tile->collision == 0;
+        path_finder->nodes[n].walkable = tile->collision == 0 ? EMPTY : BLOCKED;
         path_finder->nodes[n].parent = NULL;
         path_finder->nodes[n].x = tile->x;
         path_finder->nodes[n].y = tile->y;
@@ -54,7 +80,14 @@ static void update_path_finder(
             if (tile != NULL)
             {
                 size_t index = tile->y * path_finder->map->width + tile->x;
-                path_finder->nodes[index].walkable = 0;
+
+                //  Only mark as occupied if the tile is empty, to support
+                //  cases like actors that can pass through walls, otherwise
+                //  solid tiles could be marked as passable because of the actor.
+                if (path_finder->nodes[index].walkable == EMPTY)
+                {
+                    path_finder->nodes[index].walkable = OCCUPIED;
+                }
             }
         }
 
@@ -182,11 +215,12 @@ static void removed_node_index_from_open_list(
 
 //  ---------------------------------------------------------------------------
 static int calculate_h_cost(
-    const struct PathFinderNode* node1,
-    const struct PathFinderNode* node2)
+    const struct PathFinderNode* node,
+    const struct PathFinderNode* goal_node)
 {
-    //  Manhattan distance
-    return 10 * abs(node1->x - node2->x) + abs(node1->y - node2->y);
+    //  Manhattan distance. Occupied tiles are more costly.
+    int base_cost = node->walkable == EMPTY ? 10 : 15;
+    return base_cost * abs(node->x - goal_node->x) + abs(node->y - goal_node->y);
 }
 
 //  ---------------------------------------------------------------------------
@@ -220,12 +254,7 @@ struct Path* build_path(
 
     update_path_finder(path_finder, map, actor_list);
 
-    size_t start_index = get_map_tile_index(path_finder->map, start);
     size_t goal_index = get_map_tile_index(path_finder->map, goal);
-
-    //  Mark start and goal as walkable or else no path can be found
-    path_finder->nodes[start_index].walkable = 1;
-    path_finder->nodes[goal_index].walkable = 1;
 
     struct PathFinderNode* goal_node = &path_finder->nodes[goal_index];
 

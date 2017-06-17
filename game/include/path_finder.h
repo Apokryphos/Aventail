@@ -15,17 +15,6 @@ struct Path
 
 struct PathFinderNode;
 
-struct PathFinderNode
-{
-    int f_cost;
-    int g_cost;
-    int h_cost;
-    int walkable;
-    int x;
-    int y;
-    struct PathFinderNode* parent;
-};
-
 struct PathFinder
 {
     size_t node_count;
