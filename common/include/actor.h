@@ -10,6 +10,7 @@ struct Actor;
 struct ActorAi;
 struct Map;
 struct Tile;
+struct VisionMap;
 struct World;
 
 typedef void ActorOnTouchFunction(struct Actor* source, struct Actor* target);
@@ -34,6 +35,7 @@ struct Actor
     struct Inventory* inventory;
     struct Map* map;
     struct Tile* tile;
+    struct VisionMap* vision_map;
     struct Stats stats;
     struct Gear gear;
 };
@@ -47,7 +49,12 @@ struct Actor* create_actor(
     const int flip_flags);
 void destroy_actor(struct Actor** actor);
 int get_actor_draw_order(const struct Actor* actor);
+int is_actor_alive(const struct Actor* actor);
+int is_actor_combatant(const struct Actor* actor);
 int is_actor_dead(const struct Actor* actor);
+int is_actor_fixture(const struct Actor* actor);
 int is_actor_foe(const struct Actor* actor, const struct Actor* other);
+
+extern void destroy_vision_map(struct VisionMap** vision_map);
 
 #endif

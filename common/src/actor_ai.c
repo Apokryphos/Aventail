@@ -8,6 +8,10 @@ struct ActorAi* create_actor_ai()
 {
     struct ActorAi* actor_ai = malloc(sizeof(struct ActorAi));
 
+    actor_ai->enabled = 0;
+    actor_ai->faction = 0;
+    actor_ai->hostile = 0;
+    actor_ai->target_turn_count = 0;
     actor_ai->target = NULL;
 
     return actor_ai;

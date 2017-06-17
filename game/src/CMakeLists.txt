@@ -3,6 +3,7 @@ set(GAME_SOURCE
     actor_funcs.c
     audio.c
     blink_state_data.c
+    camera.c
     game_state_game_over.c
     game_state_gear.c
     game_state_help.c
@@ -39,7 +40,6 @@ set(GAME_SOURCE
     status_widget.c
     tileset.c
     world.c
-    vision.c
     zone.c
 )
 

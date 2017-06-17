@@ -14,8 +14,12 @@
 #include "vision.h"
 #include "zone.h"
 #include <assert.h>
+#include <stdlib.h>
 
-static const int BONES_TILESET_ID = 95;
+#define MAX_TARGET_CANIDATES 16
+
+static int target_canidate_count = 0;
+static struct Actor* target_canidates[MAX_TARGET_CANIDATES];
 
 static struct Actor* active_actor = NULL;
 
@@ -69,7 +73,7 @@ static void attack_actor(
 {
     assert(source->action_points > 0);
 
-    if (source->health > 0 && target->health > 0)
+    if (is_actor_alive(source) && is_actor_alive(target))
     {
         play_sfx(SFX_ATTACK_01);
 
@@ -86,14 +90,22 @@ static void attack_actor(
 
         target->health -= damage;
 
-        if (target->health <= 0)
+        if (is_actor_dead(target))
         {
             target->collision = 0;
             target->health = 0;
             target->move_direction = DIRECTION_NONE;
-            target->tileset_id = BONES_TILESET_ID;
+            //target->tileset_id = BONES_TILESET_ID;
 
             loot_actor(source, target, world);
+        }
+        else
+        {
+            if (target->ai->enabled)
+            {
+                //  AI should target attacker
+                target->ai->target = source;
+            }
         }
     }
 }
@@ -230,14 +242,19 @@ static void reset_action_points(struct World* world)
 }
 
 //  ---------------------------------------------------------------------------
+void revive_actor(struct Actor* actor)
+{
+    actor->health = actor->max_health;
+    actor->collision = 1;
+}
+
+//  ---------------------------------------------------------------------------
 void respawn_player_actor(struct Game* game)
 {
     struct Actor* player_actor = game->world->player.actor;
 
-    player_actor->health = player_actor->max_health;
-    player_actor->tileset_id = 190;
-
     //  Inventory and gear are not currently being reset
+    revive_actor(player_actor);
 
     //  Reset turn
     reset_action_points(game->world);
@@ -249,11 +266,103 @@ void respawn_player_actor(struct Game* game)
 }
 
 //  ---------------------------------------------------------------------------
+void update_target_canidates(
+    struct Actor* source,
+    struct Zone* zone,
+    struct World* world)
+{
+    struct ActorList* actors = zone->actors;
+
+    target_canidate_count = 0;
+
+    struct ActorListNode* actor_node = actors->front;
+    while (actor_node != NULL)
+    {
+        struct Actor* actor = actor_node->actor;
+
+        if (actor != source &&
+            is_actor_alive(actor) &&
+            is_actor_foe(source, actor) &&
+            target_canidate_count < MAX_TARGET_CANIDATES)
+        {
+            if (can_see_actor(zone->map, source, actor, actors))
+            {
+                target_canidates[target_canidate_count++] = actor;
+            }
+        }
+
+        actor_node = actor_node->next;
+    }
+}
+
+//  ---------------------------------------------------------------------------
+void update_target(
+    struct Actor* source,
+    struct Zone* zone,
+    struct World* world)
+{
+    //  How long before a hostile actor changes its target
+    const int HOSTILE_TARGET_TURNS = 3;
+
+    if (source->ai->target != NULL)
+    {
+        if (is_actor_dead(source->ai->target))
+        {
+            source->ai->target = NULL;
+        }
+        else if (source->ai->hostile)
+        {
+            if (source->ai->target_turn_count <= HOSTILE_TARGET_TURNS)
+            {
+                //  Hostile actor hasn't lost interest in target yet
+                ++source->ai->target_turn_count;
+                return;
+            }
+        }
+        else
+        {
+            //  Non-hostile actor is keeping same target.
+            ++source->ai->target_turn_count;
+            return;
+        }
+    }
+
+    //  Reset target and turn counter
+    source->ai->target_turn_count = 0;
+    source->ai->target = NULL;
+
+    //  Non-hostile villains just target the player
+    if (source->type == ACTOR_TYPE_VILLAIN &&
+        source->ai->hostile == 0)
+    {
+        if (can_see_actor(zone->map, source, world->player.actor, zone->actors))
+        {
+            source->ai->target = world->player.actor;
+        }
+        return;
+    }
+
+    update_target_canidates(source, zone, world);
+
+    if (target_canidate_count > 0)
+    {
+        //  Hostile actors choose a random visible target
+        int r = rand() % target_canidate_count;
+        source->ai->target = target_canidates[r];
+    }
+    else
+    {
+        source->ai->target = NULL;
+    }
+}
+
+//  ---------------------------------------------------------------------------
 void simulate_world(struct Game* game, struct World* world)
 {
     static struct Map* last_map = NULL;
     static struct PathFinder* path_finder = NULL;
 
+    //  Create pathfinder if needed
     if (last_map != world->zone->map && world != NULL)
     {
         last_map = world->zone->map;
@@ -275,23 +384,19 @@ void simulate_world(struct Game* game, struct World* world)
 
     if (active_actor != NULL)
     {
+        update_vision(active_actor->map, active_actor, world->zone->actors);
+
         if (active_actor->type == ACTOR_TYPE_VILLAIN)
         {
-            if (active_actor->ai != NULL)
+            if (active_actor->ai->enabled)
             {
-                if (active_actor->ai->target == NULL)
-                {
-                    if (can_see_actor(
-                            world->zone->map,
-                            active_actor,
-                            world->player.actor,
-                            world->zone->actors))
-                    {
-                        active_actor->ai->target = world->player.actor;
-                    }
-                }
+                update_target(
+                    active_actor,
+                    world->zone,
+                    world);
 
-                if (active_actor->ai->target != NULL)
+                if (active_actor->ai->target != NULL &&
+                    is_actor_alive(active_actor->ai->target))
                 {
                     struct Path* path = build_path(
                         path_finder,

@@ -3,7 +3,6 @@
 #include "actor_list.h"
 #include "map.h"
 #include "tile.h"
-#include "world.h"
 #include <assert.h>
 #include <math.h>
 #include <stdlib.h>
@@ -135,7 +134,7 @@ static struct VisionMap* create_vision_map(const int width, const int height)
 }
 
 //  ---------------------------------------------------------------------------
-static void destroy_vision_map(struct VisionMap** vision_map)
+void destroy_vision_map(struct VisionMap** vision_map)
 {
     if (*vision_map != NULL)
     {
@@ -201,6 +200,35 @@ static void update_vision_map(
 }
 
 //  ---------------------------------------------------------------------------
+void update_vision(
+    const struct Map* map,
+    struct Actor* source,
+    const struct ActorList* actors)
+{
+    assert(map != NULL);
+    assert(source != NULL);
+    assert(actors != NULL);
+
+    if (source->vision_map == NULL ||
+        source->vision_map->width != map->width ||
+        source->vision_map->height != map->height)
+    {
+        destroy_vision_map(&source->vision_map);
+        source->vision_map = create_vision_map(map->width, map->height);
+    }
+
+    if (source->tile != NULL)
+    {
+        update_vision_map(
+            source->vision_map,
+            map,
+            actors,
+            source->tile->x,
+            source->tile->y);
+    }
+}
+
+//  ---------------------------------------------------------------------------
 int can_see_actor(
     const struct Map* map,
     const struct Actor* source,
@@ -212,25 +240,15 @@ int can_see_actor(
     assert(target != NULL);
     assert(actors != NULL);
 
-    static struct VisionMap* vision_map = NULL;
-    if (vision_map == NULL ||
-        vision_map->width != map->width ||
-        vision_map->height != map->height)
-    {
-        destroy_vision_map(&vision_map);
-        vision_map = create_vision_map(map->width, map->height);
-    }
+    const struct VisionMap* vision_map = source->vision_map;
+
+    assert(vision_map != NULL);
+    assert(vision_map->width == map->width);
+    assert(vision_map->height == map->height);
 
     if (source->tile != NULL &&
         target->tile != NULL)
     {
-        update_vision_map(
-            vision_map,
-            map,
-            actors,
-            source->tile->x,
-            source->tile->y);
-
         if (vision_map->cells[target->tile->y * vision_map->width + target->tile->x] == VISIBLE_VISION_CELL)
         {
             return 1;

@@ -21,6 +21,7 @@ struct Actor* create_actor(
 
     actor->name = strdup(name);
     actor->inventory = create_inventory();
+    actor->ai = create_actor_ai();
 
     actor->map = map;
 
@@ -37,7 +38,6 @@ struct Actor* create_actor(
     actor->draw_order = 0;
     actor->flip_flags = flip_flags;
     actor->rotation = 0;
-    actor->ai = NULL;
     actor->on_touch = NULL;
     actor->move_direction = DIRECTION_NONE;
     actor->tileset_id = tileset_id;
@@ -48,6 +48,7 @@ struct Actor* create_actor(
     actor->stats.attack = 0;
     actor->stats.defend = 0;
     actor->stats.vitality = 0;
+    actor->vision_map = NULL;
 
     actor->gear = (struct Gear) { 0 };
 
@@ -64,6 +65,11 @@ void destroy_actor(struct Actor** actor)
         if ((*actor)->ai != NULL)
         {
             destroy_actor_ai(&(*actor)->ai);
+        }
+
+        if ((*actor)->vision_map != NULL)
+        {
+            destroy_vision_map(&(*actor)->vision_map);
         }
 
         remove_all_items_from_gear(*actor);
@@ -94,10 +100,33 @@ int get_actor_draw_order(const struct Actor* actor)
 }
 
 //  ---------------------------------------------------------------------------
+int is_actor_alive(const struct Actor* actor)
+{
+    assert(actor != NULL);
+    return actor->health > 0;
+}
+
+//  ---------------------------------------------------------------------------
+int is_actor_combatant(const struct Actor* actor)
+{
+    return
+        (actor->type == ACTOR_TYPE_VILLAIN ||
+         actor->type == ACTOR_TYPE_PLAYER);
+}
+
+//  ---------------------------------------------------------------------------
 int is_actor_dead(const struct Actor* actor)
 {
     assert(actor != NULL);
     return actor->health <= 0;
+}
+
+//  ---------------------------------------------------------------------------
+int is_actor_fixture(const struct Actor* actor)
+{
+    return
+        (actor->type == ACTOR_TYPE_DOOR ||
+         actor->type == ACTOR_TYPE_CONTAINER);
 }
 
 //  ---------------------------------------------------------------------------
@@ -106,7 +135,28 @@ int is_actor_foe(const struct Actor* actor, const struct Actor* other)
     assert(actor != NULL);
     assert(other != NULL);
 
-    return
-        (actor->type == ACTOR_TYPE_PLAYER && other->type == ACTOR_TYPE_VILLAIN) ||
-        (actor->type == ACTOR_TYPE_VILLAIN && other->type == ACTOR_TYPE_PLAYER);
+    if (is_actor_fixture(actor) || is_actor_fixture(other))
+    {
+        return 0;
+    }
+
+    int player_exists =
+        (actor->type == ACTOR_TYPE_PLAYER || other->type == ACTOR_TYPE_PLAYER);
+
+    int villain_exists =
+        (actor->type == ACTOR_TYPE_VILLAIN || other->type == ACTOR_TYPE_VILLAIN);
+
+    if (villain_exists)
+    {
+        if (actor->ai->hostile || other->ai->hostile)
+        {
+            return actor->ai->faction != other->ai->faction;
+        }
+        else
+        {
+            return (player_exists && villain_exists);
+        }
+    }
+
+    return 0;
 }

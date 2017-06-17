@@ -14,6 +14,7 @@ set(COMMON_SOURCE
     map.c
     stats.c
     string_util.c
+    vision.c
 )
 
 include_directories(${Aventail_SOURCE_DIR}/common/include)

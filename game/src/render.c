@@ -16,6 +16,8 @@
 #include <math.h>
 #include <string.h>
 
+static const int BONES_TILESET_ID = 95;
+
 //  SDL_RenderSetScale scale amount
 static const int RENDER_SCALE = 2;
 
@@ -261,7 +263,10 @@ void draw_map(struct World* world)
                     (flip_flags & FLIP_FLAG_ROTATE_LEFT) ? 270 :
                     actor->rotation;
 
-                get_tileset_rect(&map_tileset, actor->tileset_id, &src_rect);
+                get_tileset_rect(
+                    &map_tileset,
+                    is_actor_alive(actor) ? actor->tileset_id : BONES_TILESET_ID,
+                    &src_rect);
 
                 dest_rect.x = (actor->tile->x - left) * dest_rect.w - (int)camera->offset_x;
                 dest_rect.y = (actor->tile->y - top) * dest_rect.h - (int)camera->offset_y;
