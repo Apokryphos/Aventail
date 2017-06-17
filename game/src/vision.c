@@ -20,18 +20,18 @@ struct VisionMap
 };
 
 //  ---------------------------------------------------------------------------
-static int in_vision_map_bounds(
-    const struct VisionMap* vision_map,
-    const int x,
-    const int y)
-{
-    assert(vision_map != NULL);
-    return
-        x >= 0 &&
-        y >= 0 &&
-        x < vision_map->width &&
-        y < vision_map->height;
-}
+// static int in_vision_map_bounds(
+//     const struct VisionMap* vision_map,
+//     const int x,
+//     const int y)
+// {
+//     assert(vision_map != NULL);
+//     return
+//         x >= 0 &&
+//         y >= 0 &&
+//         x < vision_map->width &&
+//         y < vision_map->height;
+// }
 
 //  ---------------------------------------------------------------------------
 static void fire_line(
@@ -93,10 +93,11 @@ static void fire_line(
     int numerator = longest >> 1;
     for (int i = 0; i <= longest; i++)
     {
-        if (in_vision_map_bounds(vision_map, x, y) == 0)
-        {
-            return;
-        }
+        //  Bounds check: not required
+        // if (in_vision_map_bounds(vision_map, x, y) == 0)
+        // {
+        //     return;
+        // }
 
         if (vision_map->cells[y * vision_map->width + x] == SOLID_VISION_CELL)
         {

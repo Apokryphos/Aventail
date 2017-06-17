@@ -338,7 +338,12 @@ void simulate_world(struct Game* game, struct World* world)
                 --active_actor->action_points;
             }
         }
-        else
+
+        //  Activate next actor here to prevent processing an actor more
+        //  times than needed. Check if NULL since move_actor can set
+        //  active_actor to NULL when using a map link.
+        if (active_actor != NULL &&
+            active_actor->action_points <= 0)
         {
             next_active_actor(world);
         }
