@@ -42,7 +42,7 @@ int audio_init()
 {
     int init_flags = MIX_INIT_OGG;
     int init = Mix_Init(init_flags);
-    if ((init & init_flags) != init_flags)
+    if (init & init_flags != init_flags)
     {
         fprintf(stderr, "Mix_Init failed to initialize OGG support.\n");
         fprintf(stderr, "%s\n", Mix_GetError());
